@@ -1,0 +1,4 @@
+spring.application.name: memo-bot
+bot:
+  base-url: https://api.telegram.org/bot
+  api-key: ${TELEGRAM_API_KEY}
