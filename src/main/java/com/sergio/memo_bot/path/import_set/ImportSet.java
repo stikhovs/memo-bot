@@ -1,5 +1,6 @@
-package com.sergio.memo_bot.update_handler.callback_data.path;
+package com.sergio.memo_bot.path.import_set;
 
+import com.sergio.memo_bot.update_handler.callback_data.path.CallBackPath;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -11,7 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ImportSet implements CallBackPath{
+public class ImportSet implements CallBackPath {
     private static final String IMPORT_SET = "Import set";
     @Override
     public boolean canProcess(CallbackQuery callbackQuery) {

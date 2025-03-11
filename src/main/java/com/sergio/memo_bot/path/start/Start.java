@@ -1,6 +1,7 @@
-package com.sergio.memo_bot.update_handler.text.path;
+package com.sergio.memo_bot.path.start;
 
 import com.sergio.memo_bot.dto.UserDto;
+import com.sergio.memo_bot.update_handler.text.path.TextPath;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
