@@ -1,34 +1,38 @@
 package com.sergio.memo_bot.path.create_set;
 
-import com.sergio.memo_bot.state.PathState;
-import com.sergio.memo_bot.state.UserPathState;
-import com.sergio.memo_bot.update_handler.callback_data.path.CallBackPath;
+import com.sergio.memo_bot.dto.ProcessableMessage;
+import com.sergio.memo_bot.state.UserInputState;
+import com.sergio.memo_bot.state.UserStateHolder;
+import com.sergio.memo_bot.state.UserStateType;
+import com.sergio.memo_bot.update_handler.AbstractProcessable;
+import com.sergio.memo_bot.util.BotReply;
+import com.sergio.memo_bot.util.BotReplyType;
+import com.sergio.memo_bot.util.UpdateMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+
+import static com.sergio.memo_bot.state.UserStateType.CREATE_SET;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class _1_CreateSet implements CallBackPath {
-    private static final String CREATE_SET = "Create set";
-    private final UserPathState userPathState;
+public class _1_CreateSet extends AbstractProcessable {
+
+    private final UserInputState userInputState;
 
     @Override
-    public boolean canProcess(CallbackQuery callbackQuery) {
-        return StringUtils.equalsIgnoreCase(CREATE_SET, callbackQuery.getData());
+    public boolean canHandleByUserState(UserStateType userStateType) {
+        return CREATE_SET == userStateType;
     }
 
     @Override
-    public BotApiMethodMessage process(CallbackQuery callbackQuery, Long chatId) {
-        userPathState.setUserState(callbackQuery.getFrom().getId(), PathState.SET_NAMING);
-        return SendMessage.builder()
+    public BotReply process(ProcessableMessage processableMessage) {
+        userInputState.setUserInputState(processableMessage.getUserId(), true);
+        return BotReply.builder()
+                .type(BotReplyType.MESSAGE)
                 .text("Как будет называться ваш новый набор?")
-                .chatId(chatId)
+                .chatId(processableMessage.getChatId())
                 .build();
     }
 }

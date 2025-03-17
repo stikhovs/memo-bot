@@ -1,25 +1,42 @@
 package com.sergio.memo_bot.path.create_set;
 
-import com.sergio.memo_bot.state.PathState;
-import com.sergio.memo_bot.state.UserPathState;
-import com.sergio.memo_bot.update_handler.callback_data.path.CallBackPath;
-import com.sergio.memo_bot.update_handler.text.path.TextPath;
+import com.sergio.memo_bot.dto.ProcessableMessage;
+import com.sergio.memo_bot.state.UserInputState;
+import com.sergio.memo_bot.state.UserStateHolder;
+import com.sergio.memo_bot.state.UserStateType;
+import com.sergio.memo_bot.update_handler.AbstractProcessable;
+import com.sergio.memo_bot.util.BotReply;
+import com.sergio.memo_bot.util.BotReplyType;
+import com.sergio.memo_bot.util.UpdateMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Message;
+
+import static com.sergio.memo_bot.state.UserStateType.ADD_CARD_REQUEST;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class _4_AddCard implements CallBackPath, TextPath {
+public class _4_AddCard extends AbstractProcessable {
 
-    private final UserPathState userPathState;
+    private final UserInputState userInputState;
 
     @Override
+    public boolean canHandleByUserState(UserStateType userStateType) {
+        return ADD_CARD_REQUEST == userStateType;
+    }
+
+    @Override
+    public BotReply process(ProcessableMessage processableMessage) {
+        userInputState.setUserInputState(processableMessage.getUserId(), true);
+        return BotReply.builder()
+                .type(BotReplyType.MESSAGE)
+                .text("Передняя сторона карточки:")
+                .chatId(processableMessage.getChatId())
+                .build();
+    }
+
+    /*@Override
     public boolean canProcess(CallbackQuery callbackQuery) {
         return PathState.CARD_CREATION_COMPLETED == userPathState.getUserState(callbackQuery.getFrom().getId())
                 && callbackQuery.getData().equals("Add one more card");
@@ -29,9 +46,9 @@ public class _4_AddCard implements CallBackPath, TextPath {
     public boolean canProcess(Message message) {
         return PathState.CARD_CREATION_BEGIN == userPathState.getUserState(message.getFrom().getId())
                 && message.getText().equals("Прекрасно! Теперь давайте добавим карточки");
-    }
+    }*/
 
-    @Override
+    /*@Override
     public BotApiMethodMessage process(CallbackQuery callbackQuery, Long chatId) {
         Long userId = callbackQuery.getFrom().getId();
         return sendMessage(userId, chatId);
@@ -49,5 +66,5 @@ public class _4_AddCard implements CallBackPath, TextPath {
                 .text("Передняя сторона карточки:")
                 .chatId(chatId)
                 .build();
-    }
+    }*/
 }

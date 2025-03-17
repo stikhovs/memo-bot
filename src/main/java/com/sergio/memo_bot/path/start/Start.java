@@ -1,36 +1,52 @@
 package com.sergio.memo_bot.path.start;
 
+import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.dto.UserDto;
-import com.sergio.memo_bot.update_handler.text.path.TextPath;
+import com.sergio.memo_bot.state.CommandType;
+import com.sergio.memo_bot.state.UserStateHolder;
+import com.sergio.memo_bot.state.UserStateType;
+import com.sergio.memo_bot.update_handler.AbstractProcessable;
+import com.sergio.memo_bot.util.BotReply;
+import com.sergio.memo_bot.util.BotReplyType;
+import com.sergio.memo_bot.util.MarkUpUtil;
+import com.sergio.memo_bot.util.UpdateMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.List;
 
+import static com.sergio.memo_bot.state.UserStateType.CREATE_SET;
+import static com.sergio.memo_bot.state.UserStateType.IMPORT_SET;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class Start implements TextPath {
-    private static final String START = "/start";
+public class Start extends AbstractProcessable {
     public static final String CREATE_USER_URL = "/telegram/user/create";
     public static final String GET_USER_URL = "/telegram/user?telegramUserId=%s";
 
     private final RestTemplate restTemplate;
 
     @Override
+    public boolean canHandleByUserState(UserStateType userStateType) {
+        return userStateType == UserStateType.START;
+    }
+
+    @Override
+    public BotReply process(ProcessableMessage processableMessage) {
+        return getOrCreateUser(processableMessage);
+    }
+
+    /*@Override
     public boolean canProcess(Message message) {
         return StringUtils.equalsIgnoreCase(START, message.getText());
     }
@@ -40,28 +56,29 @@ public class Start implements TextPath {
         User user = message.getFrom();
         return getOrCreateUser(user, chatId);
     }
-
-    private SendMessage getOrCreateUser(User user, Long chatId) {
-        ResponseEntity<UserDto> response = callGetUserApi(user);
+*/
+    private BotReply getOrCreateUser(ProcessableMessage processableMessage) {
+        ResponseEntity<UserDto> response = callGetUserApi(processableMessage);
         if (response.getStatusCode().is2xxSuccessful()) {
-            return SendMessage.builder()
-                    .chatId(chatId)
-                    .text(String.format("Добро пожаловать назад, %s!", user.getUserName()))
+            return BotReply.builder()
+                    .type(BotReplyType.MESSAGE)
+                    .chatId(processableMessage.getChatId())
+                    .text(String.format("Добро пожаловать назад, %s!", processableMessage.getUsername()))
                     .replyMarkup(
                             getInlineKeyboardMarkup()
                     )
                     .build();
         }
-        return registerUser(user, chatId);
+        return registerUser(processableMessage);
     }
 
-    public SendMessage registerUser(User user, Long chatId) {
+    public BotReply registerUser(ProcessableMessage processableMessage) {
 
-        ResponseEntity<UserDto> response = callCreateUserApi(user, chatId);
+        ResponseEntity<UserDto> response = callCreateUserApi(processableMessage);
         if (response.getStatusCode().is2xxSuccessful()) {
-            return SendMessage.builder()
-                    .chatId(chatId)
-                    .text(String.format("Вы зарегистрировались, %s!", user.getUserName()))
+            return BotReply.builder()
+                    .chatId(processableMessage.getChatId())
+                    .text(String.format("Вы зарегистрировались, %s!", processableMessage.getUsername()))
                     .replyMarkup(
                             getInlineKeyboardMarkup()
                     )
@@ -73,30 +90,28 @@ public class Start implements TextPath {
     }
 
     private InlineKeyboardMarkup getInlineKeyboardMarkup() {
-        return InlineKeyboardMarkup.builder()
-                .keyboardRow(List.of(
-                        InlineKeyboardButton.builder().text("Создать набор").callbackData("Create set").build(),
-                        InlineKeyboardButton.builder().text("Импортировать готовый\n набор").callbackData("Import set").build()
-                ))
-                .build();
+        return MarkUpUtil.getInlineKeyboardMarkup(List.of(
+                Pair.of("Создать набор", CommandType.CREATE_SET),
+                Pair.of("Импортировать набор", CommandType.IMPORT_SET)
+        ));
     }
 
-    private ResponseEntity<UserDto> callCreateUserApi(User user, Long chatId) {
+    private ResponseEntity<UserDto> callCreateUserApi(ProcessableMessage processableMessage) {
         return restTemplate.postForEntity(
                 CREATE_USER_URL,
                 UserDto.builder()
-                        .username(user.getUserName())
-                        .telegramUserId(user.getId())
-                        .telegramChatId(chatId)
+                        .username(processableMessage.getUsername())
+                        .telegramUserId(processableMessage.getUserId())
+                        .telegramChatId(processableMessage.getChatId())
                         .build(),
                 UserDto.class
         );
     }
 
-    private ResponseEntity<UserDto> callGetUserApi(User user) {
+    private ResponseEntity<UserDto> callGetUserApi(ProcessableMessage processableMessage) {
         try {
             return restTemplate.exchange(
-                    GET_USER_URL.formatted(user.getId()),
+                    GET_USER_URL.formatted(processableMessage.getUserId()),
                     HttpMethod.GET,
                     RequestEntity.EMPTY,
                     UserDto.class

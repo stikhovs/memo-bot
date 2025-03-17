@@ -1,65 +1,56 @@
 package com.sergio.memo_bot.path.create_set;
 
-import com.sergio.memo_bot.state.PathState;
-import com.sergio.memo_bot.state.UserCardSetState;
-import com.sergio.memo_bot.state.UserMessageHolder;
-import com.sergio.memo_bot.state.UserPathState;
-import com.sergio.memo_bot.update_handler.callback_data.path.CallBackPath;
-import com.sergio.memo_bot.util.EmojiConverter;
+import com.sergio.memo_bot.dto.ProcessableMessage;
+import com.sergio.memo_bot.state.*;
+import com.sergio.memo_bot.update_handler.AbstractProcessable;
+import com.sergio.memo_bot.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.List;
 
+import static com.sergio.memo_bot.state.UserStateType.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class _6_BackSideCardAccept implements CallBackPath {
+public class _6_BackSideCardAccept extends AbstractProcessable {
 
-    private final UserPathState userPathState;
     private final UserCardSetState userCardSetState;
     private final UserMessageHolder userMessageHolder;
 
     @Override
-    public boolean canProcess(CallbackQuery callbackQuery) {
-        return userPathState.getUserState(callbackQuery.getFrom().getId()) == PathState.CARD_CREATION_BACK_SIDE
-                && callbackQuery.getData().equals("Yes");
+    public boolean canHandleByUserState(UserStateType userStateType) {
+        return BACK_SIDE_CARD_ACCEPT == userStateType;
     }
 
     @Override
-    public BotApiMethodMessage process(CallbackQuery callbackQuery, Long chatId) {
-        Long userId = callbackQuery.getFrom().getId();
-        userPathState.setUserState(userId, PathState.CARD_CREATION_COMPLETED);
+    public BotReply process(ProcessableMessage processableMessage) {
+        Long userId = processableMessage.getUserId();
         userCardSetState.getUserCardSet(userId).flatMap(cardSetDto -> cardSetDto
                 .getCards()
                 .stream()
                 .filter(cardDto -> isNotBlank(cardDto.getFrontSide()) && isBlank(cardDto.getBackSide()))
                 .findFirst()).ifPresent(card -> card.setBackSide(userMessageHolder.getUserMessage(userId))
         );
-
-//        System.out.println(userCardSetState.getUserCardSet(userId));
-
-        return SendMessage.builder().chatId(chatId)
+        log.info("Добавлена задняя сторона: {}", userCardSetState.getUserCardSet(processableMessage.getUserId()));
+        return BotReply.builder()
+                .type(BotReplyType.MESSAGE)
                 .text("Отлично! Добавить еще карточку?")
-                .replyMarkup(getInlineKeyboardMarkup())
+                .replyMarkup(
+                        MarkUpUtil.getInlineKeyboardMarkup(List.of(
+                                Pair.of(EmojiConverter.getEmoji("U+2705") + " Да", CommandType.ADD_CARD),
+                                Pair.of(EmojiConverter.getEmoji("U+274C") + " Нет, сохранить набор", CommandType.SAVE_CARD_SET)
+                        ))
+                )
+                .chatId(processableMessage.getChatId())
                 .build();
     }
 
-    private InlineKeyboardMarkup getInlineKeyboardMarkup() {
-        return InlineKeyboardMarkup.builder()
-                .keyboardRow(List.of(
-                        InlineKeyboardButton.builder().text(EmojiConverter.getEmoji("U+2705") + " Да").callbackData("Add one more card").build(),
-                        InlineKeyboardButton.builder().text(EmojiConverter.getEmoji("U+274C") + " Нет, сохранить набор").callbackData("Save cardSet").build()
-                ))
-                .build();
-    }
 }
