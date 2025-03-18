@@ -30,9 +30,10 @@ public abstract class AbstractProcessable {
     public abstract BotReply process(ProcessableMessage processableMessage);
 
     public void replyTo(ProcessableMessage processableMessage, Consumer<BotApiMethod<?>> action) {
-        log.info("User: [{}], Message: [{}], Current state: [{}], Chosen handler: [{}]",
+        log.info("User: [{}], Message: [{}], Message id: [{}], Current state: [{}], Chosen handler: [{}]",
                 processableMessage.getUsername(),
                 processableMessage.getText(),
+                processableMessage.getMessageId(),
                 processableMessage.getCurrentUserStateType(),
                 this.getClass().getName());
         if (processableMessage.isProcessable()) {

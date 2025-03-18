@@ -4,12 +4,13 @@ import com.sergio.memo_bot.dto.CardDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.state.*;
 import com.sergio.memo_bot.update_handler.AbstractProcessable;
-import com.sergio.memo_bot.util.BotReply;
-import com.sergio.memo_bot.util.BotReplyType;
-import com.sergio.memo_bot.util.UpdateMapper;
+import com.sergio.memo_bot.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 import static com.sergio.memo_bot.state.UserStateType.FRONT_SIDE_CARD_ACCEPT;
 
@@ -30,23 +31,43 @@ public class _5_FrontSideCardAccept extends AbstractProcessable {
     public BotReply process(ProcessableMessage processableMessage) {
         Long userId = processableMessage.getUserId();
         userInputState.setUserInputState(userId, true);
+        String userMessage = userMessageHolder.getUserMessage(userId);
         if (processableMessage.isProcessable()) {
             userCardSetState.getUserCardSet(userId)
                     .ifPresent(cardSetDto -> cardSetDto
                             .getCards().add(
                                     CardDto.builder()
-                                            .frontSide(userMessageHolder.getUserMessage(userId))
+                                            .frontSide(userMessage)
                                             .build()
                             ));
             log.info("Добавлена передняя сторона: {}", userCardSetState.getUserCardSet(processableMessage.getUserId()));
+
+            return BotReply.builder()
+                    .type(BotReplyType.EDIT_MESSAGE_TEXT)
+                    .messageId(processableMessage.getMessageId())
+                    .text(EmojiConverter.getEmoji("U+2705") + " Передняя сторона: %s".formatted(userMessage))
+                    .replyMarkup(
+                            MarkUpUtil.getInlineKeyboardMarkup(List.of(
+                                    Pair.of(EmojiConverter.getEmoji("U+274C") + " В начало", CommandType.MAIN_MENU)
+                            ))
+                    )
+                    .nextReply(BotReply.builder()
+                            .type(BotReplyType.FORCE_REPLY)
+                            .text("Обратная сторона карточки:")
+                            .replyMarkup(MarkUpUtil.getForceReplyMarkup("Обратная сторона"))
+                            .chatId(processableMessage.getChatId())
+                            .build())
+                    .chatId(processableMessage.getChatId())
+                    .build();
         } else {
             log.info("Передняя сторона не добавлена");
+            return BotReply.builder()
+                    .type(BotReplyType.FORCE_REPLY)
+                    .text("Обратная сторона карточки:")
+                    .replyMarkup(MarkUpUtil.getForceReplyMarkup("Обратная сторона"))
+                    .chatId(processableMessage.getChatId())
+                    .build();
         }
-        return BotReply.builder()
-                .type(BotReplyType.MESSAGE)
-                .text("Обратная сторона карточки:")
-                .chatId(processableMessage.getChatId())
-                .build();
     }
 
     /*@Override

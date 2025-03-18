@@ -33,23 +33,36 @@ public class _6_BackSideCardAccept extends AbstractProcessable {
     @Override
     public BotReply process(ProcessableMessage processableMessage) {
         Long userId = processableMessage.getUserId();
+        String userMessage = userMessageHolder.getUserMessage(userId);
         userCardSetState.getUserCardSet(userId).flatMap(cardSetDto -> cardSetDto
                 .getCards()
                 .stream()
                 .filter(cardDto -> isNotBlank(cardDto.getFrontSide()) && isBlank(cardDto.getBackSide()))
-                .findFirst()).ifPresent(card -> card.setBackSide(userMessageHolder.getUserMessage(userId))
+                .findFirst()).ifPresent(card -> card.setBackSide(userMessage)
         );
         log.info("Добавлена задняя сторона: {}", userCardSetState.getUserCardSet(processableMessage.getUserId()));
         return BotReply.builder()
-                .type(BotReplyType.MESSAGE)
-                .text("Отлично! Добавить еще карточку?")
+                .type(BotReplyType.EDIT_MESSAGE_TEXT)
+                .chatId(processableMessage.getChatId())
+                .messageId(processableMessage.getMessageId())
+                .text(EmojiConverter.getEmoji("U+2705") + " Задняя сторона: %s".formatted(userMessage))
                 .replyMarkup(
                         MarkUpUtil.getInlineKeyboardMarkup(List.of(
-                                Pair.of(EmojiConverter.getEmoji("U+2705") + " Да", CommandType.ADD_CARD),
-                                Pair.of(EmojiConverter.getEmoji("U+274C") + " Нет, сохранить набор", CommandType.SAVE_CARD_SET)
+                                Pair.of(EmojiConverter.getEmoji("U+274C") + " В начало", CommandType.MAIN_MENU)
                         ))
                 )
-                .chatId(processableMessage.getChatId())
+                .nextReply(BotReply.builder()
+                        .type(BotReplyType.MESSAGE)
+                        .text("Отлично! Карточка будет добавлена в набор")
+                        .replyMarkup(
+                                MarkUpUtil.getInlineKeyboardMarkup(List.of(
+                                        Pair.of(EmojiConverter.getEmoji("U+2705") + " Добавить еще одну", CommandType.ADD_CARD),
+                                        Pair.of(EmojiConverter.getEmoji("U+274C") + " Сохранить набор", CommandType.SAVE_CARD_SET),
+                                        Pair.of(EmojiConverter.getEmoji("U+274C") + " В начало", CommandType.MAIN_MENU)
+                                ))
+                        )
+                        .chatId(processableMessage.getChatId())
+                        .build())
                 .build();
     }
 

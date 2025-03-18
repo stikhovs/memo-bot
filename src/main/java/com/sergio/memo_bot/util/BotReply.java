@@ -5,7 +5,7 @@ import lombok.Data;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 @Data
-@Builder
+@Builder(toBuilder = true)
 public class BotReply {
 
     private Long chatId;
@@ -17,5 +17,7 @@ public class BotReply {
     private BotReplyType type;
 
     private BotReply nextReply;
+
+    private Integer messageId;
 
 }

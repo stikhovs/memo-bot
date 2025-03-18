@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
@@ -39,27 +40,40 @@ public class _3_GiveNameToSetAccept extends AbstractProcessable {
 
     @Override
     public BotReply process(ProcessableMessage processableMessage) {
+        String userMessage = userMessageHolder.getUserMessage(processableMessage.getUserId());
         userCardSetState.setUserCardSet(processableMessage.getUserId(), CardSetDto.builder()
                 .telegramChatId(processableMessage.getChatId())
-                .title(userMessageHolder.getUserMessage(processableMessage.getUserId()))
+                .title(userMessage)
                 .cards(new ArrayList<>())
                 .build());
         log.info("Создан предварительный набор: {}", userCardSetState.getUserCardSet(processableMessage.getUserId()));
         return BotReply.builder()
-                .type(BotReplyType.MESSAGE)
-                .text("Прекрасно!")
+                .type(BotReplyType.EDIT_MESSAGE_TEXT)
                 .chatId(processableMessage.getChatId())
+                .messageId(processableMessage.getMessageId())
+                .text(EmojiConverter.getEmoji("U+2705") + " Будет создан набор: \"%s\"".formatted(userMessage))
+                .replyMarkup(
+                        MarkUpUtil.getInlineKeyboardMarkup(List.of(
+                                Pair.of(EmojiConverter.getEmoji("U+274C") + " В начало", CommandType.MAIN_MENU)
+                        ))
+                )
                 .nextReply(BotReply.builder()
                         .type(BotReplyType.MESSAGE)
-                        .text("Теперь давайте добавим в набор карточки")
+                        .chatId(processableMessage.getChatId())
+                        .text("Теперь давайте добавим в него карточки")
                         .replyMarkup(
                                 MarkUpUtil.getInlineKeyboardMarkup(List.of(
-                                        Pair.of(EmojiConverter.getEmoji("U+2705") + " Ок", CommandType.ADD_CARD),
+                                        Pair.of(EmojiConverter.getEmoji("U+2705") + " Добавить карточку", CommandType.ADD_CARD),
                                         Pair.of(EmojiConverter.getEmoji("U+274C") + " В начало", CommandType.MAIN_MENU)
                                 ))
                         )
-                        .chatId(processableMessage.getChatId())
                         .build())
+                /*.nextReply(BotReply.builder()
+                        .type(BotReplyType.EDIT_MESSAGE_TEXT)
+                        .messageId(processableMessage.getMessageId())
+                        .text("Теперь давайте добавим в набор карточки")
+                        .chatId(processableMessage.getChatId())
+                        .build())*/
                 .build();
     }
 }

@@ -26,6 +26,7 @@ public class UserStateHolder {
 
     public void calculateNextState(ProcessableMessage processableMessage) {
         Long userId = processableMessage.getUserId();
+//        log.info("Message id: {}; text: {}", processableMessage.getMessageId(), processableMessage.getText());
         if (containsCommand(processableMessage)) {
             UserStateType userStateByCommand = getUserStateByCommand(processableMessage.getText());
             setUserState(userId, userStateByCommand);

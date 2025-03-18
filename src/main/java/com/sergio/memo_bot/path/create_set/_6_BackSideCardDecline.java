@@ -35,6 +35,7 @@ public class _6_BackSideCardDecline extends AbstractProcessable {
         return frontSideCardAccept.process(ProcessableMessage.builder()
                 .userId(userId)
                 .chatId(processableMessage.getChatId())
+                .messageId(processableMessage.getMessageId())
                 .currentUserStateType(FRONT_SIDE_CARD_ACCEPT)
                 .text(DECLINE_BACK_SIDE.getCommandText())
                 .build());

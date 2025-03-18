@@ -12,6 +12,7 @@ import java.util.Map;
 public enum CommandType {
 
     MAIN_MENU("/main-menu"),
+    CLOSE ("/close"),
     START("/start"),
     IMPORT_SET("/import-set"),
     CREATE_SET("/create-set"),

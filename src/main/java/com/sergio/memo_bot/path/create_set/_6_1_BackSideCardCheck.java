@@ -34,11 +34,12 @@ public class _6_1_BackSideCardCheck extends AbstractProcessable {
         userMessageHolder.setUserMessage(processableMessage.getUserId(), processableMessage.getText());
         return BotReply.builder()
                 .type(BotReplyType.MESSAGE)
-                .text("Обратная сторона: %s\nВерно?".formatted(processableMessage.getText()))
+                .text("Обратная сторона: %s".formatted(processableMessage.getText()))
                 .replyMarkup(
                         MarkUpUtil.getInlineKeyboardMarkup(List.of(
-                                Pair.of(EmojiConverter.getEmoji("U+2705") + " Да", CommandType.ACCEPT_BACK_SIDE),
-                                Pair.of(EmojiConverter.getEmoji("U+274C") + " Нет", CommandType.DECLINE_BACK_SIDE)
+                                Pair.of(EmojiConverter.getEmoji("U+2705") + " Принять", CommandType.ACCEPT_BACK_SIDE),
+                                Pair.of(EmojiConverter.getEmoji("U+274C") + " Изменить", CommandType.DECLINE_BACK_SIDE),
+                                Pair.of(EmojiConverter.getEmoji("U+274C") + " В начало", CommandType.MAIN_MENU)
                         ))
                 )
                 .chatId(processableMessage.getChatId())

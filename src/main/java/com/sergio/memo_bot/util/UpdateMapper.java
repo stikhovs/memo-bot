@@ -3,6 +3,7 @@ package com.sergio.memo_bot.util;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.state.UserStateHolder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -13,6 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.polls.PollAnswer;
 import org.telegram.telegrambots.meta.api.objects.polls.PollOption;
 
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class UpdateMapper {
@@ -46,6 +48,21 @@ public class UpdateMapper {
                     .userId(user.getId())
                     .chatId(callbackQuery.getMessage().getChatId())
                     .text(callbackQuery.getData())
+                    .currentUserStateType(userStateHolder.getUserState(getUserId(update)))
+                    .messageId(messageId)
+                    .build();
+        }
+
+        if (isEditedMessage(update)) {
+            Message message = update.getEditedMessage();
+            User user = message.getFrom();
+            Integer messageId = message.getMessageId();
+            return ProcessableMessage.builder()
+                    .processable(true)
+                    .username(user.getUserName())
+                    .userId(user.getId())
+                    .chatId(message.getChatId())
+                    .text(message.getText())
                     .currentUserStateType(userStateHolder.getUserState(getUserId(update)))
                     .messageId(messageId)
                     .build();
@@ -93,7 +110,9 @@ public class UpdateMapper {
         if (isCallbackData(update)) return update.getCallbackQuery().getFrom().getId();
         if (isPoll(update)) throw new UnsupportedOperationException("Don't know how to get user id from Poll");
         if (isPollAnswer(update)) return update.getPollAnswer().getUser().getId();
-        throw new UnsupportedOperationException("Unsupported type of update");
+        if (isEditedMessage(update)) return update.getEditedMessage().getFrom().getId();
+        log.warn("Unsupported type of update: [{}]", update);
+        return null;
     }
 
     private boolean isText(Update update) {
@@ -110,6 +129,10 @@ public class UpdateMapper {
 
     private boolean isPollAnswer(Update update) {
         return update.hasPollAnswer();
+    }
+
+    private boolean isEditedMessage(Update update) {
+        return update.hasEditedMessage();
     }
 
 }

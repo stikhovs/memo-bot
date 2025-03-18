@@ -6,6 +6,7 @@ import com.sergio.memo_bot.state.UserStateHolder;
 import com.sergio.memo_bot.state.UserStateType;
 import com.sergio.memo_bot.update_handler.AbstractProcessable;
 import com.sergio.memo_bot.util.BotReply;
+import com.sergio.memo_bot.util.BotReplyType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -38,7 +39,11 @@ public class _2_GiveNameToSetDecline extends AbstractProcessable {
                         .chatId(processableMessage.getChatId())
                         .currentUserStateType(CREATE_SET)
                         .text(DECLINE_SET_NAME.getCommandText())
-                .build());
+                        .build())
+                .toBuilder()
+                .type(BotReplyType.EDIT_MESSAGE_TEXT)
+                .messageId(processableMessage.getMessageId())
+                .build();
     }
 
 }

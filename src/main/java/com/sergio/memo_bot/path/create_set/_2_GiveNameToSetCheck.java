@@ -35,15 +35,33 @@ public class _2_GiveNameToSetCheck extends AbstractProcessable {
         userMessageHolder.setUserMessage(processableMessage.getUserId(), processableMessage.getText());
         return BotReply.builder()
                 .type(BotReplyType.MESSAGE)
-                .text("Дано название: %s".formatted(processableMessage.getText()))
+                .chatId(processableMessage.getChatId())
+                .text("Будет создан набор карточек: \"%s\"".formatted(processableMessage.getText()))
                 .replyMarkup(
                         MarkUpUtil.getInlineKeyboardMarkup(List.of(
                                 Pair.of(EmojiConverter.getEmoji("U+2705") + " Принять", CommandType.ACCEPT_SET_NAME),
-                                Pair.of(EmojiConverter.getEmoji("U+274C") + " Отклонить", CommandType.DECLINE_SET_NAME)
+                                Pair.of(EmojiConverter.getEmoji("U+274C") + " Изменить", CommandType.DECLINE_SET_NAME),
+                                Pair.of(EmojiConverter.getEmoji("U+274C") + " В начало", CommandType.MAIN_MENU)
                         ))
                 )
-                .chatId(processableMessage.getChatId())
                 .build();
+        /*return BotReply.builder()
+                .type(BotReplyType.DELETE_MESSAGE_TEXT)
+                .messageId(processableMessage.getMessageId())
+                .chatId(processableMessage.getChatId())
+                .nextReply(BotReply.builder()
+                        .type(BotReplyType.EDIT_MESSAGE_TEXT)
+                        .messageId(processableMessage.getMessageId() - 1)
+                        .text("Дано название: %s".formatted(processableMessage.getText()))
+                        .replyMarkup(
+                                MarkUpUtil.getInlineKeyboardMarkup(List.of(
+                                        Pair.of(EmojiConverter.getEmoji("U+2705") + " Принять", CommandType.ACCEPT_SET_NAME),
+                                        Pair.of(EmojiConverter.getEmoji("U+274C") + " Отклонить", CommandType.DECLINE_SET_NAME)
+                                ))
+                        )
+                        .chatId(processableMessage.getChatId())
+                        .build())
+                .build();*/
     }
 
 }

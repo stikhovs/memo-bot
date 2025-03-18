@@ -9,6 +9,8 @@ public enum UserStateType {
 
     MAIN_MENU(CommandType.MAIN_MENU),
 
+    CLOSE (CommandType.CLOSE),
+
     START (CommandType.START),
 
     IMPORT_SET (CommandType.IMPORT_SET),

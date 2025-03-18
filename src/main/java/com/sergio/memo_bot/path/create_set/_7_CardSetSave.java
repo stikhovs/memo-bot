@@ -44,7 +44,8 @@ public class _7_CardSetSave extends AbstractProcessable {
         if (response.getStatusCode().is2xxSuccessful()) {
             userCardSetState.clearUserCardSet(userId);
             return BotReply.builder()
-                    .type(BotReplyType.MESSAGE)
+                    .type(BotReplyType.EDIT_MESSAGE_TEXT)
+                    .messageId(processableMessage.getMessageId())
                     .text("Набор карточек успешно сохранен!")
                     .chatId(processableMessage.getChatId())
                     .build();

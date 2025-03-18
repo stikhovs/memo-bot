@@ -2,6 +2,7 @@ package com.sergio.memo_bot.util;
 
 import com.sergio.memo_bot.state.CommandType;
 import org.apache.commons.lang3.tuple.Pair;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ForceReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
@@ -33,6 +34,14 @@ public class MarkUpUtil {
                                         .build()))
                                 .toList()
                 )
+                .build();
+    }
+
+    public static ForceReplyKeyboard getForceReplyMarkup(String placeholder) {
+        return ForceReplyKeyboard.builder()
+                .forceReply(true)
+                .selective(false)
+                .inputFieldPlaceholder(placeholder)
                 .build();
     }
 
