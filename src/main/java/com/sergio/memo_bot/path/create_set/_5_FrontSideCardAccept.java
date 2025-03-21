@@ -3,21 +3,18 @@ package com.sergio.memo_bot.path.create_set;
 import com.sergio.memo_bot.dto.CardDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.state.*;
-import com.sergio.memo_bot.update_handler.AbstractProcessable;
+import com.sergio.memo_bot.update_handler.BaseProcessor;
 import com.sergio.memo_bot.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 import static com.sergio.memo_bot.state.UserStateType.FRONT_SIDE_CARD_ACCEPT;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class _5_FrontSideCardAccept extends AbstractProcessable {
+public class _5_FrontSideCardAccept extends BaseProcessor {
     private final UserCardSetState userCardSetState;
     private final UserMessageHolder userMessageHolder;
     private final UserInputState userInputState;
@@ -31,7 +28,7 @@ public class _5_FrontSideCardAccept extends AbstractProcessable {
     public BotReply process(ProcessableMessage processableMessage) {
         Long userId = processableMessage.getUserId();
         userInputState.setUserInputState(userId, true);
-        String userMessage = userMessageHolder.getUserMessage(userId);
+        String userMessage = userMessageHolder.getUserMessage(userId).getMessageText();
         if (processableMessage.isProcessable()) {
             userCardSetState.getUserCardSet(userId)
                     .ifPresent(cardSetDto -> cardSetDto
@@ -46,11 +43,11 @@ public class _5_FrontSideCardAccept extends AbstractProcessable {
                     .type(BotReplyType.EDIT_MESSAGE_TEXT)
                     .messageId(processableMessage.getMessageId())
                     .text(EmojiConverter.getEmoji("U+2705") + " Передняя сторона: %s".formatted(userMessage))
-                    .replyMarkup(
+                    /*.replyMarkup(
                             MarkUpUtil.getInlineKeyboardMarkup(List.of(
                                     Pair.of(EmojiConverter.getEmoji("U+274C") + " В начало", CommandType.MAIN_MENU)
                             ))
-                    )
+                    )*/
                     .nextReply(BotReply.builder()
                             .type(BotReplyType.FORCE_REPLY)
                             .text("Обратная сторона карточки:")

@@ -1,6 +1,7 @@
 package com.sergio.memo_bot.state;
 
 import lombok.Getter;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.List;
 
@@ -37,7 +38,9 @@ public enum UserStateType {
 
     static {
         MAIN_MENU.possibleNextStates = List.of(START, IMPORT_SET, CREATE_SET);
+        CLOSE.possibleNextStates = List.of(MAIN_MENU);
         START.possibleNextStates = List.of(IMPORT_SET, CREATE_SET);
+
         CREATE_SET.possibleNextStates = List.of(GIVE_NAME_TO_SET);
         GIVE_NAME_TO_SET.possibleNextStates = List.of(SET_NAME_APPROVAL, SET_NAME_DECLINE);
         SET_NAME_DECLINE.possibleNextStates = List.of(GIVE_NAME_TO_SET);
@@ -50,6 +53,8 @@ public enum UserStateType {
         BACK_SIDE_CARD_DECLINE.possibleNextStates = List.of(FRONT_SIDE_CARD_ACCEPT);
         BACK_SIDE_CARD_ACCEPT.possibleNextStates = List.of(CARD_SET_SAVE, ADD_CARD_REQUEST);
         CARD_SET_SAVE.possibleNextStates = List.of(MAIN_MENU);
+
+        SHOW_SET_REQUESTED.possibleNextStates = List.of();
     }
 
     UserStateType(CommandType commandType) {

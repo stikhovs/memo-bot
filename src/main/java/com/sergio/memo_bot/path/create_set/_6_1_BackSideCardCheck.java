@@ -1,18 +1,13 @@
 package com.sergio.memo_bot.path.create_set;
 
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.state.UserMessageHolder;
-import com.sergio.memo_bot.state.UserStateHolder;
-import com.sergio.memo_bot.state.UserStateType;
-import com.sergio.memo_bot.update_handler.AbstractProcessable;
+import com.sergio.memo_bot.state.*;
+import com.sergio.memo_bot.update_handler.BaseProcessor;
 import com.sergio.memo_bot.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.List;
 
@@ -21,7 +16,7 @@ import static com.sergio.memo_bot.state.UserStateType.*;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class _6_1_BackSideCardCheck extends AbstractProcessable {
+public class _6_1_BackSideCardCheck extends BaseProcessor {
     private final UserMessageHolder userMessageHolder;
 
     @Override
@@ -31,7 +26,11 @@ public class _6_1_BackSideCardCheck extends AbstractProcessable {
 
     @Override
     public BotReply process(ProcessableMessage processableMessage) {
-        userMessageHolder.setUserMessage(processableMessage.getUserId(), processableMessage.getText());
+        MessageDto message = MessageDto.builder()
+                .messageId(processableMessage.getMessageId())
+                .messageText(processableMessage.getText())
+                .build();
+        userMessageHolder.setUserMessage(processableMessage.getUserId(), message);
         return BotReply.builder()
                 .type(BotReplyType.MESSAGE)
                 .text("Обратная сторона: %s".formatted(processableMessage.getText()))

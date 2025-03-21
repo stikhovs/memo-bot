@@ -3,13 +3,11 @@ package com.sergio.memo_bot.path.start;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.dto.UserDto;
 import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.state.UserStateHolder;
 import com.sergio.memo_bot.state.UserStateType;
-import com.sergio.memo_bot.update_handler.AbstractProcessable;
+import com.sergio.memo_bot.update_handler.BaseProcessor;
 import com.sergio.memo_bot.util.BotReply;
 import com.sergio.memo_bot.util.BotReplyType;
 import com.sergio.memo_bot.util.MarkUpUtil;
-import com.sergio.memo_bot.util.UpdateMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
@@ -20,17 +18,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.List;
-
-import static com.sergio.memo_bot.state.UserStateType.CREATE_SET;
-import static com.sergio.memo_bot.state.UserStateType.IMPORT_SET;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class Start extends AbstractProcessable {
+public class Start extends BaseProcessor {
     public static final String CREATE_USER_URL = "/telegram/user/create";
     public static final String GET_USER_URL = "/telegram/user?telegramUserId=%s";
 

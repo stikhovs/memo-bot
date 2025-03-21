@@ -1,25 +1,21 @@
 package com.sergio.memo_bot.update_handler;
 
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.state.UserStateHolder;
 import com.sergio.memo_bot.state.UserStateType;
 import com.sergio.memo_bot.util.BotReply;
 import com.sergio.memo_bot.util.BotReplyMapper;
-import com.sergio.memo_bot.util.UpdateMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.function.Consumer;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public abstract class AbstractProcessable {
+public abstract class BaseProcessor {
 
     public abstract boolean canHandleByUserState(UserStateType userStateType);
 

@@ -2,26 +2,23 @@ package com.sergio.memo_bot.path.create_set;
 
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.state.UserCardSetState;
-import com.sergio.memo_bot.state.UserMessageHolder;
-import com.sergio.memo_bot.state.UserStateHolder;
-import com.sergio.memo_bot.state.UserStateType;
-import com.sergio.memo_bot.update_handler.AbstractProcessable;
-import com.sergio.memo_bot.util.BotReply;
-import com.sergio.memo_bot.util.BotReplyType;
-import com.sergio.memo_bot.util.UpdateMapper;
+import com.sergio.memo_bot.state.*;
+import com.sergio.memo_bot.update_handler.BaseProcessor;
+import com.sergio.memo_bot.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.stream.Collectors;
+
 import static com.sergio.memo_bot.state.UserStateType.CARD_SET_SAVE;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class _7_CardSetSave extends AbstractProcessable {
+public class _7_CardSetSave extends BaseProcessor {
     public static final String CREATE_SET_URL = "/set/save";
 
     private final UserCardSetState userCardSetState;
@@ -46,8 +43,27 @@ public class _7_CardSetSave extends AbstractProcessable {
             return BotReply.builder()
                     .type(BotReplyType.EDIT_MESSAGE_TEXT)
                     .messageId(processableMessage.getMessageId())
-                    .text("Набор карточек успешно сохранен!")
                     .chatId(processableMessage.getChatId())
+                    .text(
+                            """
+                                    Будет сохранен набор \"%s\"
+                                    Карточки: \n%s
+                                    """.formatted(cardSetDto.getTitle(),
+                                    cardSetDto.getCards()
+                                            .stream()
+                                            .map(cardDto -> cardDto.getFrontSide() + " -> " + cardDto.getBackSide())
+                                            .collect(Collectors.joining(";\n"))
+                            )
+                    )
+                    /*.replyMarkup(
+                            MarkUpUtil.getInlineKeyboardMarkup(List.of(
+                                    Pair.of(EmojiConverter.getEmoji("U+274C") + " В начало", CommandType.MAIN_MENU)
+                            ))
+                    )*/.nextReply(BotReply.builder()
+                            .type(BotReplyType.MESSAGE)
+                            .text("Набор карточек успешно сохранен!")
+                            .chatId(processableMessage.getChatId())
+                            .build())
                     .build();
         }
         return BotReply.builder()

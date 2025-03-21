@@ -6,7 +6,7 @@ import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.state.UserCardSetState;
 import com.sergio.memo_bot.state.UserMessageHolder;
 import com.sergio.memo_bot.state.UserStateType;
-import com.sergio.memo_bot.update_handler.AbstractProcessable;
+import com.sergio.memo_bot.update_handler.BaseProcessor;
 import com.sergio.memo_bot.util.BotReply;
 import com.sergio.memo_bot.util.BotReplyType;
 import com.sergio.memo_bot.util.EmojiConverter;
@@ -15,20 +15,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static com.sergio.memo_bot.state.UserStateType.*;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class _3_GiveNameToSetAccept extends AbstractProcessable {
+public class _3_GiveNameToSetAccept extends BaseProcessor {
 
     private final UserCardSetState userCardSetState;
     private final UserMessageHolder userMessageHolder;
@@ -40,7 +36,7 @@ public class _3_GiveNameToSetAccept extends AbstractProcessable {
 
     @Override
     public BotReply process(ProcessableMessage processableMessage) {
-        String userMessage = userMessageHolder.getUserMessage(processableMessage.getUserId());
+        String userMessage = userMessageHolder.getUserMessage(processableMessage.getUserId()).getMessageText();
         userCardSetState.setUserCardSet(processableMessage.getUserId(), CardSetDto.builder()
                 .telegramChatId(processableMessage.getChatId())
                 .title(userMessage)
@@ -52,11 +48,11 @@ public class _3_GiveNameToSetAccept extends AbstractProcessable {
                 .chatId(processableMessage.getChatId())
                 .messageId(processableMessage.getMessageId())
                 .text(EmojiConverter.getEmoji("U+2705") + " Будет создан набор: \"%s\"".formatted(userMessage))
-                .replyMarkup(
+                /*.replyMarkup(
                         MarkUpUtil.getInlineKeyboardMarkup(List.of(
                                 Pair.of(EmojiConverter.getEmoji("U+274C") + " В начало", CommandType.MAIN_MENU)
                         ))
-                )
+                )*/
                 .nextReply(BotReply.builder()
                         .type(BotReplyType.MESSAGE)
                         .chatId(processableMessage.getChatId())

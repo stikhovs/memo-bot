@@ -2,7 +2,7 @@ package com.sergio.memo_bot.path;
 
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.state.*;
-import com.sergio.memo_bot.update_handler.AbstractProcessable;
+import com.sergio.memo_bot.update_handler.BaseProcessor;
 import com.sergio.memo_bot.util.BotReply;
 import com.sergio.memo_bot.util.BotReplyType;
 import com.sergio.memo_bot.util.MarkUpUtil;
@@ -14,7 +14,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class MainMenu extends AbstractProcessable {
+public class MainMenu extends BaseProcessor {
 
     private final UserStateHolder userStateHolder;
     private final UserMessageHolder userMessageHolder;

@@ -3,7 +3,7 @@ package com.sergio.memo_bot;
 import com.sergio.memo_bot.configuration.BotProperties;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.state.UserStateHolder;
-import com.sergio.memo_bot.update_handler.AbstractProcessable;
+import com.sergio.memo_bot.update_handler.BaseProcessor;
 import com.sergio.memo_bot.util.UpdateMapper;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -15,11 +15,11 @@ import java.util.List;
 
 @Service
 public class BotListener extends TelegramLongPollingBot {
-    private final List<AbstractProcessable> handlers;
+    private final List<BaseProcessor> handlers;
     protected final UpdateMapper updateMapper;
     private final UserStateHolder stateHolder;
 
-    public BotListener(BotProperties botProperties, List<AbstractProcessable> handlers,  UpdateMapper updateMapper, UserStateHolder stateHolder) {
+    public BotListener(BotProperties botProperties, List<BaseProcessor> handlers, UpdateMapper updateMapper, UserStateHolder stateHolder) {
         super(botProperties.getApiKey());
         this.handlers = handlers;
         this.updateMapper = updateMapper;

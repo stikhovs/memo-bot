@@ -7,13 +7,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class UserMessageHolder {
 
-    private final ConcurrentHashMap<Long, String> userMessages = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Long, MessageDto> userMessages = new ConcurrentHashMap<>();
 
-    public void setUserMessage(Long userId, String message) {
+    public void setUserMessage(Long userId, MessageDto message) {
         userMessages.put(userId, message);
     }
 
-    public String getUserMessage(Long userId) {
+    public MessageDto getUserMessage(Long userId) {
         return userMessages.get(userId);
     }
 

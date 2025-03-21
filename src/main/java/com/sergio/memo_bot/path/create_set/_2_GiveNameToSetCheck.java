@@ -2,9 +2,10 @@ package com.sergio.memo_bot.path.create_set;
 
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.state.CommandType;
+import com.sergio.memo_bot.state.MessageDto;
 import com.sergio.memo_bot.state.UserMessageHolder;
 import com.sergio.memo_bot.state.UserStateType;
-import com.sergio.memo_bot.update_handler.AbstractProcessable;
+import com.sergio.memo_bot.update_handler.BaseProcessor;
 import com.sergio.memo_bot.util.BotReply;
 import com.sergio.memo_bot.util.BotReplyType;
 import com.sergio.memo_bot.util.EmojiConverter;
@@ -21,7 +22,7 @@ import static com.sergio.memo_bot.state.UserStateType.GIVE_NAME_TO_SET;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class _2_GiveNameToSetCheck extends AbstractProcessable {
+public class _2_GiveNameToSetCheck extends BaseProcessor {
 
     private final UserMessageHolder userMessageHolder;
 
@@ -32,7 +33,11 @@ public class _2_GiveNameToSetCheck extends AbstractProcessable {
 
     @Override
     public BotReply process(ProcessableMessage processableMessage) {
-        userMessageHolder.setUserMessage(processableMessage.getUserId(), processableMessage.getText());
+        MessageDto message = MessageDto.builder()
+                .messageId(processableMessage.getMessageId())
+                .messageText(processableMessage.getText())
+                .build();
+        userMessageHolder.setUserMessage(processableMessage.getUserId(), message);
         return BotReply.builder()
                 .type(BotReplyType.MESSAGE)
                 .chatId(processableMessage.getChatId())

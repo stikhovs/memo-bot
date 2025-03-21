@@ -1,25 +1,20 @@
 package com.sergio.memo_bot.path.create_set;
 
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.state.UserInputState;
-import com.sergio.memo_bot.state.UserStateHolder;
 import com.sergio.memo_bot.state.UserStateType;
-import com.sergio.memo_bot.update_handler.AbstractProcessable;
+import com.sergio.memo_bot.update_handler.BaseProcessor;
 import com.sergio.memo_bot.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 import static com.sergio.memo_bot.state.UserStateType.ADD_CARD_REQUEST;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class _4_AddCard extends AbstractProcessable {
+public class _4_AddCard extends BaseProcessor {
 
     private final UserInputState userInputState;
 
@@ -36,11 +31,11 @@ public class _4_AddCard extends AbstractProcessable {
                 .chatId(processableMessage.getChatId())
                 .messageId(processableMessage.getMessageId())
                 .text(EmojiConverter.getEmoji("U+2705") + " Добавляем карточку")
-                .replyMarkup(
+                /*.replyMarkup(
                         MarkUpUtil.getInlineKeyboardMarkup(List.of(
                                 Pair.of(EmojiConverter.getEmoji("U+274C") + " В начало", CommandType.MAIN_MENU)
                         ))
-                )
+                )*/
                 .nextReply(
                         BotReply.builder()
                                 .type(BotReplyType.MESSAGE)
