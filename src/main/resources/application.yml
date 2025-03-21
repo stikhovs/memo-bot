@@ -1,4 +1,13 @@
-spring.application.name: memo-bot
+spring:
+  application.name: memo-bot
+  datasource:
+#    url: jdbc:h2:file:/app/data/botdb;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:mem:botdb;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+    jpa:
+      database-platform: org.hibernate.dialect.H2Dialect
 bot:
   base-url: https://api.telegram.org/bot
   api-key: ${TELEGRAM_API_KEY}
