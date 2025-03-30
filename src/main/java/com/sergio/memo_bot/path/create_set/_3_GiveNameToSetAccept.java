@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sergio.memo_bot.state.UserStateType.*;
+import static com.sergio.memo_bot.state.UserStateType.SET_NAME_APPROVAL;
 
 @Slf4j
 @Component
@@ -59,7 +59,7 @@ public class _3_GiveNameToSetAccept extends BaseProcessor {
                         .text("Теперь давайте добавим в него карточки")
                         .replyMarkup(
                                 MarkUpUtil.getInlineKeyboardMarkup(List.of(
-                                        Pair.of(EmojiConverter.getEmoji("U+2705") + " Добавить карточку", CommandType.ADD_CARD),
+                                        Pair.of(EmojiConverter.getEmoji("U+2705") + " Добавить карточку", CommandType.ADD_CARD_REQUEST),
                                         Pair.of(EmojiConverter.getEmoji("U+274C") + " В начало", CommandType.MAIN_MENU)
                                 ))
                         )

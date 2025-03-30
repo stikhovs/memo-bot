@@ -8,6 +8,10 @@ spring:
     driverClassName: org.h2.Driver
     jpa:
       database-platform: org.hibernate.dialect.H2Dialect
+  jpa:
+    open-in-view: false
+  liquibase:
+    change-log: classpath:database/changelog-master.yaml
 bot:
   base-url: https://api.telegram.org/bot
   api-key: ${TELEGRAM_API_KEY}

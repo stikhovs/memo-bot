@@ -18,7 +18,7 @@ import java.util.List;
 import static com.sergio.memo_bot.state.UserStateType.CREATE_SET;
 
 @Slf4j
-@Component
+//@Component
 @RequiredArgsConstructor
 public class _1_CreateSet extends BaseProcessor {
 

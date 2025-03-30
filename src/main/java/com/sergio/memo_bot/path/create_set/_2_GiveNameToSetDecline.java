@@ -16,7 +16,7 @@ import static com.sergio.memo_bot.state.UserStateType.CREATE_SET;
 import static com.sergio.memo_bot.state.UserStateType.SET_NAME_DECLINE;
 
 @Slf4j
-@Component
+//@Component
 @RequiredArgsConstructor
 public class _2_GiveNameToSetDecline extends BaseProcessor {
 

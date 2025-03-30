@@ -2,7 +2,6 @@ package com.sergio.memo_bot.state;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.EnumUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,23 +10,30 @@ import java.util.Map;
 @RequiredArgsConstructor
 public enum CommandType {
 
-    MAIN_MENU("/main-menu"),
+    MAIN_MENU("/main_menu"),
     CLOSE ("/close"),
     START("/start"),
-    IMPORT_SET("/import-set"),
-    CREATE_SET("/create-set"),
-    ACCEPT_SET_NAME("/accept-set-name"),
-    DECLINE_SET_NAME("/decline-set-name"),
-    ADD_CARD("/add-card"),
-    ACCEPT_FRONT_SIDE("/accept-front-side"),
-    DECLINE_FRONT_SIDE("/decline-front-side"),
-    ACCEPT_BACK_SIDE("/accept-back-side"),
-    DECLINE_BACK_SIDE("/decline-back-side"),
-    SAVE_CARD_SET("/save-card-set"),
+    IMPORT_SET("/import_set"),
+    CREATE_SET("/create_set"),
+    NAME_SET("/name_set"),
+    ACCEPT_SET_NAME("/accept_set_name"),
+    DECLINE_SET_NAME("/decline_set_name"),
+    ADD_CARD_REQUEST("/add_card_request"),
+    INSERT_FRONT_SIDE("/insert_front_side"),
+    FRONT_SIDE_RECEIVED("/front_side_received"),
+    INSERT_BACK_SIDE("/insert_back_side"),
+    BACK_SIDE_RECEIVED("/back_side_received"),
+    ADD_CARD_RESPONSE("/add_card_response"),
 
-    GET_ALL_SETS("/get-all-sets"),
+    ACCEPT_FRONT_SIDE("/accept_front_side"),
+    DECLINE_FRONT_SIDE("/decline_front_side"),
+    ACCEPT_BACK_SIDE("/accept_back_side"),
+    DECLINE_BACK_SIDE("/decline_back_side"),
+    SAVE_CARD_SET_REQUEST("/request_to_save_card_set"),
+    SAVE_CARD_SET_RESPONSE("/save_card_set_response"),
 
-    ;
+    GET_ALL_SETS("/get_all_sets"),
+    GET_CARD_SET_INFO("/get_card_set__%s");
 
     private final String commandText;
 
@@ -40,11 +46,11 @@ public enum CommandType {
     }
 
     public static boolean isCommandType(String text) {
-        return BY_LABEL.containsKey(text);
+        return BY_LABEL.containsKey(text) || text.contains("/get_card_set__");
     }
 
     public static CommandType getByCommandText(String text) {
-        return BY_LABEL.get(text);
+        return BY_LABEL.getOrDefault(text, GET_CARD_SET_INFO);
     }
 
 }

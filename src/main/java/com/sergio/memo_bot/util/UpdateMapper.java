@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.api.objects.polls.Poll;
 import org.telegram.telegrambots.meta.api.objects.polls.PollAnswer;
 import org.telegram.telegrambots.meta.api.objects.polls.PollOption;
@@ -28,12 +28,10 @@ public class UpdateMapper {
             User user = message.getFrom();
             Integer messageId = message.getMessageId();
             return ProcessableMessage.builder()
-                    .processable(true)
                     .username(user.getUserName())
                     .userId(user.getId())
                     .chatId(message.getChatId())
                     .text(message.getText())
-                    .currentUserStateType(userStateHolder.getUserState(getUserId(update)))
                     .messageId(messageId)
                     .build();
         }
@@ -43,12 +41,10 @@ public class UpdateMapper {
             User user = callbackQuery.getFrom();
             Integer messageId = callbackQuery.getMessage().getMessageId();
             return ProcessableMessage.builder()
-                    .processable(true)
                     .username(user.getUserName())
                     .userId(user.getId())
                     .chatId(callbackQuery.getMessage().getChatId())
                     .text(callbackQuery.getData())
-                    .currentUserStateType(userStateHolder.getUserState(getUserId(update)))
                     .messageId(messageId)
                     .build();
         }
@@ -58,12 +54,10 @@ public class UpdateMapper {
             User user = message.getFrom();
             Integer messageId = message.getMessageId();
             return ProcessableMessage.builder()
-                    .processable(true)
                     .username(user.getUserName())
                     .userId(user.getId())
                     .chatId(message.getChatId())
                     .text(message.getText())
-                    .currentUserStateType(userStateHolder.getUserState(getUserId(update)))
                     .messageId(messageId)
                     .build();
         }
@@ -76,12 +70,10 @@ public class UpdateMapper {
                     .findFirst()
                     .orElseThrow();
             return ProcessableMessage.builder()
-                    .processable(true)
 //                    .username(user.getUserName())
 //                    .userId(user.getId())
 //                    .chatId(message.getChatId())
                     .text(answer.getText())
-                    .currentUserStateType(userStateHolder.getUserState(getUserId(update)))
                     .build();
         }
 
@@ -89,23 +81,19 @@ public class UpdateMapper {
             PollAnswer pollAnswer = update.getPollAnswer();
             User user = pollAnswer.getUser();
             return ProcessableMessage.builder()
-                    .processable(true)
                     .username(user.getUserName())
                     .userId(user.getId())
 //                    .chatId(pollAnswer.getChatId())
 //                    .text(pollAnswer.getOptionIds())
-                    .currentUserStateType(userStateHolder.getUserState(getUserId(update)))
                     .build();
         }
 
         return ProcessableMessage.builder()
-                .processable(false)
 //                .userId(update.get)
-                .currentUserStateType(userStateHolder.getUserState(getUserId(update)))
                 .build();
     }
 
-    private Long getUserId(Update update) {
+    /*private Long getUserId(Update update) {
         if (isText(update)) return update.getMessage().getFrom().getId();
         if (isCallbackData(update)) return update.getCallbackQuery().getFrom().getId();
         if (isPoll(update)) throw new UnsupportedOperationException("Don't know how to get user id from Poll");
@@ -113,7 +101,7 @@ public class UpdateMapper {
         if (isEditedMessage(update)) return update.getEditedMessage().getFrom().getId();
         log.warn("Unsupported type of update: [{}]", update);
         return null;
-    }
+    }*/
 
     private boolean isText(Update update) {
         return update.hasMessage() && update.getMessage().hasText();

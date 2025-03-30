@@ -1,7 +1,6 @@
 package com.sergio.memo_bot.state;
 
 import lombok.Getter;
-import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.List;
 
@@ -20,14 +19,14 @@ public enum UserStateType {
     GIVE_NAME_TO_SET,
     SET_NAME_APPROVAL (CommandType.ACCEPT_SET_NAME),
     SET_NAME_DECLINE (CommandType.DECLINE_SET_NAME),
-    ADD_CARD_REQUEST (CommandType.ADD_CARD),
+    ADD_CARD_REQUEST (CommandType.ADD_CARD_REQUEST),
     FRONT_SIDE_CARD_CHECK,
     FRONT_SIDE_CARD_ACCEPT (CommandType.ACCEPT_FRONT_SIDE),
     FRONT_SIDE_CARD_DECLINE (CommandType.DECLINE_FRONT_SIDE),
     BACK_SIDE_CARD_CHECK,
     BACK_SIDE_CARD_ACCEPT (CommandType.ACCEPT_BACK_SIDE),
     BACK_SIDE_CARD_DECLINE (CommandType.DECLINE_BACK_SIDE),
-    CARD_SET_SAVE (CommandType.SAVE_CARD_SET),
+    CARD_SET_SAVE (CommandType.SAVE_CARD_SET_REQUEST),
 
     SHOW_SET_REQUESTED (CommandType.GET_ALL_SETS),
 

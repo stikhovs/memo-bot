@@ -1,5 +1,6 @@
 package com.sergio.memo_bot.dto;
 
+import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.state.UserStateType;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +16,8 @@ public class ProcessableMessage {
     private Long chatId;
 
     private String username;
+
+    private boolean fromPartReply;
 
     private String text;
 

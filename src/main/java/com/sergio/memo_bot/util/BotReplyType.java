@@ -9,6 +9,7 @@ public enum BotReplyType {
     DELETE_MESSAGE_TEXT,
     EDIT_MESSAGE_REPLY_MARKUP,
     FORCE_REPLY,
-    POLL
+    POLL,
+    SET_CHAT_MENU_BUTTON,
 
 }

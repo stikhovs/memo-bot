@@ -7,7 +7,7 @@ import com.sergio.memo_bot.util.BotReplyMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.util.function.Consumer;
@@ -46,12 +46,12 @@ public abstract class BaseProcessor {
     }
 
     private void send(BotReply reply, Consumer<BotApiMethod<?>> action) {
-        if (reply != null) {
+        /*if (reply != null) {
             action.accept(BotReplyMapper.toBotApiMethod(reply));
             if (reply.getNextReply() != null) {
                 send(reply.getNextReply(), action);
             }
-        }
+        }*/
     }
 
 

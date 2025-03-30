@@ -1,8 +1,6 @@
 package com.sergio.memo_bot.configuration;
 
-import org.apache.http.impl.client.DefaultUserTokenHandler;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.boot.web.client.RootUriTemplateHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
