@@ -1,9 +1,9 @@
 package com.sergio.memo_bot.util;
 
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.state.UserStateHolder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -18,9 +18,6 @@ import org.telegram.telegrambots.meta.api.objects.polls.PollOption;
 @Component
 @RequiredArgsConstructor
 public class UpdateMapper {
-
-    private final UserStateHolder userStateHolder;
-//    private final UserChatIdHolder userChatIdHolder;
 
     public ProcessableMessage map(Update update) {
         if (isText(update)) {
@@ -130,7 +127,7 @@ public class UpdateMapper {
     }
 
     private boolean isFromUser(User user) {
-        return user.getIsBot();
+        return BooleanUtils.isFalse(user.getIsBot());
     }
 
 }

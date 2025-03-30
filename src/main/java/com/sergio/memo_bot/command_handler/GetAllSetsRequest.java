@@ -63,7 +63,7 @@ public class GetAllSetsRequest implements CommandHandler {
     }
 
     private ResponseEntity<List<CardSetDto>> callApi(ProcessableMessage processableMessage) {
-        return apiCallService.get(GET_ALL_SETS_URL.formatted(processableMessage.getUserId()));
+        return apiCallService.getList(GET_ALL_SETS_URL.formatted(processableMessage.getUserId()), CardSetDto.class);
     }
 
 }

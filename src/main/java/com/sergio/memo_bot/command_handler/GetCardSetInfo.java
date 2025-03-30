@@ -58,7 +58,11 @@ public class GetCardSetInfo implements CommandHandler {
                 .chatId(processableMessage.getChatId())
                 .messageId(processableMessage.getMessageId())
                 .text(resultCardSet.getTitle())
-                .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(Pair.of("main menu", CommandType.MAIN_MENU))))
+                .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
+                        Pair.of("Посмотреть карточки", CommandType.MAIN_MENU),
+                        Pair.of("Редактировать карточки", CommandType.MAIN_MENU),
+                        Pair.of("Упражнения", CommandType.MAIN_MENU)
+                )))
                 .build();
     }
 

@@ -1,6 +1,6 @@
 package com.sergio.memo_bot.util;
 
-import com.sergio.memo_bot.dto.CardSetDto;
+import com.google.gson.reflect.TypeToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +26,22 @@ public class ApiCallService {
                     RequestEntity.EMPTY,
                     new ParameterizedTypeReference<>() {
                     }
+            );
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode().is4xxClientError()) {
+                return ResponseEntity.badRequest().build();
+            }
+            throw e;
+        }
+    }
+
+    public <T> ResponseEntity<List<T>> getList(String url, Class<T> elementType) {
+        try {
+            return restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    RequestEntity.EMPTY,
+                    ParameterizedTypeReference.forType(TypeToken.getParameterized(List.class, elementType).getType())
             );
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode().is4xxClientError()) {
