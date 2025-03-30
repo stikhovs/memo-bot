@@ -28,6 +28,7 @@ public class UpdateMapper {
             User user = message.getFrom();
             Integer messageId = message.getMessageId();
             return ProcessableMessage.builder()
+                    .processable(isFromUser(user))
                     .username(user.getUserName())
                     .userId(user.getId())
                     .chatId(message.getChatId())
@@ -41,6 +42,7 @@ public class UpdateMapper {
             User user = callbackQuery.getFrom();
             Integer messageId = callbackQuery.getMessage().getMessageId();
             return ProcessableMessage.builder()
+                    .processable(isFromUser(user))
                     .username(user.getUserName())
                     .userId(user.getId())
                     .chatId(callbackQuery.getMessage().getChatId())
@@ -54,6 +56,7 @@ public class UpdateMapper {
             User user = message.getFrom();
             Integer messageId = message.getMessageId();
             return ProcessableMessage.builder()
+                    .processable(isFromUser(user))
                     .username(user.getUserName())
                     .userId(user.getId())
                     .chatId(message.getChatId())
@@ -70,6 +73,7 @@ public class UpdateMapper {
                     .findFirst()
                     .orElseThrow();
             return ProcessableMessage.builder()
+                    .processable(true)
 //                    .username(user.getUserName())
 //                    .userId(user.getId())
 //                    .chatId(message.getChatId())
@@ -81,6 +85,7 @@ public class UpdateMapper {
             PollAnswer pollAnswer = update.getPollAnswer();
             User user = pollAnswer.getUser();
             return ProcessableMessage.builder()
+                    .processable(isFromUser(user))
                     .username(user.getUserName())
                     .userId(user.getId())
 //                    .chatId(pollAnswer.getChatId())
@@ -89,6 +94,7 @@ public class UpdateMapper {
         }
 
         return ProcessableMessage.builder()
+                .processable(false)
 //                .userId(update.get)
                 .build();
     }
@@ -121,6 +127,10 @@ public class UpdateMapper {
 
     private boolean isEditedMessage(Update update) {
         return update.hasEditedMessage();
+    }
+
+    private boolean isFromUser(User user) {
+        return user.getIsBot();
     }
 
 }

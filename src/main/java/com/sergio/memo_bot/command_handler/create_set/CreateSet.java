@@ -2,8 +2,7 @@ package com.sergio.memo_bot.command_handler.create_set;
 
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.persistence.entity.AwaitsUserInput;
-import com.sergio.memo_bot.persistence.repository.ChatAwaitsInputRepository;
+import com.sergio.memo_bot.persistence.service.ChatAwaitsInputService;
 import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.util.BotReply;
 import com.sergio.memo_bot.util.BotReplyType;
@@ -17,7 +16,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CreateSet implements CommandHandler {
 
-    private final ChatAwaitsInputRepository chatAwaitsInputRepository;
+    private final ChatAwaitsInputService chatAwaitsInputService;
 
     @Override
     public boolean canHandle(CommandType commandType) {
@@ -26,12 +25,7 @@ public class CreateSet implements CommandHandler {
 
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
-        chatAwaitsInputRepository.deleteByChatId(processableMessage.getChatId());
-        chatAwaitsInputRepository.save(AwaitsUserInput.builder()
-                .chatId(processableMessage.getChatId())
-                .inputType("TEXT")
-                .nextCommand("/name-set")
-                .build());
+        chatAwaitsInputService.clearAndSave(processableMessage.getChatId(), CommandType.NAME_SET);
 
         return BotReply.builder()
                 .type(BotReplyType.MESSAGE)

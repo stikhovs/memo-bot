@@ -1,14 +1,18 @@
 package com.sergio.memo_bot.command_handler;
 
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.persistence.repository.ChatAwaitsInputRepository;
-import com.sergio.memo_bot.persistence.repository.ChatTempDataRepository;
+import com.sergio.memo_bot.persistence.service.ChatAwaitsInputService;
+import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.util.*;
+import com.sergio.memo_bot.util.BotReply;
+import com.sergio.memo_bot.util.BotReplyType;
+import com.sergio.memo_bot.util.MarkUpUtil;
+import com.sergio.memo_bot.util.Reply;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,8 +21,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MainMenu implements CommandHandler {
 
-    private final ChatAwaitsInputRepository chatAwaitsInputRepository;
-    private final ChatTempDataRepository chatTempDataRepository;
+    private final ChatAwaitsInputService chatAwaitsInputService;
+    private final ChatTempDataService chatTempDataService;
 
     @Override
     public boolean canHandle(CommandType commandType) {
@@ -26,10 +30,11 @@ public class MainMenu implements CommandHandler {
     }
 
     @Override
+    @Transactional
     public Reply getReply(ProcessableMessage processableMessage) {
 
-        chatAwaitsInputRepository.deleteByChatId(processableMessage.getChatId());
-        chatTempDataRepository.deleteByChatId(processableMessage.getChatId());
+        chatAwaitsInputService.clear(processableMessage.getChatId());
+        chatTempDataService.clear(processableMessage.getChatId());
 
         return BotReply.builder()
                 .type(BotReplyType.MESSAGE)

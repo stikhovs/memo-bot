@@ -1,23 +1,21 @@
 package com.sergio.memo_bot.command_handler.create_set;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CardDto;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.persistence.entity.AwaitsUserInput;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
-import com.sergio.memo_bot.persistence.repository.ChatAwaitsInputRepository;
-import com.sergio.memo_bot.persistence.repository.ChatTempDataRepository;
+import com.sergio.memo_bot.persistence.service.ChatAwaitsInputService;
+import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.util.*;
+import com.sergio.memo_bot.util.BotPartReply;
+import com.sergio.memo_bot.util.BotReplyType;
+import com.sergio.memo_bot.util.Reply;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,8 +27,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FrontSideReceived implements CommandHandler {
 
-    private final ChatAwaitsInputRepository chatAwaitsInputRepository;
-    private final ChatTempDataRepository chatTempDataRepository;
+    private final ChatAwaitsInputService chatAwaitsInputService;
+    private final ChatTempDataService chatTempDataService;
 
     @Override
     public boolean canHandle(CommandType commandType) {
@@ -41,26 +39,15 @@ public class FrontSideReceived implements CommandHandler {
     @Transactional
     public Reply getReply(ProcessableMessage processableMessage) {
 
-        AwaitsUserInput awaitsUserInput = chatAwaitsInputRepository.findOneByChatId(processableMessage.getChatId())
-                .map(aui -> aui.toBuilder()
-                        .inputType("TEXT")
-                        .nextCommand(CommandType.INSERT_BACK_SIDE.getCommandText())
-                        .chatId(processableMessage.getChatId())
-                        .build())
-                .orElseThrow(() -> new RuntimeException("Must find the record by chatId"));
+        chatAwaitsInputService.update(processableMessage.getChatId(), CommandType.INSERT_BACK_SIDE);
 
-        chatAwaitsInputRepository.save(awaitsUserInput);
+        ChatTempData chatTempData = chatTempDataService.get(processableMessage.getChatId());
 
-        List<ChatTempData> tempDataList = chatTempDataRepository.findByChatId(processableMessage.getChatId());
-        if (CollectionUtils.isEmpty(tempDataList)) {
-            throw new RuntimeException("Temp data should not be empty on this step");
-        }
+        String updatedData = updateTempData(chatTempData, processableMessage.getText());
 
-        ChatTempData tempData = tempDataList.getFirst();
-        String updated = updateTempData(tempData, processableMessage.getText());
-        chatTempDataRepository.save(tempData.toBuilder().data(updated).build());
+        chatTempDataService.save(chatTempData.toBuilder().data(updatedData).build());
 
-        System.out.println(chatTempDataRepository.findByChatId(processableMessage.getChatId()));
+//        System.out.println(chatTempDataRepository.findByChatId(processableMessage.getChatId()));
 
         return BotPartReply.builder()
                 .type(BotReplyType.MESSAGE)
@@ -74,7 +61,7 @@ public class FrontSideReceived implements CommandHandler {
     @SneakyThrows
     private String updateTempData(ChatTempData tempData, String frontSide) {
         Gson gson = new Gson();
-        System.out.println(tempData.getData());
+//        System.out.println(tempData.getData());
         CardSetDto cardSetDto = gson.fromJson(tempData.getData(), CardSetDto.class);
         CardSetDto updated;
         if (CollectionUtils.isEmpty(cardSetDto.getCards())) {

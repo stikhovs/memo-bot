@@ -4,7 +4,7 @@ import com.sergio.memo_bot.Sender;
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.entity.AwaitsUserInput;
-import com.sergio.memo_bot.persistence.repository.ChatAwaitsInputRepository;
+import com.sergio.memo_bot.persistence.service.ChatAwaitsInputService;
 import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.util.*;
 import lombok.RequiredArgsConstructor;
@@ -24,21 +24,23 @@ public class UpdateService {
     private final List<CommandHandler> commandHandlers;
     private final UpdateMapper updateMapper;
     private final Sender sender;
-    private final ChatAwaitsInputRepository chatAwaitsInputRepository;
+    private final ChatAwaitsInputService chatAwaitsInputService;
 
 
     public void process(Update update) {
         ProcessableMessage processableMessage = updateMapper.map(update);
 
-        if(CommandType.isCommandType(processableMessage.getText())) {
-            Reply reply = handleCommand(CommandType.getByCommandText(processableMessage.getText()), processableMessage);
-            send(reply);
-        } else {
-            List<AwaitsUserInput> ifAwaitsUserTextInput = chatAwaitsInputRepository.findIfAwaitsUserTextInput(processableMessage.getChatId());
-            if (isNotEmpty(ifAwaitsUserTextInput)) {
-                CommandType commandType = CommandType.getByCommandText(ifAwaitsUserTextInput.getFirst().getNextCommand());
-                Reply reply = handleCommand(commandType, processableMessage);
+        if (processableMessage.isProcessable()) {
+            if (CommandType.isCommandType(processableMessage.getText())) {
+                Reply reply = handleCommand(CommandType.getByCommandText(processableMessage.getText()), processableMessage);
                 send(reply);
+            } else {
+                List<AwaitsUserInput> ifAwaitsUserTextInput = chatAwaitsInputService.findAll(processableMessage.getChatId());
+                if (isNotEmpty(ifAwaitsUserTextInput)) {
+                    CommandType commandType = CommandType.getByCommandText(ifAwaitsUserTextInput.getFirst().getNextCommand());
+                    Reply reply = handleCommand(commandType, processableMessage);
+                    send(reply);
+                }
             }
         }
 

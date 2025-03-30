@@ -1,6 +1,5 @@
 package com.sergio.memo_bot.persistence.repository;
 
-import com.sergio.memo_bot.persistence.entity.AwaitsUserInput;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

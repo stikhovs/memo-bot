@@ -6,25 +6,18 @@ import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
-import java.util.List;
+import static com.sergio.memo_bot.util.UrlConstant.CREATE_USER_URL;
+import static com.sergio.memo_bot.util.UrlConstant.GET_USER_URL;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class Start implements CommandHandler {
-    public static final String CREATE_USER_URL = "/telegram/user/create";
-    public static final String GET_USER_URL = "/telegram/user?telegramUserId=%s";
 
-    private final RestTemplate restTemplate;
+    private final ApiCallService apiCallService;
 
     @Override
     public boolean canHandle(CommandType commandType) {
@@ -75,30 +68,16 @@ public class Start implements CommandHandler {
     }*/
 
     private ResponseEntity<UserDto> callCreateUserApi(ProcessableMessage processableMessage) {
-        return restTemplate.postForEntity(
-                CREATE_USER_URL,
+        return apiCallService.post(CREATE_USER_URL,
                 UserDto.builder()
                         .username(processableMessage.getUsername())
                         .telegramUserId(processableMessage.getUserId())
                         .telegramChatId(processableMessage.getChatId())
                         .build(),
-                UserDto.class
-        );
+                UserDto.class);
     }
 
     private ResponseEntity<UserDto> callGetUserApi(ProcessableMessage processableMessage) {
-        try {
-            return restTemplate.exchange(
-                    GET_USER_URL.formatted(processableMessage.getUserId()),
-                    HttpMethod.GET,
-                    RequestEntity.EMPTY,
-                    UserDto.class
-            );
-        } catch (HttpClientErrorException e) {
-            if (e.getStatusCode().is4xxClientError()) {
-                return ResponseEntity.badRequest().build();
-            }
-            throw e;
-        }
+        return apiCallService.get(GET_USER_URL.formatted(processableMessage.getUserId()));
     }
 }

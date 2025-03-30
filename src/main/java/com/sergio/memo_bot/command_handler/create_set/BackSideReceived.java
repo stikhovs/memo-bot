@@ -6,21 +6,18 @@ import com.sergio.memo_bot.dto.CardDto;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
-import com.sergio.memo_bot.persistence.repository.ChatAwaitsInputRepository;
-import com.sergio.memo_bot.persistence.repository.ChatTempDataRepository;
+import com.sergio.memo_bot.persistence.service.ChatAwaitsInputService;
+import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.util.*;
+import com.sergio.memo_bot.util.BotReplyType;
+import com.sergio.memo_bot.util.MultipleBotReply;
+import com.sergio.memo_bot.util.Reply;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -28,8 +25,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BackSideReceived implements CommandHandler {
 
-    private final ChatAwaitsInputRepository chatAwaitsInputRepository;
-    private final ChatTempDataRepository chatTempDataRepository;
+    private final ChatAwaitsInputService chatAwaitsInputService;
+    private final ChatTempDataService chatTempDataService;
 
     @Override
     public boolean canHandle(CommandType commandType) {
@@ -40,20 +37,16 @@ public class BackSideReceived implements CommandHandler {
     @Transactional
     public Reply getReply(ProcessableMessage processableMessage) {
 
-        System.out.println("Before delete: " + chatAwaitsInputRepository.findAll());
-        chatAwaitsInputRepository.deleteByChatId(processableMessage.getChatId());
-        System.out.println("After delete: " + chatAwaitsInputRepository.findAll());
+        chatAwaitsInputService.clear(processableMessage.getChatId());
+//        System.out.println("Before delete: " + chatAwaitsInputRepository.findAll());
+//        chatAwaitsInputRepository.deleteByChatId(processableMessage.getChatId());
+//        System.out.println("After delete: " + chatAwaitsInputRepository.findAll());
 
-        List<ChatTempData> tempDataList = chatTempDataRepository.findByChatId(processableMessage.getChatId());
-        if (CollectionUtils.isEmpty(tempDataList)) {
-            throw new RuntimeException("Temp data should not be empty on this step");
-        }
+        ChatTempData chatTempData = chatTempDataService.get(processableMessage.getChatId());
+        String updated = updateTempData(chatTempData, processableMessage.getText());
+        ChatTempData updatedData = chatTempDataService.save(chatTempData.toBuilder().data(updated).build());
 
-        ChatTempData tempData = tempDataList.getFirst();
-        String updated = updateTempData(tempData, processableMessage.getText());
-        ChatTempData updatedData = chatTempDataRepository.save(tempData.toBuilder().data(updated).build());
-
-        System.out.println(updatedData);
+//        System.out.println(updatedData);
         CardSetDto cardSetDto = new Gson().fromJson(updatedData.getData(), CardSetDto.class);
         CardDto lastCard = cardSetDto.getCards().getLast();
 
@@ -70,7 +63,7 @@ public class BackSideReceived implements CommandHandler {
     @SneakyThrows
     private String updateTempData(ChatTempData tempData, String backSide) {
         Gson gson = new Gson();
-        System.out.println(tempData.getData());
+//        System.out.println(tempData.getData());
         CardSetDto cardSetDto = gson.fromJson(tempData.getData(), CardSetDto.class);
         CardSetDto updated = cardSetDto.toBuilder()
                 .cards(cardSetDto.getCards().stream().peek(cardDto -> {
