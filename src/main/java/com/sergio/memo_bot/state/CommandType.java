@@ -33,7 +33,10 @@ public enum CommandType {
     SAVE_CARD_SET_RESPONSE("/save_card_set_response"),
 
     GET_ALL_SETS("/get_all_sets"),
-    GET_CARD_SET_INFO("/get_card_set__%s");
+    GET_CARD_SET_INFO("/get_card_set__%s"),
+    GET_CARDS("/get_cards"),
+    EDIT_SET("/edit_set"),
+    GET_EXERCISES("/get_exercises");
 
     private final String commandText;
 

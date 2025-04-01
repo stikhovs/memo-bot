@@ -1,5 +1,6 @@
 package com.sergio.memo_bot.persistence.entity;
 
+import com.sergio.memo_bot.state.CommandType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -24,7 +25,8 @@ public class AwaitsUserInput {
 
     private String inputType;
 
-    private String nextCommand;
+    @Enumerated(EnumType.STRING)
+    private CommandType nextCommand;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

@@ -1,8 +1,6 @@
 package com.sergio.memo_bot.command_handler.create_set;
 
-import com.google.gson.Gson;
 import com.sergio.memo_bot.command_handler.CommandHandler;
-import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatAwaitsInputService;
@@ -39,15 +37,16 @@ public class NameSetApproval implements CommandHandler {
 
         chatAwaitsInputService.clear(chatId);
 
-        CardSetDto cardSet = CardSetDto.builder()
+        /*CardSetDto cardSet = CardSetDto.builder()
                 .title(processableMessage.getText())
                 .build();
-        System.out.println(new Gson().toJson(cardSet));
+        System.out.println(new Gson().toJson(cardSet));*/
 
         chatTempDataService.clearAndSave(chatId,
                 ChatTempData.builder()
                         .chatId(chatId)
-                        .data(new Gson().toJson(cardSet))
+                        .data(processableMessage.getText())
+                        .command(CommandType.NAME_SET)
                         .build()
         );
 

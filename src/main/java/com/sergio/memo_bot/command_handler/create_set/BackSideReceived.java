@@ -36,31 +36,35 @@ public class BackSideReceived implements CommandHandler {
     @Override
     @Transactional
     public Reply getReply(ProcessableMessage processableMessage) {
+        Long chatId = processableMessage.getChatId();
 
-        chatAwaitsInputService.clear(processableMessage.getChatId());
+        chatAwaitsInputService.clear(chatId);
 //        System.out.println("Before delete: " + chatAwaitsInputRepository.findAll());
 //        chatAwaitsInputRepository.deleteByChatId(processableMessage.getChatId());
 //        System.out.println("After delete: " + chatAwaitsInputRepository.findAll());
 
-        ChatTempData chatTempData = chatTempDataService.get(processableMessage.getChatId());
-        String updated = updateTempData(chatTempData, processableMessage.getText());
-        ChatTempData updatedData = chatTempDataService.save(chatTempData.toBuilder().data(updated).build());
-
-//        System.out.println(updatedData);
-        CardSetDto cardSetDto = new Gson().fromJson(updatedData.getData(), CardSetDto.class);
-        CardDto lastCard = cardSetDto.getCards().getLast();
+//        ChatTempData chatTempData = chatTempDataService.get(processableMessage.getChatId(), CommandType.BACK_SIDE_RECEIVED);
+//        String updated = updateTempData(chatTempData, processableMessage.getText());
+        ChatTempData backSide = chatTempDataService.clearAndSave(chatId,
+                ChatTempData.builder()
+                        .chatId(chatId)
+                        .command(CommandType.BACK_SIDE_RECEIVED)
+                        .data(processableMessage.getText())
+                        .build()
+        );
+        ChatTempData frontSide = chatTempDataService.get(chatId, CommandType.FRONT_SIDE_RECEIVED);
 
         return MultipleBotReply.builder()
                 .type(BotReplyType.MESSAGE)
-                .text("Добавлена карточка: %s - %s".formatted(lastCard.getFrontSide(), lastCard.getBackSide()))
+                .text("Добавлена карточка: %s - %s".formatted(frontSide.getData(), backSide.getData()))
                 .messageId(processableMessage.getMessageId())
-                .chatId(processableMessage.getChatId())
+                .chatId(chatId)
                 .previousProcessableMessage(processableMessage)
                 .nextCommand(CommandType.ADD_CARD_RESPONSE)
                 .build();
     }
 
-    @SneakyThrows
+    /*@SneakyThrows
     private String updateTempData(ChatTempData tempData, String backSide) {
         Gson gson = new Gson();
 //        System.out.println(tempData.getData());
@@ -73,5 +77,5 @@ public class BackSideReceived implements CommandHandler {
                 }).toList())
                 .build();
         return gson.toJson(updated);
-    }
+    }*/
 }

@@ -1,5 +1,6 @@
 package com.sergio.memo_bot.util;
 
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.menubutton.SetChatMenuButton;
@@ -12,6 +13,8 @@ import org.telegram.telegrambots.meta.api.objects.menubutton.MenuButton;
 import org.telegram.telegrambots.meta.api.objects.menubutton.MenuButtonCommands;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
+import java.util.Optional;
+
 public class BotReplyMapper {
 
     public static BotApiMethod<?> toBotApiMethod(BotReply reply) {
@@ -20,12 +23,14 @@ public class BotReplyMapper {
                     .chatId(reply.getChatId())
                     .text(reply.getText())
                     .replyMarkup(reply.getReplyMarkup())
+                    .parseMode(reply.getParseMode())
                     .build();
             case EDIT_MESSAGE_TEXT -> EditMessageText.builder()
                     .chatId(reply.getChatId())
                     .messageId(reply.getMessageId())
                     .text(reply.getText())
                     .replyMarkup((InlineKeyboardMarkup) reply.getReplyMarkup())
+                    .parseMode(reply.getParseMode())
                     .build();
             case EDIT_MESSAGE_REPLY_MARKUP -> EditMessageReplyMarkup.builder()
                     .chatId(reply.getChatId())
@@ -55,12 +60,14 @@ public class BotReplyMapper {
                     .chatId(reply.getChatId())
                     .text(reply.getText())
                     .replyMarkup(reply.getReplyMarkup())
+                    .parseMode(reply.getParseMode())
                     .build();
             case EDIT_MESSAGE_TEXT -> EditMessageText.builder()
                     .chatId(reply.getChatId())
                     .messageId(reply.getMessageId())
                     .text(reply.getText())
                     .replyMarkup((InlineKeyboardMarkup) reply.getReplyMarkup())
+                    .parseMode(reply.getParseMode())
                     .build();
             case EDIT_MESSAGE_REPLY_MARKUP -> EditMessageReplyMarkup.builder()
                     .chatId(reply.getChatId())

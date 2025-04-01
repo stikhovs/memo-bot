@@ -1,6 +1,7 @@
-package com.sergio.memo_bot.command_handler;
+package com.sergio.memo_bot.command_handler.card_set_manipulation;
 
 import com.google.gson.Gson;
+import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
@@ -41,6 +42,7 @@ public class GetAllSetsRequest implements CommandHandler {
                     ChatTempData.builder()
                             .chatId(processableMessage.getChatId())
                             .data(new Gson().toJson(response.getBody()))
+                            .command(CommandType.GET_ALL_SETS)
                             .build());
 
             return BotReply.builder()

@@ -24,7 +24,7 @@ public class ChatAwaitsInputService {
         chatAwaitsInputRepository.save(AwaitsUserInput.builder()
                 .chatId(chatId)
                 .inputType("TEXT")
-                .nextCommand(nextCommand.getCommandText())
+                .nextCommand(nextCommand)
                 .build());
     }
 
@@ -44,7 +44,7 @@ public class ChatAwaitsInputService {
         AwaitsUserInput awaitsUserInput = chatAwaitsInputRepository.findOneByChatId(chatId)
                 .map(aui -> aui.toBuilder()
                         .inputType("TEXT")
-                        .nextCommand(nextCommand.getCommandText())
+                        .nextCommand(nextCommand)
                         .chatId(chatId)
                         .build())
                 .orElseThrow(() -> new RuntimeException("Must find the record by chatId"));

@@ -78,6 +78,6 @@ public class Start implements CommandHandler {
     }
 
     private ResponseEntity<UserDto> callGetUserApi(ProcessableMessage processableMessage) {
-        return apiCallService.get(GET_USER_URL.formatted(processableMessage.getUserId()));
+        return apiCallService.get(GET_USER_URL.formatted(processableMessage.getUserId()), UserDto.class);
     }
 }

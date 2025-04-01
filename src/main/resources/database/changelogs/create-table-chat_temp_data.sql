@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS chat_temp_data (
 	id SERIAL PRIMARY KEY,
 	chat_id BIGINT NOT NULL,
 	data TEXT,
+	command VARCHAR,
 	created_at timestamp NOT NULL DEFAULT now(),
 	updated_at timestamp NOT NULL DEFAULT now()
 );

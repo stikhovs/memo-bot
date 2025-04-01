@@ -41,11 +41,15 @@ public class FrontSideReceived implements CommandHandler {
 
         chatAwaitsInputService.update(processableMessage.getChatId(), CommandType.INSERT_BACK_SIDE);
 
-        ChatTempData chatTempData = chatTempDataService.get(processableMessage.getChatId());
+//        ChatTempData chatTempData = chatTempDataService.get(processableMessage.getChatId(), CommandType.FRONT_SIDE_RECEIVED);
 
-        String updatedData = updateTempData(chatTempData, processableMessage.getText());
+//        String updatedData = updateTempData(chatTempData, processableMessage.getText());
 
-        chatTempDataService.save(chatTempData.toBuilder().data(updatedData).build());
+        chatTempDataService.clearAndSave(processableMessage.getChatId(), ChatTempData.builder()
+                .chatId(processableMessage.getChatId())
+                .data(processableMessage.getText())
+                .command(CommandType.FRONT_SIDE_RECEIVED)
+                .build());
 
 //        System.out.println(chatTempDataRepository.findByChatId(processableMessage.getChatId()));
 
@@ -58,7 +62,7 @@ public class FrontSideReceived implements CommandHandler {
                 .build();
     }
 
-    @SneakyThrows
+//    @SneakyThrows
     private String updateTempData(ChatTempData tempData, String frontSide) {
         Gson gson = new Gson();
 //        System.out.println(tempData.getData());

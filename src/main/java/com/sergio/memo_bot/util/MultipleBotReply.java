@@ -26,4 +26,6 @@ public class MultipleBotReply implements Reply {
 
     private Integer messageId;
 
+    private String parseMode;
+
 }

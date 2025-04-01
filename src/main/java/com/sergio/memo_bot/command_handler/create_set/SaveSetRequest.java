@@ -28,7 +28,7 @@ public class SaveSetRequest implements CommandHandler {
     @Override
     @Transactional
     public Reply getReply(ProcessableMessage processableMessage) {
-        CardSetDto cardSetDto = chatTempDataService.mapDataToType(processableMessage.getChatId(), CardSetDto.class);
+        CardSetDto cardSetDto = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.ADD_CARD_RESPONSE, CardSetDto.class);
 
         log.info("Сохраняем: {}", cardSetDto);
         ResponseEntity<CardSetDto> response = callCreateSetApi(cardSetDto.toBuilder().telegramChatId(processableMessage.getChatId()).build());

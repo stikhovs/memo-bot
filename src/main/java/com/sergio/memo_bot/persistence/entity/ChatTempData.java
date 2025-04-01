@@ -1,9 +1,7 @@
 package com.sergio.memo_bot.persistence.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.sergio.memo_bot.state.CommandType;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -26,6 +24,9 @@ public class ChatTempData {
     private Long chatId;
 
     private String data;
+
+    @Enumerated(EnumType.STRING)
+    private CommandType command;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

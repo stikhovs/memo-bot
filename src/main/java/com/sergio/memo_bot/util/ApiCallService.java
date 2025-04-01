@@ -18,14 +18,13 @@ public class ApiCallService {
 
     private final RestTemplate restTemplate;
 
-    public <T> ResponseEntity<T> get(String url) {
+    public <T> ResponseEntity<T> get(String url, Class<T> resultType) {
         try {
             return restTemplate.exchange(
                     url,
                     HttpMethod.GET,
                     RequestEntity.EMPTY,
-                    new ParameterizedTypeReference<>() {
-                    }
+                    ParameterizedTypeReference.forType(TypeToken.get(resultType).getType())
             );
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode().is4xxClientError()) {

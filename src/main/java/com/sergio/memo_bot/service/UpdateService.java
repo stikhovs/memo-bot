@@ -37,7 +37,7 @@ public class UpdateService {
             } else {
                 List<AwaitsUserInput> ifAwaitsUserTextInput = chatAwaitsInputService.findAll(processableMessage.getChatId());
                 if (isNotEmpty(ifAwaitsUserTextInput)) {
-                    CommandType commandType = CommandType.getByCommandText(ifAwaitsUserTextInput.getFirst().getNextCommand());
+                    CommandType commandType = ifAwaitsUserTextInput.getFirst().getNextCommand();
                     Reply reply = handleCommand(commandType, processableMessage);
                     send(reply);
                 }

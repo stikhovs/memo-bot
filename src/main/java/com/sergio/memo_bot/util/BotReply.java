@@ -1,6 +1,5 @@
 package com.sergio.memo_bot.util;
 
-import com.sergio.memo_bot.dto.ProcessableMessage;
 import lombok.Builder;
 import lombok.Data;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
@@ -20,5 +19,7 @@ public class BotReply implements Reply {
     private Reply nextReply;
 
     private Integer messageId;
+
+    private String parseMode;
 
 }

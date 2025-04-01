@@ -6,5 +6,6 @@ public class UrlConstant {
     public static final String CREATE_SET_URL = "/set/save";
     public static final String GET_ALL_SETS_URL = "/telegram/sets-by-chat?telegramChatId=%s";
     public static final String GET_CARDS_URL = "/telegram/get-cards?cardSetId=%s";
+    public static final String GET_SET_AND_CARDS_URL = "/telegram/set-and-cards-by-set-id?cardSetId=%s";
 
 }
