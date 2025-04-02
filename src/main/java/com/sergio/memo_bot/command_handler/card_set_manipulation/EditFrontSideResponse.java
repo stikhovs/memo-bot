@@ -1,0 +1,69 @@
+package com.sergio.memo_bot.command_handler.card_set_manipulation;
+
+import com.google.gson.Gson;
+import com.sergio.memo_bot.command_handler.CommandHandler;
+import com.sergio.memo_bot.dto.CardDto;
+import com.sergio.memo_bot.dto.CardSetDto;
+import com.sergio.memo_bot.dto.ProcessableMessage;
+import com.sergio.memo_bot.persistence.entity.ChatTempData;
+import com.sergio.memo_bot.persistence.service.ChatAwaitsInputService;
+import com.sergio.memo_bot.persistence.service.ChatTempDataService;
+import com.sergio.memo_bot.state.CommandType;
+import com.sergio.memo_bot.util.*;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class EditFrontSideResponse implements CommandHandler {
+
+    private final ApiCallService apiCallService;
+    private final ChatTempDataService chatTempDataService;
+
+    @Override
+    public boolean canHandle(CommandType commandType) {
+        return CommandType.EDIT_CARD_FRONT_SIDE_RESPONSE == commandType;
+    }
+
+    @Override
+    public Reply getReply(ProcessableMessage processableMessage) {
+        Long chatId = processableMessage.getChatId();
+
+        CardDto cardDto = chatTempDataService.mapDataToType(chatId, CommandType.EDIT_CARD_REQUEST, CardDto.class);
+        CardDto updatedCard = apiCallService.updateCard(cardDto.toBuilder().frontSide(processableMessage.getText()).build());
+        CardSetDto updatedCardSet = getCardSetAndUpdateIt(chatId, updatedCard);
+
+        chatTempDataService.clearAndSave(chatId, ChatTempData.builder()
+                .chatId(chatId)
+                .data(new Gson().toJson(updatedCardSet))
+                .command(CommandType.GET_CARD_SET_INFO)
+                .build());
+
+        return MultipleBotReply.builder()
+                .type(BotReplyType.MESSAGE)
+                .text("Лицевая сторона успешно сохранена")
+                .messageId(processableMessage.getMessageId())
+                .chatId(chatId)
+                .previousProcessableMessage(processableMessage)
+                .nextCommand(CommandType.MAIN_MENU)
+                .build();
+    }
+
+    private CardSetDto getCardSetAndUpdateIt(Long chatId, CardDto updatedCard) {
+        CardSetDto cardSetDto = chatTempDataService.mapDataToType(chatId, CommandType.GET_CARD_SET_INFO, CardSetDto.class);
+        List<CardDto> cards = cardSetDto.getCards().stream().map(it -> {
+            if (it.getId().equals(updatedCard.getId())) {
+                return updatedCard;
+            }
+            return it;
+        }).toList();
+        CardSetDto updatedCardSet = cardSetDto.toBuilder()
+                .cards(cards)
+                .build();
+        return updatedCardSet;
+    }
+}

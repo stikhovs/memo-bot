@@ -8,7 +8,6 @@ import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,11 +29,8 @@ public class SaveSetRequest implements CommandHandler {
     public Reply getReply(ProcessableMessage processableMessage) {
         CardSetDto cardSetDto = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.ADD_CARD_RESPONSE, CardSetDto.class);
 
-        log.info("Сохраняем: {}", cardSetDto);
-        ResponseEntity<CardSetDto> response = callCreateSetApi(cardSetDto.toBuilder().telegramChatId(processableMessage.getChatId()).build());
-
-        if (response.getStatusCode().is2xxSuccessful()) {
-            log.info("Сохранено: {}", response.getBody());
+        try {
+            apiCallService.saveCardSet(cardSetDto);
             chatTempDataService.clear(processableMessage.getChatId());
 
             return BotPartReply.builder()
@@ -45,16 +41,14 @@ public class SaveSetRequest implements CommandHandler {
 //                    .type(BotReplyType.MESSAGE)
 //                    .text()
                     .build();
+        } catch (RuntimeException ex) {
+            log.error("Something went wrong", ex);
+            return BotReply.builder()
+                    .type(BotReplyType.MESSAGE)
+                    .text("Что-то пошло не так")
+                    .chatId(processableMessage.getChatId())
+                    .build();
         }
-        return BotReply.builder()
-                .type(BotReplyType.MESSAGE)
-                .text("Что-то пошло не так")
-                .chatId(processableMessage.getChatId())
-                .build();
     }
 
-    private ResponseEntity<CardSetDto> callCreateSetApi(CardSetDto cardSetDto) {
-        return apiCallService.post(UrlConstant.CREATE_SET_URL, cardSetDto, CardSetDto.class);
-//        return ResponseEntity.ok(cardSetDto);
-    }
 }

@@ -21,7 +21,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class EditCards implements CommandHandler {
+public class EditSet implements CommandHandler {
 
     private final ChatTempDataService chatTempDataService;
 
@@ -52,7 +52,7 @@ public class EditCards implements CommandHandler {
         ArrayList<InlineKeyboardRow> rows = new ArrayList<>();
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
                 .text("Заголовок: %s".formatted(cardSetDto.getTitle()))
-                .callbackData(CommandType.MAIN_MENU.getCommandText())
+                .callbackData(CommandType.EDIT_TITLE_REQUEST.getCommandText())
                 .build()
         ));
         rows.addAll(
@@ -63,7 +63,7 @@ public class EditCards implements CommandHandler {
                                 new InlineKeyboardRow(
                                         InlineKeyboardButton.builder()
                                                 .text("Карточка: %s — %s".formatted(it.getFrontSide(), it.getBackSide()))
-                                                .callbackData(CommandType.MAIN_MENU.getCommandText())
+                                                .callbackData(CommandType.EDIT_CARD_REQUEST.getCommandText().formatted(it.getId()))
                                                 .build()
                                 ))
                         .toList()

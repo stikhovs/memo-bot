@@ -6,11 +6,9 @@ import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import static com.sergio.memo_bot.util.UrlConstant.CREATE_USER_URL;
-import static com.sergio.memo_bot.util.UrlConstant.GET_USER_URL;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -30,8 +28,8 @@ public class Start implements CommandHandler {
     }
 
     private Reply getOrCreateUser(ProcessableMessage processableMessage) {
-        ResponseEntity<UserDto> response = callGetUserApi(processableMessage);
-        if (response.getStatusCode().is2xxSuccessful()) {
+        Optional<UserDto> user = apiCallService.getUser(processableMessage.getChatId());
+        if (user.isPresent()) {
             return BotPartReply.builder()
                     .type(BotReplyType.MESSAGE)
                     .previousProcessableMessage(processableMessage)
@@ -44,20 +42,14 @@ public class Start implements CommandHandler {
     }
 
     public Reply registerUser(ProcessableMessage processableMessage) {
-
-        ResponseEntity<UserDto> response = callCreateUserApi(processableMessage);
-        if (response.getStatusCode().is2xxSuccessful()) {
-            return MultipleBotReply.builder()
-                    .chatId(processableMessage.getChatId())
-                    .text("Добро пожаловать!")
-                    .nextCommand(CommandType.MAIN_MENU)
-                    .chatId(processableMessage.getChatId())
-                    .messageId(processableMessage.getMessageId())
-                    .build();
-        } else {
-            log.error("Status code: {}", response.getStatusCode().value());
-            throw new RuntimeException("Couldn't register the user");
-        }
+        callCreateUserApi(processableMessage);
+        return MultipleBotReply.builder()
+                .chatId(processableMessage.getChatId())
+                .text("Добро пожаловать!")
+                .nextCommand(CommandType.MAIN_MENU)
+                .chatId(processableMessage.getChatId())
+                .messageId(processableMessage.getMessageId())
+                .build();
     }
 
     /*private InlineKeyboardMarkup getInlineKeyboardMarkup() {
@@ -67,17 +59,12 @@ public class Start implements CommandHandler {
         ));
     }*/
 
-    private ResponseEntity<UserDto> callCreateUserApi(ProcessableMessage processableMessage) {
-        return apiCallService.post(CREATE_USER_URL,
-                UserDto.builder()
-                        .username(processableMessage.getUsername())
-                        .telegramUserId(processableMessage.getUserId())
-                        .telegramChatId(processableMessage.getChatId())
-                        .build(),
-                UserDto.class);
+    private UserDto callCreateUserApi(ProcessableMessage processableMessage) {
+        return apiCallService.saveUser(UserDto.builder()
+                .username(processableMessage.getUsername())
+                .telegramUserId(processableMessage.getUserId())
+                .telegramChatId(processableMessage.getChatId())
+                .build());
     }
 
-    private ResponseEntity<UserDto> callGetUserApi(ProcessableMessage processableMessage) {
-        return apiCallService.get(GET_USER_URL.formatted(processableMessage.getUserId()), UserDto.class);
-    }
 }

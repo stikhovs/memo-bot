@@ -11,13 +11,11 @@ import com.sergio.memo_bot.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.NumberUtils;
 
 import java.util.List;
-
-import static com.sergio.memo_bot.util.UrlConstant.GET_SET_AND_CARDS_URL;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -35,10 +33,10 @@ public class GetCardSetInfo implements CommandHandler {
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
         Long cardSetId = NumberUtils.parseNumber(processableMessage.getText().split("__")[1], Long.class);
-        ResponseEntity<CardSetDto> setAndCardsResponse = getSetAndCards(cardSetId);
+        Optional<CardSetDto> cardSet = apiCallService.getCardSet(cardSetId);
 
-        if (setAndCardsResponse.getStatusCode().is2xxSuccessful()) {
-            CardSetDto cardSetDto = setAndCardsResponse.getBody();
+        if (cardSet.isPresent()) {
+            CardSetDto cardSetDto = cardSet.get();
 
             chatTempDataService.clearAndSave(processableMessage.getChatId(), ChatTempData.builder()
                     .chatId(processableMessage.getChatId())
@@ -69,9 +67,5 @@ public class GetCardSetInfo implements CommandHandler {
                 .previousProcessableMessage(processableMessage)
                 .messageId(processableMessage.getMessageId())
                 .build();
-    }
-
-    private ResponseEntity<CardSetDto> getSetAndCards(Long cardSetId) {
-        return apiCallService.get(GET_SET_AND_CARDS_URL.formatted(cardSetId), CardSetDto.class);
     }
 }

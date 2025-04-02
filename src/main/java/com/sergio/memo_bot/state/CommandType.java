@@ -11,7 +11,7 @@ import java.util.Map;
 public enum CommandType {
 
     MAIN_MENU("/main_menu"),
-    CLOSE ("/close"),
+    CLOSE("/close"),
     START("/start"),
     IMPORT_SET("/import_set"),
     CREATE_SET("/create_set"),
@@ -36,6 +36,15 @@ public enum CommandType {
     GET_CARD_SET_INFO("/get_card_set__%s"),
     GET_CARDS("/get_cards"),
     EDIT_SET("/edit_set"),
+    EDIT_TITLE_REQUEST("/edit_title_request"),
+    EDIT_TITLE_RESPONSE("/edit_title_response"),
+    EDIT_CARD_REQUEST("/edit_card_request__%s"),
+    EDIT_CARD_FRONT_SIDE_REQUEST("/edit_card_front_request"),
+    EDIT_CARD_FRONT_SIDE_RESPONSE("/edit_card_front_response"),
+    EDIT_CARD_BACK_SIDE_REQUEST("/edit_card_back_request"),
+    EDIT_CARD_BACK_SIDE_RESPONSE("/edit_card_back_response"),
+    EDIT_CARD_RESPONSE("/edit_card_response"),
+
     GET_EXERCISES("/get_exercises");
 
     private final String commandText;
@@ -43,17 +52,34 @@ public enum CommandType {
     private static final Map<String, CommandType> BY_LABEL = new HashMap<>();
 
     static {
-        for (CommandType e: values()) {
+        for (CommandType e : values()) {
             BY_LABEL.put(e.commandText, e);
         }
     }
 
     public static boolean isCommandType(String text) {
-        return BY_LABEL.containsKey(text) || text.contains("/get_card_set__");
+        return BY_LABEL.containsKey(text)
+                || containsGetCardSet(text)
+                || containsEditCard(text);
     }
 
     public static CommandType getByCommandText(String text) {
-        return BY_LABEL.getOrDefault(text, GET_CARD_SET_INFO);
+        CommandType commandType = BY_LABEL.get(text);
+        if (commandType != null) {
+            return commandType;
+        }
+        if (containsGetCardSet(text)) return GET_CARD_SET_INFO;
+        if (containsEditCard(text)) return EDIT_CARD_REQUEST;
+
+        throw new UnsupportedOperationException("Couldn't map text [%s] to CommandType".formatted(text));
+    }
+
+    private static boolean containsGetCardSet(String text) {
+        return text.contains("/get_card_set__");
+    }
+
+    private static boolean containsEditCard(String text) {
+        return text.contains("/edit_card_request__");
     }
 
 }

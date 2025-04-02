@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -91,6 +92,7 @@ public class AddCardResponse implements CommandHandler {
         } else {
             ChatTempData title = chatTempDataService.get(chatId, CommandType.NAME_SET);
             return CardSetDto.builder()
+                    .uuid(UUID.randomUUID())
                     .telegramChatId(chatId)
                     .title(title.getData())
                     .cards(List.of(CardDto.builder()

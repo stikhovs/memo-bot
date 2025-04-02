@@ -10,13 +10,11 @@ import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
-import static com.sergio.memo_bot.util.UrlConstant.GET_ALL_SETS_URL;
 
 @Slf4j
 @Component
@@ -34,14 +32,13 @@ public class GetAllSetsRequest implements CommandHandler {
     @Override
     @Transactional
     public Reply getReply(ProcessableMessage processableMessage) {
-        ResponseEntity<List<CardSetDto>> response = callApi(processableMessage);
+        List<CardSetDto> cardSets = apiCallService.getCardSets(processableMessage.getChatId());
 
-        if (response.getStatusCode().is2xxSuccessful()) {
-            log.info("Response: {}", response.getBody());
+        if (CollectionUtils.isNotEmpty(cardSets)) {
             chatTempDataService.clearAndSave(processableMessage.getChatId(),
                     ChatTempData.builder()
                             .chatId(processableMessage.getChatId())
-                            .data(new Gson().toJson(response.getBody()))
+                            .data(new Gson().toJson(cardSets))
                             .command(CommandType.GET_ALL_SETS)
                             .build());
 
@@ -50,7 +47,7 @@ public class GetAllSetsRequest implements CommandHandler {
                     .chatId(processableMessage.getChatId())
                     .messageId(processableMessage.getMessageId())
                     .text("Выберите набор")
-                    .replyMarkup(MarkUpUtil.getInlineCardSetButtons(response.getBody()))
+                    .replyMarkup(MarkUpUtil.getInlineCardSetButtons(cardSets))
                     .build();
         }
 
@@ -62,10 +59,6 @@ public class GetAllSetsRequest implements CommandHandler {
                 .nextCommand(CommandType.MAIN_MENU)
                 .build();
 
-    }
-
-    private ResponseEntity<List<CardSetDto>> callApi(ProcessableMessage processableMessage) {
-        return apiCallService.getList(GET_ALL_SETS_URL.formatted(processableMessage.getUserId()), CardSetDto.class);
     }
 
 }
