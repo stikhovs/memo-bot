@@ -43,7 +43,7 @@ public class GetAllSetsRequest implements CommandHandler {
                             .build());
 
             return BotReply.builder()
-                    .type(BotReplyType.MESSAGE)
+                    .type(BotReplyType.EDIT_MESSAGE_TEXT)
                     .chatId(processableMessage.getChatId())
                     .messageId(processableMessage.getMessageId())
                     .text("Выберите набор")

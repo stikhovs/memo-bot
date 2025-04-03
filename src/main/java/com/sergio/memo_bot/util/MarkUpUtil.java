@@ -70,6 +70,7 @@ public class MarkUpUtil {
                                         )))
                                 .toList()
                 )
+                .keyboardRow(new InlineKeyboardRow(InlineKeyboardButton.builder().text("Назад").callbackData(CommandType.MAIN_MENU.getCommandText()).build()))
                 .build();
     }
 

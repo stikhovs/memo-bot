@@ -51,7 +51,7 @@ public class EditSet implements CommandHandler {
     private List<InlineKeyboardRow> buildRows(CardSetDto cardSetDto) {
         ArrayList<InlineKeyboardRow> rows = new ArrayList<>();
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                .text("Заголовок: %s".formatted(cardSetDto.getTitle()))
+                .text("Изменить заголовок: %s".formatted(cardSetDto.getTitle()))
                 .callbackData(CommandType.EDIT_TITLE_REQUEST.getCommandText())
                 .build()
         ));
@@ -62,12 +62,17 @@ public class EditSet implements CommandHandler {
                         .map(it ->
                                 new InlineKeyboardRow(
                                         InlineKeyboardButton.builder()
-                                                .text("Карточка: %s — %s".formatted(it.getFrontSide(), it.getBackSide()))
+                                                .text("Изменить карточку: %s — %s".formatted(it.getFrontSide(), it.getBackSide()))
                                                 .callbackData(CommandType.EDIT_CARD_REQUEST.getCommandText().formatted(it.getId()))
                                                 .build()
                                 ))
                         .toList()
         );
+        rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
+                .text("Добавить карточку")
+                .callbackData(CommandType.ADD_CARD_REQUEST.getCommandText())
+                .build()
+        ));
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
                 .text("Назад")
                 .callbackData(CommandType.GET_CARD_SET_INFO.getCommandText().formatted(cardSetDto.getId()))

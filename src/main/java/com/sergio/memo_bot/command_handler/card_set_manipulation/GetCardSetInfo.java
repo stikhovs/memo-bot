@@ -32,8 +32,15 @@ public class GetCardSetInfo implements CommandHandler {
 
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
-        Long cardSetId = NumberUtils.parseNumber(processableMessage.getText().split("__")[1], Long.class);
-        Optional<CardSetDto> cardSet = apiCallService.getCardSet(cardSetId);
+        Optional<CardSetDto> cardSet;
+        String[] commandAndCardSetId = processableMessage.getText().split("__");
+
+        if (commandAndCardSetId[1].equals("%s")) {
+            cardSet = Optional.of(chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.GET_CARD_SET_INFO, CardSetDto.class));
+        } else {
+            Long cardSetId = NumberUtils.parseNumber(commandAndCardSetId[1], Long.class);
+            cardSet = apiCallService.getCardSet(cardSetId);
+        }
 
         if (cardSet.isPresent()) {
             CardSetDto cardSetDto = cardSet.get();
@@ -45,13 +52,15 @@ public class GetCardSetInfo implements CommandHandler {
                     .build());
 
             return BotReply.builder()
-                    .type(BotReplyType.EDIT_MESSAGE_TEXT)
+                    .type(BotReplyType.EDIT_MESSAGE_TEXT) // TODO: не работает когда переход из обработчиков, где только что был ввод пользователя
+//                    .type(BotReplyType.MESSAGE)
                     .chatId(processableMessage.getChatId())
                     .messageId(processableMessage.getMessageId())
                     .text(cardSetDto.getTitle())
                     .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
                             Pair.of("Посмотреть карточки", CommandType.GET_CARDS),
                             Pair.of("Редактировать набор", CommandType.EDIT_SET),
+                            Pair.of("Удалить набор", CommandType.REMOVE_SET_REQUEST),
                             Pair.of("Упражнения", CommandType.GET_EXERCISES),
                             Pair.of("Назад", CommandType.GET_ALL_SETS)
                     )))

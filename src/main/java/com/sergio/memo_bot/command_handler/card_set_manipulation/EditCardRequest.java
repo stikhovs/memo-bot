@@ -34,16 +34,29 @@ public class EditCardRequest implements CommandHandler {
 
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
-        Long cardId = NumberUtils.parseNumber(processableMessage.getText().split("__")[1], Long.class);
 
-        CardSetDto cardSetDto = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.GET_CARD_SET_INFO, CardSetDto.class);
-        CardDto card = cardSetDto.getCards().stream().filter(cardDto -> cardDto.getId().equals(cardId)).findFirst().orElseThrow();
+        CardDto card;
+        String[] commandAndCardId = processableMessage.getText().split("__");
 
-        chatTempDataService.clearAndSave(processableMessage.getChatId(), ChatTempData.builder()
-                        .command(CommandType.EDIT_CARD_REQUEST)
-                        .data(new Gson().toJson(card))
-                        .chatId(processableMessage.getChatId())
-                .build());
+        if (commandAndCardId[1].equals("%s")) {
+            card = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.EDIT_CARD_REQUEST, CardDto.class);
+        } else {
+            Long cardId = NumberUtils.parseNumber(commandAndCardId[1], Long.class);
+
+            CardSetDto cardSetDto = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.GET_CARD_SET_INFO, CardSetDto.class);
+            card = cardSetDto
+                    .getCards()
+                    .stream()
+                    .filter(cardDto -> cardDto.getId().equals(cardId))
+                    .findFirst()
+                    .orElseThrow();
+
+            chatTempDataService.clearAndSave(processableMessage.getChatId(), ChatTempData.builder()
+                    .command(CommandType.EDIT_CARD_REQUEST)
+                    .data(new Gson().toJson(card))
+                    .chatId(processableMessage.getChatId())
+                    .build());
+        }
 
         return BotReply.builder()
                 .type(BotReplyType.MESSAGE)
@@ -52,7 +65,8 @@ public class EditCardRequest implements CommandHandler {
                 .messageId(processableMessage.getMessageId())
                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkup(List.of(
                         Pair.of("Лицевая: %s".formatted(card.getFrontSide()), CommandType.EDIT_CARD_FRONT_SIDE_REQUEST),
-                        Pair.of("Задняя: %s".formatted(card.getBackSide()), CommandType.EDIT_CARD_BACK_SIDE_REQUEST)
+                        Pair.of("Задняя: %s".formatted(card.getBackSide()), CommandType.EDIT_CARD_BACK_SIDE_REQUEST),
+                        Pair.of("Удалить карточку", CommandType.REMOVE_CARD_REQUEST)
                 )))
                 .build();
     }

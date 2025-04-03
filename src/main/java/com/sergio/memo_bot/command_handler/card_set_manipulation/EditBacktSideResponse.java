@@ -50,8 +50,8 @@ public class EditBacktSideResponse implements CommandHandler {
                 .text("Обратная сторона успешно сохранена")
                 .messageId(processableMessage.getMessageId())
                 .chatId(chatId)
-                .previousProcessableMessage(processableMessage)
-                .nextCommand(CommandType.MAIN_MENU)
+                .previousProcessableMessage(processableMessage.toBuilder().text(CommandType.GET_CARD_SET_INFO.getCommandText()).build())
+                .nextCommand(CommandType.GET_CARD_SET_INFO)
                 .build();
     }
 

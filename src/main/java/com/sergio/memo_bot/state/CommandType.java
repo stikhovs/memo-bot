@@ -45,6 +45,12 @@ public enum CommandType {
     EDIT_CARD_BACK_SIDE_RESPONSE("/edit_card_back_response"),
     EDIT_CARD_RESPONSE("/edit_card_response"),
 
+    REMOVE_SET_REQUEST("/remove_set_request"),
+    REMOVE_SET_RESPONSE("/remove_set_response"),
+
+    REMOVE_CARD_REQUEST("/remove_card_request"),
+    REMOVE_CARD_RESPONSE("/remove_card_response"),
+
     GET_EXERCISES("/get_exercises");
 
     private final String commandText;

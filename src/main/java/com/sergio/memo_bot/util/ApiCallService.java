@@ -105,6 +105,18 @@ public class ApiCallService {
         throw new RuntimeException("Couldn't update the card");
     }
 
+    public void deleteCardSet(Long cardSetId) {
+        log.info("Deleting cardSet with id: {}", cardSetId);
+        delete(DELETE_CARD_SET_URL.formatted(cardSetId));
+        log.info("Deleted cardSet with id: {}", cardSetId);
+    }
+
+    public void deleteCard(Long cardId) {
+        log.info("Deleting card with id: {}", cardId);
+        delete(DELETE_CARD_URL.formatted(cardId));
+        log.info("Deleted card with id: {}", cardId);
+    }
+
     private <T> ResponseEntity<T> get(String url, Class<T> resultType) {
         try {
             return restTemplate.exchange(
@@ -157,5 +169,9 @@ public class ApiCallService {
             }
             throw e;
         }
+    }
+
+    private  void delete(String url) {
+        restTemplate.delete(restTemplate.getUriTemplateHandler().expand(url));
     }
 }
