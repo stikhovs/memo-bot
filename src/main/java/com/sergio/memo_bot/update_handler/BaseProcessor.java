@@ -3,7 +3,6 @@ package com.sergio.memo_bot.update_handler;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.state.UserStateType;
 import com.sergio.memo_bot.util.BotReply;
-import com.sergio.memo_bot.util.BotReplyMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

@@ -23,7 +23,6 @@ public class MainMenu implements CommandHandler {
 
     private final ChatAwaitsInputService chatAwaitsInputService;
     private final ChatTempDataService chatTempDataService;
-
     @Override
     public boolean canHandle(CommandType commandType) {
         return CommandType.MAIN_MENU == commandType;
@@ -32,9 +31,10 @@ public class MainMenu implements CommandHandler {
     @Override
     @Transactional
     public Reply getReply(ProcessableMessage processableMessage) {
+        Long chatId = processableMessage.getChatId();
 
-        chatAwaitsInputService.clear(processableMessage.getChatId());
-        chatTempDataService.clear(processableMessage.getChatId());
+        chatAwaitsInputService.clear(chatId);
+        chatTempDataService.clear(chatId);
 
         return BotReply.builder()
                 .type(BotReplyType.MESSAGE)
@@ -43,7 +43,8 @@ public class MainMenu implements CommandHandler {
                         Pair.of("Создать набор", CommandType.CREATE_SET),
                         Pair.of("Просмотреть наборы", CommandType.GET_ALL_SETS)
                 )))
-                .chatId(processableMessage.getChatId())
+                .chatId(chatId)
                 .build();
     }
+
 }

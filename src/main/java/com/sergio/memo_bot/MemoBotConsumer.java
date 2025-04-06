@@ -2,6 +2,7 @@ package com.sergio.memo_bot;
 
 import com.sergio.memo_bot.configuration.BotProperties;
 import com.sergio.memo_bot.dto.ProcessableMessage;
+import com.sergio.memo_bot.service.SenderService;
 import com.sergio.memo_bot.service.UpdateService;
 import com.sergio.memo_bot.state.UserStateHolder;
 import com.sergio.memo_bot.update_handler.BaseProcessor;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer;
 import org.telegram.telegrambots.longpolling.starter.SpringLongPollingBot;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class MemoBotConsumer implements SpringLongPollingBot, LongPollingSingleT
     private final List<BaseProcessor> handlers;
     protected final UpdateMapper updateMapper;
     private final UserStateHolder stateHolder;
-    private final Sender sender;
+    private final SenderService senderService;
     private final UpdateService updateService;
 
     @Override
@@ -47,13 +47,13 @@ public class MemoBotConsumer implements SpringLongPollingBot, LongPollingSingleT
         handleAndReply(processableMessage);
     }*/
 
-    public void handleAndReply(ProcessableMessage processableMessage) {
+   /* public void handleAndReply(ProcessableMessage processableMessage) {
         handlers.stream()
                 .filter(it -> it.canHandleByUserState(processableMessage))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Couldn't find the right handler"))
-                .replyTo(processableMessage, sender::send);
-    }
+                .replyTo(processableMessage, senderService::send);
+    }*/
 
     @Override
     public String getBotToken() {
