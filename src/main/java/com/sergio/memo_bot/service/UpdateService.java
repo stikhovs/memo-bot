@@ -1,10 +1,11 @@
 package com.sergio.memo_bot.service;
 
-import com.sergio.memo_bot.Sender;
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.ProcessableMessage;
+import com.sergio.memo_bot.mapper.ReplyMapper;
 import com.sergio.memo_bot.persistence.entity.AwaitsUserInput;
 import com.sergio.memo_bot.persistence.service.ChatAwaitsInputService;
+import com.sergio.memo_bot.persistence.service.ChatMessageService;
 import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.util.*;
 import lombok.RequiredArgsConstructor;
@@ -23,20 +24,27 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 public class UpdateService {
     private final List<CommandHandler> commandHandlers;
     private final UpdateMapper updateMapper;
-    private final Sender sender;
+    private final SenderService senderService;
     private final ChatAwaitsInputService chatAwaitsInputService;
+    private final ChatMessageService chatMessageService;
+    private final ReplyMapper replyMapper;
 
 
     public void process(Update update) {
         ProcessableMessage processableMessage = updateMapper.map(update);
+        chatMessageService.saveFromUser(processableMessage.getChatId(), processableMessage.getMessageId());
 
         if (processableMessage.isProcessable()) {
             if (CommandType.isCommandType(processableMessage.getText())) {
+                log.info("Consumed command: {}", processableMessage);
                 Reply reply = handleCommand(CommandType.getByCommandText(processableMessage.getText()), processableMessage);
                 send(reply);
             } else {
                 List<AwaitsUserInput> ifAwaitsUserTextInput = chatAwaitsInputService.findAll(processableMessage.getChatId());
                 if (isNotEmpty(ifAwaitsUserTextInput)) {
+                    log.info("Consumed user input: {}", processableMessage);
+                    /*Integer newMessageId = chatMessageService.findMessageId(processableMessage.getChatId()).orElse(null);
+                    log.info("Changing messageId from {} to {}", processableMessage.getMessageId(), newMessageId);*/
                     CommandType commandType = ifAwaitsUserTextInput.getFirst().getNextCommand();
                     Reply reply = handleCommand(commandType, processableMessage);
                     send(reply);
@@ -48,7 +56,7 @@ public class UpdateService {
 
     private void send(Reply reply) {
         if (reply instanceof BotReply botReply) {
-            sender.send(BotReplyMapper.toBotApiMethod(botReply));
+            senderService.send(replyMapper.toReplyData(botReply));
             Optional.ofNullable(botReply.getNextReply()).ifPresent(this::send);
         } else if (reply instanceof BotPartReply botPartReply) {
             ProcessableMessage processableMessage = botPartReply.getPreviousProcessableMessage()
@@ -58,8 +66,11 @@ public class UpdateService {
                     .build();
             send(handleCommand(botPartReply.getNextCommand(), processableMessage));
         } else if (reply instanceof MultipleBotReply multipleBotReply) {
-            sender.send(BotReplyMapper.toBotApiMethod(multipleBotReply));
+            senderService.send(replyMapper.toReplyData(multipleBotReply));
             send(handleCommand(multipleBotReply.getNextCommand(), multipleBotReply.getPreviousProcessableMessage()));
+        } else if (reply instanceof DeleteMessageReply deleteMessageReply) {
+            senderService.send(replyMapper.toReplyData(deleteMessageReply));
+            chatMessageService.delete(deleteMessageReply.getChatId(), deleteMessageReply.getMessageIds());
         }
     }
 
