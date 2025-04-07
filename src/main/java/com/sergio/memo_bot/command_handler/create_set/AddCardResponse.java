@@ -8,7 +8,10 @@ import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.util.*;
+import com.sergio.memo_bot.util.BotMessageReply;
+import com.sergio.memo_bot.util.EmojiConverter;
+import com.sergio.memo_bot.util.MarkUpUtil;
+import com.sergio.memo_bot.util.Reply;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -42,8 +45,8 @@ public class AddCardResponse implements CommandHandler {
         ChatTempData chatTempData = mapToData(chatId, cardSetDto);
         chatTempDataService.clearAndSave(chatId, chatTempData);
 
-        return BotReply.builder()
-                .type(BotReplyType.MESSAGE)
+        return BotMessageReply.builder()
+//                .type(BotReplyType.MESSAGE)
                 .text(
                         """
                                 Предварительный набор \"%s\"
@@ -55,7 +58,7 @@ public class AddCardResponse implements CommandHandler {
                                         .collect(Collectors.joining(";\n"))
                         )
                 )
-                .messageId(processableMessage.getMessageId())
+//                .messageId(processableMessage.getMessageId())
                 .chatId(chatId)
                 .replyMarkup(
                         MarkUpUtil.getInlineKeyboardMarkup(List.of(
@@ -90,17 +93,34 @@ public class AddCardResponse implements CommandHandler {
                     .cards(cards)
                     .build();
         } else {
-            ChatTempData title = chatTempDataService.get(chatId, CommandType.NAME_SET);
-            return CardSetDto.builder()
-                    .uuid(UUID.randomUUID())
-                    .telegramChatId(chatId)
-                    .title(title.getData())
-                    .cards(List.of(CardDto.builder()
-                            .frontSide(frontSide.getData())
-                            .backSide(backSide.getData())
-                            .build()
-                    ))
-                    .build();
+            Optional<ChatTempData> titleOptional = chatTempDataService.find(chatId, CommandType.NAME_SET);
+            if (titleOptional.isPresent()) {
+                ChatTempData title = titleOptional.get();
+
+                return CardSetDto.builder()
+                        .uuid(UUID.randomUUID())
+                        .telegramChatId(chatId)
+                        .title(title.getData())
+                        .cards(List.of(CardDto.builder()
+                                .frontSide(frontSide.getData())
+                                .backSide(backSide.getData())
+                                .build()
+                        ))
+                        .build();
+            } else {
+                CardSetDto cardSetDto = chatTempDataService.mapDataToType(chatId, CommandType.GET_CARD_SET_INFO, CardSetDto.class);
+                CardDto cardDto = CardDto.builder()
+                        .frontSide(frontSide.getData())
+                        .backSide(backSide.getData())
+                        .build();
+
+                List<CardDto> cards = cardSetDto.getCards();
+                cards.add(cardDto);
+
+                return cardSetDto.toBuilder()
+                        .cards(cards)
+                        .build();
+            }
         }
     }
 

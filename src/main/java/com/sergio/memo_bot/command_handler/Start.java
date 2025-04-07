@@ -31,10 +31,9 @@ public class Start implements CommandHandler {
         Optional<UserDto> user = apiCallService.getUser(processableMessage.getChatId());
         if (user.isPresent()) {
             return BotPartReply.builder()
-                    .type(BotReplyType.MESSAGE)
                     .previousProcessableMessage(processableMessage)
                     .chatId(processableMessage.getChatId())
-                    .messageId(processableMessage.getMessageId())
+//                    .messageId(processableMessage.getMessageId())
                     .nextCommand(CommandType.MAIN_MENU)
                     .build();
         }
@@ -43,12 +42,15 @@ public class Start implements CommandHandler {
 
     public Reply registerUser(ProcessableMessage processableMessage) {
         callCreateUserApi(processableMessage);
-        return MultipleBotReply.builder()
+        return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
                 .text("Добро пожаловать!")
-                .nextCommand(CommandType.MAIN_MENU)
+                .nextReply(NextReply.builder()
+                        .nextCommand(CommandType.MAIN_MENU)
+                        .previousProcessableMessage(processableMessage)
+                        .build())
                 .chatId(processableMessage.getChatId())
-                .messageId(processableMessage.getMessageId())
+//                .messageId(processableMessage.getMessageId())
                 .build();
     }
 

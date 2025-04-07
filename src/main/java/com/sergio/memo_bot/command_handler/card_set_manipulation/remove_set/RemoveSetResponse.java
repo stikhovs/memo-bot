@@ -5,7 +5,10 @@ import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.util.*;
+import com.sergio.memo_bot.util.ApiCallService;
+import com.sergio.memo_bot.util.BotMessageReply;
+import com.sergio.memo_bot.util.NextReply;
+import com.sergio.memo_bot.util.Reply;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -32,13 +35,15 @@ public class RemoveSetResponse implements CommandHandler {
 
         chatTempDataService.clear(chatId, CommandType.GET_CARD_SET_INFO);
 
-        return MultipleBotReply.builder()
-                .type(BotReplyType.MESSAGE)
+        return BotMessageReply.builder()
                 .chatId(chatId)
-                .messageId(processableMessage.getMessageId())
+//                .type(BotReplyType.MESSAGE)
+//                .messageId(processableMessage.getMessageId())
                 .text("Набор удален")
-                .previousProcessableMessage(processableMessage)
-                .nextCommand(CommandType.MAIN_MENU)
+                .nextReply(NextReply.builder()
+                        .nextCommand(CommandType.MAIN_MENU)
+                        .previousProcessableMessage(processableMessage)
+                        .build())
                 .build();
     }
 }

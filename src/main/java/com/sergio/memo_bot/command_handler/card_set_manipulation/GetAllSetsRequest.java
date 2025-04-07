@@ -42,21 +42,24 @@ public class GetAllSetsRequest implements CommandHandler {
                             .command(CommandType.GET_ALL_SETS)
                             .build());
 
-            return BotReply.builder()
-                    .type(BotReplyType.EDIT_MESSAGE_TEXT)
+            return BotMessageReply.builder()
                     .chatId(processableMessage.getChatId())
-                    .messageId(processableMessage.getMessageId())
+//                    .type(BotReplyType.EDIT_MESSAGE_TEXT)
+//                    .messageId(processableMessage.getMessageId())
                     .text("Выберите набор")
                     .replyMarkup(MarkUpUtil.getInlineCardSetButtons(cardSets))
                     .build();
         }
 
-        return MultipleBotReply.builder()
-                .type(BotReplyType.MESSAGE)
+        return BotMessageReply.builder()
+//                .type(BotReplyType.MESSAGE)
                 .chatId(processableMessage.getChatId())
-                .messageId(processableMessage.getMessageId())
+//                .messageId(processableMessage.getMessageId())
                 .text("Что-то пошло не так. Попробуйте снова")
-                .nextCommand(CommandType.MAIN_MENU)
+                .nextReply(NextReply.builder()
+                        .nextCommand(CommandType.MAIN_MENU)
+                        .previousProcessableMessage(processableMessage)
+                        .build())
                 .build();
 
     }

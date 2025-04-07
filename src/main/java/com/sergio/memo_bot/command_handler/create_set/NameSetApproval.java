@@ -7,7 +7,6 @@ import com.sergio.memo_bot.persistence.service.ChatAwaitsInputService;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.util.BotPartReply;
-import com.sergio.memo_bot.util.BotReplyType;
 import com.sergio.memo_bot.util.EmojiConverter;
 import com.sergio.memo_bot.util.Reply;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +51,7 @@ public class NameSetApproval implements CommandHandler {
 
         return BotPartReply.builder()
                 .nextCommand(CommandType.ADD_CARD_REQUEST)
-                .type(BotReplyType.MESSAGE)
+//                .type(BotReplyType.MESSAGE)
                 .previousProcessableMessage(processableMessage)
                 .chatId(chatId)
                 .text(EmojiConverter.getEmoji("U+2705") + " Будет создан набор: \"%s\"".formatted(processableMessage.getText()))

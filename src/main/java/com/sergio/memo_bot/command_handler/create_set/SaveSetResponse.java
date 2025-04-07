@@ -3,9 +3,8 @@ package com.sergio.memo_bot.command_handler.create_set;
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.util.BotReply;
-import com.sergio.memo_bot.util.BotReplyType;
-import com.sergio.memo_bot.util.MultipleBotReply;
+import com.sergio.memo_bot.util.BotMessageReply;
+import com.sergio.memo_bot.util.NextReply;
 import com.sergio.memo_bot.util.Reply;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +24,16 @@ public class SaveSetResponse implements CommandHandler {
     @Override
     @Transactional
     public Reply getReply(ProcessableMessage processableMessage) {
-        return BotReply.builder()
+        return BotMessageReply.builder()
+                .chatId(processableMessage.getChatId())
+                .text("Набор карточек успешно сохранен!")
+                .nextReply(NextReply.builder()
+                        .nextCommand(CommandType.MAIN_MENU)
+                        .previousProcessableMessage(processableMessage)
+                        .build())
+                .build();
+
+                /*BotReply.builder()
                 .type(BotReplyType.EDIT_MESSAGE_REPLY_MARKUP)
                 .chatId(processableMessage.getChatId())
                 .messageId(processableMessage.getMessageId())
@@ -39,7 +47,7 @@ public class SaveSetResponse implements CommandHandler {
                                 .previousProcessableMessage(processableMessage)
                                 .build()
                 )
-                .build();
+                .build();*/
 
     }
 

@@ -8,14 +8,17 @@ import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.util.*;
+import com.sergio.memo_bot.util.ApiCallService;
+import com.sergio.memo_bot.util.BotMessageReply;
+import com.sergio.memo_bot.util.NextReply;
+import com.sergio.memo_bot.util.Reply;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Objects;
+
+import static org.apache.commons.lang3.ObjectUtils.notEqual;
 
 @Slf4j
 @Component
@@ -45,20 +48,22 @@ public class RemoveCardResponse implements CommandHandler {
                 .command(CommandType.GET_CARD_SET_INFO)
                 .build());
 
-        return MultipleBotReply.builder()
-                .type(BotReplyType.MESSAGE)
+        return BotMessageReply.builder()
                 .chatId(chatId)
-                .messageId(processableMessage.getMessageId())
+//                .messageId(processableMessage.getMessageId())
+//                .type(BotReplyType.MESSAGE)
                 .text("Карточка удалена")
-//                .previousProcessableMessage(processableMessage.toBuilder().text(CommandType.GET_CARD_SET_INFO.getCommandText()).build())
-                .nextCommand(CommandType.GET_CARD_SET_INFO)
+                .nextReply(NextReply.builder()
+                        .nextCommand(CommandType.GET_CARD_SET_INFO)
+                        .previousProcessableMessage(processableMessage.toBuilder().text(CommandType.GET_CARD_SET_INFO.getCommandText()).build())
+                        .build())
                 .build();
     }
 
     private CardSetDto removeCardFromDB(Long chatId, Long cardId) {
         CardSetDto cardSetDto = chatTempDataService.mapDataToType(chatId, CommandType.GET_CARD_SET_INFO, CardSetDto.class);
         List<CardDto> cards = cardSetDto.getCards().stream()
-                .filter(it -> !ObjectUtils.notEqual(it.getId(), cardId))
+                .filter(it -> notEqual(it.getId(), cardId))
                 .toList();
         CardSetDto updatedCardSet = cardSetDto.toBuilder()
                 .cards(cards)

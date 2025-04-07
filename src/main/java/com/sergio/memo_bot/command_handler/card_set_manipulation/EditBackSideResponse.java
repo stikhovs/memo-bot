@@ -9,8 +9,8 @@ import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.util.ApiCallService;
-import com.sergio.memo_bot.util.BotReplyType;
-import com.sergio.memo_bot.util.MultipleBotReply;
+import com.sergio.memo_bot.util.BotMessageReply;
+import com.sergio.memo_bot.util.NextReply;
 import com.sergio.memo_bot.util.Reply;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class EditBacktSideResponse implements CommandHandler {
+public class EditBackSideResponse implements CommandHandler {
 
     private final ApiCallService apiCallService;
     private final ChatTempDataService chatTempDataService;
@@ -45,13 +45,15 @@ public class EditBacktSideResponse implements CommandHandler {
                 .command(CommandType.GET_CARD_SET_INFO)
                 .build());
 
-        return MultipleBotReply.builder()
-                .type(BotReplyType.MESSAGE)
-                .text("Обратная сторона успешно сохранена")
-                .messageId(processableMessage.getMessageId())
+        return BotMessageReply.builder()
                 .chatId(chatId)
-                .previousProcessableMessage(processableMessage.toBuilder().text(CommandType.GET_CARD_SET_INFO.getCommandText()).build())
-                .nextCommand(CommandType.GET_CARD_SET_INFO)
+//                .type(BotReplyType.MESSAGE)
+                .text("Обратная сторона успешно сохранена")
+//                .messageId(processableMessage.getMessageId())
+                .nextReply(NextReply.builder()
+                        .nextCommand(CommandType.GET_CARD_SET_INFO)
+                        .previousProcessableMessage(processableMessage.toBuilder().text(CommandType.GET_CARD_SET_INFO.getCommandText()).build())
+                        .build())
                 .build();
     }
 

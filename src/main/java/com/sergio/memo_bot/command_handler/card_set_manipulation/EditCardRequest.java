@@ -8,8 +8,7 @@ import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.util.BotReply;
-import com.sergio.memo_bot.util.BotReplyType;
+import com.sergio.memo_bot.util.BotMessageReply;
 import com.sergio.memo_bot.util.MarkUpUtil;
 import com.sergio.memo_bot.util.Reply;
 import lombok.RequiredArgsConstructor;
@@ -58,11 +57,11 @@ public class EditCardRequest implements CommandHandler {
                     .build());
         }
 
-        return BotReply.builder()
-                .type(BotReplyType.MESSAGE)
-                .text("Какую сторону редактировать?")
+        return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
-                .messageId(processableMessage.getMessageId())
+//                .type(BotReplyType.EDIT_MESSAGE_TEXT)
+                .text("Какую сторону редактировать?")
+//                .messageId(processableMessage.getMessageId())
                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkup(List.of(
                         Pair.of("Лицевая: %s".formatted(card.getFrontSide()), CommandType.EDIT_CARD_FRONT_SIDE_REQUEST),
                         Pair.of("Задняя: %s".formatted(card.getBackSide()), CommandType.EDIT_CARD_BACK_SIDE_REQUEST),

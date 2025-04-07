@@ -13,7 +13,6 @@ import com.sergio.memo_bot.util.BotPartReply;
 import com.sergio.memo_bot.util.BotReplyType;
 import com.sergio.memo_bot.util.Reply;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
@@ -56,7 +55,7 @@ public class FrontSideReceived implements CommandHandler {
         return BotPartReply.builder()
                 .type(BotReplyType.MESSAGE)
                 .nextCommand(CommandType.INSERT_BACK_SIDE)
-                .messageId(processableMessage.getMessageId())
+//                .messageId(processableMessage.getMessageId())
                 .previousProcessableMessage(processableMessage)
                 .chatId(processableMessage.getChatId())
                 .build();

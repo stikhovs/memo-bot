@@ -55,9 +55,15 @@ public class UpdateService {
     }
 
     private void send(Reply reply) {
-        if (reply instanceof BotReply botReply) {
-            senderService.send(replyMapper.toReplyData(botReply));
-            Optional.ofNullable(botReply.getNextReply()).ifPresent(this::send);
+
+        if (reply instanceof BotMessageReply messageReply) {
+            for (ReplyData replyData : replyMapper.toReplyData(messageReply)) {
+                senderService.send(replyData);
+            }
+            NextReply nextReply = messageReply.getNextReply();
+            if (nextReply != null) {
+                send(handleCommand(nextReply.getNextCommand(), nextReply.getPreviousProcessableMessage()));
+            }
         } else if (reply instanceof BotPartReply botPartReply) {
             ProcessableMessage processableMessage = botPartReply.getPreviousProcessableMessage()
                     .toBuilder()
@@ -65,10 +71,10 @@ public class UpdateService {
                     .text(botPartReply.getText())
                     .build();
             send(handleCommand(botPartReply.getNextCommand(), processableMessage));
-        } else if (reply instanceof MultipleBotReply multipleBotReply) {
+        } /*else if (reply instanceof MultipleBotReply multipleBotReply) {
             senderService.send(replyMapper.toReplyData(multipleBotReply));
             send(handleCommand(multipleBotReply.getNextCommand(), multipleBotReply.getPreviousProcessableMessage()));
-        } else if (reply instanceof DeleteMessageReply deleteMessageReply) {
+        }*/ else if (reply instanceof DeleteMessageReply deleteMessageReply) {
             senderService.send(replyMapper.toReplyData(deleteMessageReply));
             chatMessageService.delete(deleteMessageReply.getChatId(), deleteMessageReply.getMessageIds());
         }
