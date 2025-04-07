@@ -12,6 +12,9 @@ spring:
     open-in-view: false
   liquibase:
     change-log: classpath:database/changelog-master.yaml
+  h2:
+    console:
+      enabled: true
 bot:
   base-url: https://api.telegram.org/bot
   api-key: ${TELEGRAM_API_KEY}
