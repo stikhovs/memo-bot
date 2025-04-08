@@ -9,6 +9,7 @@ public class UrlConstant {
     public static final String GET_SET_AND_CARDS_URL = "/telegram/set-and-cards-by-set-id?cardSetId=%s";
     public static final String UPDATE_SET_URL = "/telegram/set/update";
     public static final String UPDATE_CARD_URL = "/telegram/card/update";
+    public static final String ADD_CARD_URL = "/telegram/card/add?cardSetId=%s";
     public static final String DELETE_CARD_SET_URL = "/telegram/set/delete?cardSetId=%s";
     public static final String DELETE_CARD_URL = "/telegram/card/delete?cardId=%s";
 

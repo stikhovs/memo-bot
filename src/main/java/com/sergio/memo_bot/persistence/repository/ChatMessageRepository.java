@@ -24,6 +24,8 @@ public interface ChatMessageRepository extends ListCrudRepository<ChatMessage, L
 
     Optional<ChatMessage> findFirstByChatIdAndHasButtonsIsTrueOrderByUpdatedAtDesc(Long chatId);
 
+    Optional<ChatMessage> findFirstByChatIdOrderByUpdatedAtDesc(Long chatId);
+
     @Transactional
     @Modifying
     @Query("""

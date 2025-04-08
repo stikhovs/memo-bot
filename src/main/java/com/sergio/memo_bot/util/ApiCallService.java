@@ -105,6 +105,17 @@ public class ApiCallService {
         throw new RuntimeException("Couldn't update the card");
     }
 
+    public CardDto addCard(Long cardSetId, CardDto cardDto) {
+        log.info("Adding card to: {}", cardDto);
+        ResponseEntity<CardDto> response = post(ADD_CARD_URL.formatted(cardSetId), cardDto, CardDto.class);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            log.info("Card was added successfully. {}", cardDto);
+            return response.getBody();
+        }
+        log.error("Couldn't add card to: {}. Response code: {}", cardDto, response.getStatusCode().value());
+        throw new RuntimeException("Couldn't add the card");
+    }
+
     public void deleteCardSet(Long cardSetId) {
         log.info("Deleting cardSet with id: {}", cardSetId);
         delete(DELETE_CARD_SET_URL.formatted(cardSetId));

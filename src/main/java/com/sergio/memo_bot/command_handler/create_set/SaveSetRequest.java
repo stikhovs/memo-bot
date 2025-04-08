@@ -45,6 +45,7 @@ public class SaveSetRequest implements CommandHandler {
                     .chatId(chatId)
                     .build();
         } else {
+            log.warn("Что-то пошло не так");
             return BotMessageReply.builder()
 //                    .type(BotReplyType.MESSAGE)
                     .text("Что-то пошло не так")
@@ -56,7 +57,7 @@ public class SaveSetRequest implements CommandHandler {
     private Runnable getAction(Long chatId, CardSetDto cardSetDto) {
         Runnable action;
         if (chatTempDataService.find(chatId, CommandType.GET_CARD_SET_INFO).isPresent()) {
-            action = () -> apiCallService.updateCardSet(cardSetDto);
+            action = () -> apiCallService.addCard(cardSetDto.getId(), cardSetDto.getCards().getLast());
         } else {
             action = () -> apiCallService.saveCardSet(cardSetDto);
         }

@@ -19,7 +19,7 @@ public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
 
     public void saveFromUser(Long chatId, Integer messageId) {
-//        log.info("Saving to chat_message from user: chatId {}, messageId {}", chatId, messageId);
+        log.info("Saving to chat_message from user: chatId {}, messageId {}", chatId, messageId);
         chatMessageRepository.findOneByChatIdAndMessageId(chatId, messageId)
                 .ifPresentOrElse(it -> {
                             it.setUpdatedAt(LocalDateTime.now());
@@ -36,10 +36,11 @@ public class ChatMessageService {
     }
 
     public void saveFromBot(Long chatId, Integer messageId, boolean hasButtons) {
-//        log.info("Saving to chat_message from bot: chatId {}, messageId {}", chatId, messageId);
+        log.info("Saving to chat_message from bot: chatId {}, messageId {}, hasButtons {}", chatId, messageId, hasButtons);
         chatMessageRepository.findOneByChatIdAndMessageId(chatId, messageId)
                 .ifPresentOrElse(it -> {
-                            it.setUpdatedAt(LocalDateTime.now());
+//                            it.setUpdatedAt(LocalDateTime.now());
+                            it.setHasButtons(hasButtons);
                             chatMessageRepository.save(it);
                         },
                         () -> chatMessageRepository.save(ChatMessage.builder()
@@ -55,6 +56,10 @@ public class ChatMessageService {
     public Optional<Integer> findLastBotMessageId(Long chatId) {
         return chatMessageRepository.findFirstByChatIdAndSenderTypeOrderByUpdatedAtDesc(chatId, SenderType.BOT)
                 .map(ChatMessage::getMessageId);
+    }
+
+    public Optional<ChatMessage> findLastMessage(Long chatId) {
+        return chatMessageRepository.findFirstByChatIdOrderByUpdatedAtDesc(chatId);
     }
 
     public Integer getMessageId(Long chatId) {

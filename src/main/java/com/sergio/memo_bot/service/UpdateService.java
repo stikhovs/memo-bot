@@ -11,10 +11,10 @@ import com.sergio.memo_bot.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
@@ -30,6 +30,7 @@ public class UpdateService {
     private final ReplyMapper replyMapper;
 
 
+    @Transactional
     public void process(Update update) {
         ProcessableMessage processableMessage = updateMapper.map(update);
         chatMessageService.saveFromUser(processableMessage.getChatId(), processableMessage.getMessageId());
