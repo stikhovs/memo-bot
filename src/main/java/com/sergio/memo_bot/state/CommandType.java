@@ -61,6 +61,11 @@ public enum CommandType {
 
     QUIZ_PREPARE("/quiz_prepare"),
     QUIZ("/quiz"),
+
+    ANSWER_INPUT_PREPARE("/answer_input_prepare"),
+    ANSWER_INPUT_REQUEST("/answer_input_request"),
+    ANSWER_INPUT_RESPONSE("/answer_input_response"),
+
     ;
 
     private final String commandText;

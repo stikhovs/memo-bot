@@ -29,7 +29,8 @@ public class Exercises implements CommandHandler {
                 .text("Выберите упражнение")
                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
                         Pair.of("Флеш-карточки", CommandType.FLASH_CARDS_PREPARE),
-                        Pair.of("Квиз", CommandType.QUIZ_PREPARE)
+                        Pair.of("Квиз", CommandType.QUIZ_PREPARE),
+                        Pair.of("Самостоятельный ввод ответа", CommandType.ANSWER_INPUT_PREPARE)
                 )))
                 .build();
     }
