@@ -51,7 +51,15 @@ public enum CommandType {
     REMOVE_CARD_REQUEST("/remove_card_request"),
     REMOVE_CARD_RESPONSE("/remove_card_response"),
 
-    GET_EXERCISES("/get_exercises");
+    GET_EXERCISES("/get_exercises"),
+
+    FLASH_CARDS("/flash_cards"),
+    FLASH_CARD("/flash_card"),
+    FLIP_REQUEST("/flip_request"),
+    NEXT_FLASH_CARD_REQUEST("/next_flash_card_request"),
+    PREVIOUS_FLASH_CARD_REQUEST("/previous_flash_card_request"),
+
+    ;
 
     private final String commandText;
 

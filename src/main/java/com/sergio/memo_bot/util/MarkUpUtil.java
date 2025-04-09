@@ -2,6 +2,7 @@ package com.sergio.memo_bot.util;
 
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.state.CommandType;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ForceReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -20,6 +21,7 @@ public class MarkUpUtil {
                 .keyboard(List.of(
                         new InlineKeyboardRow(
                                 buttons.stream()
+                                        .filter(button -> button.getLeft() != null)
                                         .map(button -> InlineKeyboardButton.builder()
                                                 .text(button.getLeft())
                                                 .callbackData(button.getRight().getCommandText())
@@ -33,6 +35,7 @@ public class MarkUpUtil {
     public static ReplyKeyboardMarkup getReplyKeyboardMarkup(List<String> buttons) {
         return ReplyKeyboardMarkup.builder()
                 .keyboard(buttons.stream()
+                        .filter(StringUtils::isNotBlank)
                         .map(button -> new KeyboardRow(
                                 KeyboardButton
                                         .builder()
@@ -47,6 +50,7 @@ public class MarkUpUtil {
         return InlineKeyboardMarkup.builder()
                 .keyboard(
                         buttons.stream()
+                                .filter(button -> button.getLeft() != null)
                                 .map(button -> new InlineKeyboardRow(
                                         List.of(InlineKeyboardButton.builder()
                                                 .text(button.getLeft())
