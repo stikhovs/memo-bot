@@ -33,9 +33,9 @@ public class UpdateService {
     @Transactional
     public void process(Update update) {
         ProcessableMessage processableMessage = updateMapper.map(update);
-        chatMessageService.saveFromUser(processableMessage.getChatId(), processableMessage.getMessageId());
 
         if (processableMessage.isProcessable()) {
+            chatMessageService.saveFromUser(processableMessage.getChatId(), processableMessage.getMessageId());
             if (CommandType.isCommandType(processableMessage.getText())) {
                 log.info("Consumed command: {}", processableMessage);
                 Reply reply = handleCommand(CommandType.getByCommandText(processableMessage.getText()), processableMessage);
@@ -78,6 +78,8 @@ public class UpdateService {
         }*/ else if (reply instanceof DeleteMessageReply deleteMessageReply) {
             senderService.send(replyMapper.toReplyData(deleteMessageReply));
             chatMessageService.delete(deleteMessageReply.getChatId(), deleteMessageReply.getMessageIds());
+        } else if (reply instanceof BotQuizReply quizReply) {
+            senderService.send(replyMapper.toReplyData(quizReply));
         }
     }
 

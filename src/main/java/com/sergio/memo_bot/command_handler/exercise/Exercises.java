@@ -28,7 +28,8 @@ public class Exercises implements CommandHandler {
                 .chatId(processableMessage.getChatId())
                 .text("Выберите упражнение")
                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
-                        Pair.of("Флеш-карточки", CommandType.FLASH_CARDS)
+                        Pair.of("Флеш-карточки", CommandType.FLASH_CARDS_PREPARE),
+                        Pair.of("Квиз", CommandType.QUIZ_PREPARE)
                 )))
                 .build();
     }

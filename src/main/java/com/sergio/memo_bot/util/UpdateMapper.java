@@ -1,6 +1,7 @@
 package com.sergio.memo_bot.util;
 
 import com.sergio.memo_bot.dto.ProcessableMessage;
+import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
@@ -85,8 +86,8 @@ public class UpdateMapper {
                     .processable(isFromUser(user))
                     .username(user.getUserName())
                     .userId(user.getId())
-//                    .chatId(pollAnswer.getChatId())
-//                    .text(pollAnswer.getOptionIds())
+                    .chatId(user.getId())
+                    .text(CommandType.QUIZ.getCommandText())
                     .build();
         }
 

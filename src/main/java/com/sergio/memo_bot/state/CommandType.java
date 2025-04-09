@@ -53,12 +53,14 @@ public enum CommandType {
 
     GET_EXERCISES("/get_exercises"),
 
-    FLASH_CARDS("/flash_cards"),
+    FLASH_CARDS_PREPARE("/flash_cards_prepare"),
     FLASH_CARD("/flash_card"),
     FLIP_REQUEST("/flip_request"),
     NEXT_FLASH_CARD_REQUEST("/next_flash_card_request"),
     PREVIOUS_FLASH_CARD_REQUEST("/previous_flash_card_request"),
 
+    QUIZ_PREPARE("/quiz_prepare"),
+    QUIZ("/quiz"),
     ;
 
     private final String commandText;
