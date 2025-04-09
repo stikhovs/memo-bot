@@ -43,6 +43,7 @@ public class FlashCard implements CommandHandler {
                 .replyMarkup(
                         InlineKeyboardMarkup.builder()
                                 .keyboard(List.of(
+                                        new InlineKeyboardRow(getFlipButton(data)),
                                         new InlineKeyboardRow(defineBackAndNextButtons(data)),
                                         new InlineKeyboardRow(
                                                 InlineKeyboardButton.builder()
@@ -60,20 +61,19 @@ public class FlashCard implements CommandHandler {
         ArrayList<InlineKeyboardButton> buttons = new ArrayList<>();
 
         if (data.getCurrentIndex() == 0 && data.getTotalNumberOfCards() == 1) {
-            buttons.add(getFlipButton(data));
+            return buttons;
+        } else {
+
+            if (data.getCurrentIndex() > 0) {
+                buttons.addFirst(getBackButton(data));
+            }
+
+            if (data.getCurrentIndex() < data.getTotalNumberOfCards() - 1) {
+                buttons.addLast(getNextButton(data));
+            }
+
+            return buttons;
         }
-
-        if (data.getCurrentIndex() > 0) {
-            buttons.addFirst(getBackButton(data));
-        }
-
-        buttons.add(getFlipButton(data));
-
-        if (data.getCurrentIndex() < data.getTotalNumberOfCards() - 1) {
-            buttons.addLast(getNextButton(data));
-        }
-
-        return buttons;
     }
 
     private InlineKeyboardButton getFlipButton(FlashCardData data) {

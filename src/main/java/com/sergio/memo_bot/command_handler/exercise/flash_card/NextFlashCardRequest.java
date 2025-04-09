@@ -32,7 +32,7 @@ public class NextFlashCardRequest implements CommandHandler {
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
         FlashCardData data = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.FLASH_CARD, FlashCardData.class);
-        List<CardDto> cards = chatTempDataService.mapDataToList(processableMessage.getChatId(), CommandType.FLASH_CARDS, CardDto.class);
+        List<CardDto> cards = chatTempDataService.mapDataToList(processableMessage.getChatId(), CommandType.FLASH_CARDS_PREPARE, CardDto.class);
 
         int newIndex = data.getCurrentIndex() + 1;
         CardDto nextCard = cards.get(newIndex);

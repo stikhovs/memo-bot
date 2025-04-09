@@ -18,13 +18,13 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class FlashCards implements CommandHandler {
+public class FlashCardsPrepare implements CommandHandler {
 
     private final ChatTempDataService chatTempDataService;
 
     @Override
     public boolean canHandle(CommandType commandType) {
-        return CommandType.FLASH_CARDS == commandType;
+        return CommandType.FLASH_CARDS_PREPARE == commandType;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class FlashCards implements CommandHandler {
         CardSetDto cardSetDto = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.GET_CARD_SET_INFO, CardSetDto.class);
         chatTempDataService.clearAndSave(processableMessage.getChatId(), ChatTempData.builder()
                 .chatId(processableMessage.getChatId())
-                .command(CommandType.FLASH_CARDS)
+                .command(CommandType.FLASH_CARDS_PREPARE)
                 .data(new Gson().toJson(cardSetDto.getCards()))
                 .build());
 

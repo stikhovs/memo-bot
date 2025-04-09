@@ -2,17 +2,16 @@ package com.sergio.memo_bot.persistence.service;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.repository.ChatTempDataRepository;
 import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -63,6 +62,11 @@ public class ChatTempDataService {
     public <T> List<T> mapDataToList(Long chatId, CommandType commandType, Class<T> elementType) {
         ChatTempData chatTempData = get(chatId, commandType);
         return new Gson().fromJson(chatTempData.getData(), TypeToken.getParameterized(List.class, elementType).getType());
+    }
+
+    public <K, V> Map<K, V> mapDataToMap(Long chatId, CommandType commandType, Class<K> keyClass, Class<V> valueClass) {
+        ChatTempData chatTempData = get(chatId, commandType);
+        return new Gson().fromJson(chatTempData.getData(), TypeToken.getParameterized(Map.class, keyClass, valueClass).getType());
     }
 
 }
