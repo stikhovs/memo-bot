@@ -66,6 +66,10 @@ public enum CommandType {
     ANSWER_INPUT_REQUEST("/answer_input_request"),
     ANSWER_INPUT_RESPONSE("/answer_input_response"),
 
+    CONNECT_WORDS_PREPARE("/connect_words_prepare"),
+    CONNECT_WORDS_REQUEST("/connect_words_request"),
+    CONNECT_WORDS_RESPONSE("/connect_words_response__%s"),
+
     ;
 
     private final String commandText;
@@ -81,7 +85,8 @@ public enum CommandType {
     public static boolean isCommandType(String text) {
         return BY_LABEL.containsKey(text)
                 || containsGetCardSet(text)
-                || containsEditCard(text);
+                || containsEditCard(text)
+                || containsConnectWordsResponse(text);
     }
 
     public static CommandType getByCommandText(String text) {
@@ -91,6 +96,7 @@ public enum CommandType {
         }
         if (containsGetCardSet(text)) return GET_CARD_SET_INFO;
         if (containsEditCard(text)) return EDIT_CARD_REQUEST;
+        if (containsConnectWordsResponse(text)) return CONNECT_WORDS_RESPONSE;
 
         throw new UnsupportedOperationException("Couldn't map text [%s] to CommandType".formatted(text));
     }
@@ -101,6 +107,10 @@ public enum CommandType {
 
     private static boolean containsEditCard(String text) {
         return text.contains("/edit_card_request__");
+    }
+
+    private static boolean containsConnectWordsResponse(String text) {
+        return text.contains("/connect_words_response__");
     }
 
 }
