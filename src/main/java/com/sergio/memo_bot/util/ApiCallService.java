@@ -3,6 +3,7 @@ package com.sergio.memo_bot.util;
 import com.google.gson.reflect.TypeToken;
 import com.sergio.memo_bot.dto.CardDto;
 import com.sergio.memo_bot.dto.CardSetDto;
+import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +57,7 @@ public class ApiCallService {
             log.info("CardSet successfully saved: {}", savedCardSet);
             return savedCardSet;
         }
-        log.error("Couldn't save the cardSet: {} . Status code: {}", cardSetDto, response.getStatusCode().value());
+        log.error("Couldn't save the cardSet: {}. Status code: {}", cardSetDto, response.getStatusCode().value());
         throw new RuntimeException("Couldn't save the cardSet");
     }
 
@@ -126,6 +127,60 @@ public class ApiCallService {
         log.info("Deleting card with id: {}", cardId);
         delete(DELETE_CARD_URL.formatted(cardId));
         log.info("Deleted card with id: {}", cardId);
+    }
+
+    public CategoryDto saveCategory(Long chatId, CategoryDto categoryDto) {
+        log.info("Saving category: {}", categoryDto);
+        ResponseEntity<CategoryDto> response = post(CREATE_CATEGORY_URL.formatted(chatId), categoryDto, CategoryDto.class);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            CategoryDto savedCategory = response.getBody();
+            log.info("Category successfully saved: {}", savedCategory);
+            return savedCategory;
+        }
+        log.error("Couldn't save the category: {}. Status code: {}", categoryDto, response.getStatusCode().value());
+        throw new RuntimeException("Couldn't save the category");
+    }
+
+    public CategoryDto updateCategory(CategoryDto categoryDto) {
+        log.info("Updating category: {}", categoryDto);
+        ResponseEntity<CategoryDto> response = put(UPDATE_CATEGORY_URL, categoryDto, CategoryDto.class);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            CategoryDto updated = response.getBody();
+            log.info("Category successfully updated: {}", updated);
+            return updated;
+        }
+        log.error("Couldn't update the category: {}. Status code: {}", categoryDto, response.getStatusCode().value());
+        throw new RuntimeException("Couldn't update the category");
+    }
+
+    public CategoryDto getCategoryById(Long categoryId) {
+        log.info("Getting category by categoryId: {}", categoryId);
+        ResponseEntity<CategoryDto> response = get(GET_CATEGORY_BY_ID_URL.formatted(categoryId), CategoryDto.class);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            CategoryDto category = response.getBody();
+            log.info("Successfully got category by categoryId: {}", categoryId);
+            return category;
+        }
+        log.error("Couldn't get category by categoryId: {}. Status code: {}", categoryId, response.getStatusCode().value());
+        throw new RuntimeException("Couldn't get category");
+    }
+
+    public List<CategoryDto> getCategoriesByChatId(Long chatId) {
+        log.info("Getting all categories by chatId: {}", chatId);
+        ResponseEntity<List<CategoryDto>> response = getList(GET_CATEGORY_BY_CHAT_ID_URL.formatted(chatId), CategoryDto.class);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            List<CategoryDto> categories = response.getBody();
+            log.info("Successfully got all categories by chatId: {}", chatId);
+            return categories;
+        }
+        log.error("Couldn't get categories by chatId: {}. Status code: {}", chatId, response.getStatusCode().value());
+        throw new RuntimeException("Couldn't get categories");
+    }
+
+    public void deleteCategory(Long categoryId) {
+        log.info("Deleting category with id: {}", categoryId);
+        delete(DELETE_CATEGORY_URL.formatted(categoryId));
+        log.info("Deleted category with id: {}", categoryId);
     }
 
     private <T> ResponseEntity<T> get(String url, Class<T> resultType) {

@@ -13,4 +13,10 @@ public class UrlConstant {
     public static final String DELETE_CARD_SET_URL = "/telegram/set/delete?cardSetId=%s";
     public static final String DELETE_CARD_URL = "/telegram/card/delete?cardId=%s";
 
+    public static final String CREATE_CATEGORY_URL = "/telegram/category/save?chatId=%s";
+    public static final String UPDATE_CATEGORY_URL = "/telegram/category/update";
+    public static final String GET_CATEGORY_BY_ID_URL = "/telegram/category?categoryId=%s";
+    public static final String GET_CATEGORY_BY_CHAT_ID_URL = "/telegram/category/by-chat?chatId=%s";
+    public static final String DELETE_CATEGORY_URL = "/telegram/category/delete?categoryId=%s";
+
 }
