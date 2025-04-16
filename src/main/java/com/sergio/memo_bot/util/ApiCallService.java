@@ -84,6 +84,16 @@ public class ApiCallService {
         return List.of();
     }
 
+    public List<CardSetDto> getCardSetsByCategory(Long categoryId) {
+        log.info("Getting all cardSets for categoryId: {}", categoryId);
+        ResponseEntity<List<CardSetDto>> response = getList(GET_ALL_SETS_BY_CATEGORY_ID_URL.formatted(categoryId), CardSetDto.class);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            return response.getBody();
+        }
+        log.info("Couldn't find cardSets for categoryId: {}. Response code: {}", categoryId, response.getStatusCode().value());
+        return List.of();
+    }
+
     public CardSetDto updateCardSet(CardSetDto cardSetDto) {
         log.info("Updating cardSet to: {}", cardSetDto);
         ResponseEntity<CardSetDto> response = put(UPDATE_SET_URL, cardSetDto, CardSetDto.class);
@@ -93,6 +103,17 @@ public class ApiCallService {
         }
         log.error("Couldn't update cardSet to: {}. Response code: {}", cardSetDto, response.getStatusCode().value());
         throw new RuntimeException("Couldn't update the cardSet");
+    }
+
+    public void updateCategoryBatch(List<Long> cardSetIds, Long categoryId) {
+        log.info("Updating category to {} for cardSetIds: {}", categoryId, cardSetIds);
+        ResponseEntity<Void> response = put(UPDATE_CATEGORY_FOR_SETS.formatted(categoryId), cardSetIds, Void.class);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            log.info("Successfully updated category to {} for cardSetIds: {}", categoryId, cardSetIds);
+            return;
+        }
+        log.error("Couldn't update category to {} for cardSetIds: {}. Response code: {}", categoryId, cardSetIds, response.getStatusCode().value());
+        throw new RuntimeException("Couldn't update category for cardSetIds");
     }
 
     public CardDto updateCard(CardDto cardDto) {
@@ -177,9 +198,9 @@ public class ApiCallService {
         throw new RuntimeException("Couldn't get categories");
     }
 
-    public void deleteCategory(Long categoryId) {
+    public void deleteCategory(Long categoryId, boolean keepSets) {
         log.info("Deleting category with id: {}", categoryId);
-        delete(DELETE_CATEGORY_URL.formatted(categoryId));
+        delete(DELETE_CATEGORY_URL.formatted(categoryId, keepSets));
         log.info("Deleted category with id: {}", categoryId);
     }
 

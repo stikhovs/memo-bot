@@ -41,9 +41,15 @@ public class MainMenu implements CommandHandler {
                 .chatId(chatId)
                 .text("Выберите действие")
                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
+                        Pair.of("Категории", CommandType.CATEGORY_MENU_DATA),
+                        Pair.of("Наборы", CommandType.CARD_SET_MENU_DATA),
+                        Pair.of("Упражнения", CommandType.EXERCISES_FROM_MENU)
+                )))
+                /*.replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
+                        Pair.of("Создать категорию", CommandType.CREATE_CATEGORY_REQUEST),
                         Pair.of("Создать набор", CommandType.CREATE_SET),
                         Pair.of("Просмотреть наборы", CommandType.GET_ALL_SETS)
-                )))
+                )))*/
                 .build();
 
 

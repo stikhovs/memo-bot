@@ -12,9 +12,12 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MarkUpUtil {
+    private static final int DEFAULT_NUMBER_OF_EXPECTED_COLUMNS = 2;
 
     public static InlineKeyboardMarkup getInlineKeyboardMarkup(List<Pair<String, CommandType>> buttons) {
         return InlineKeyboardMarkup.builder()
@@ -83,6 +86,41 @@ public class MarkUpUtil {
                 .forceReply(true)
                 .selective(false)
                 .inputFieldPlaceholder(placeholder)
+                .build();
+    }
+
+    public static List<InlineKeyboardRow> getKeyboardRows(Map<String, String> buttonsMap, int numberOfExpectedColumns) {
+        ArrayList<InlineKeyboardRow> rows = new ArrayList<>();
+
+        buttonsMap.forEach((text, callbackData) -> {
+            if (rows.isEmpty() || rows.getLast().size() >= numberOfExpectedColumns) {
+                rows.add(new InlineKeyboardRow(getButton(text, callbackData)));
+            } else {
+                rows.getLast().add(getButton(text, callbackData));
+            }
+        });
+
+        return rows;
+    }
+
+    public static List<InlineKeyboardRow> getKeyboardRows(Map<String, String> buttonsMap) {
+        ArrayList<InlineKeyboardRow> rows = new ArrayList<>();
+
+        buttonsMap.forEach((text, callbackData)-> {
+            if (rows.isEmpty() || rows.getLast().size() >= DEFAULT_NUMBER_OF_EXPECTED_COLUMNS) {
+                rows.add(new InlineKeyboardRow(getButton(text, callbackData)));
+            } else {
+                rows.getLast().add(getButton(text, callbackData));
+            }
+        });
+
+        return rows;
+    }
+
+    private static InlineKeyboardButton getButton(String text, String callbackData) {
+        return InlineKeyboardButton.builder()
+                .text(text)
+                .callbackData(callbackData)
                 .build();
     }
 

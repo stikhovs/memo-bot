@@ -1,8 +1,11 @@
 package com.sergio.memo_bot.command_handler.create_set;
 
+import com.google.gson.Gson;
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CardSetDto;
+import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
+import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.util.ApiCallService;
@@ -13,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -33,7 +38,13 @@ public class SaveSetRequest implements CommandHandler {
         Long chatId = processableMessage.getChatId();
         CardSetDto cardSetDto = chatTempDataService.mapDataToType(chatId, CommandType.ADD_CARD_RESPONSE, CardSetDto.class);
 
-        Runnable action = getAction(chatId, cardSetDto);
+        Long categoryId = chatTempDataService.find(chatId, CommandType.GET_CATEGORY_INFO_RESPONSE)
+                .map(chatTempData -> new Gson().fromJson(chatTempData.getData(), CategoryDto.class))
+                .map(CategoryDto::getId)
+                .orElse(null);
+
+
+        Runnable action = getAction(chatId, cardSetDto.toBuilder().categoryId(categoryId).build());
 
         if (callSafely(action)) {
             chatTempDataService.clear(chatId);

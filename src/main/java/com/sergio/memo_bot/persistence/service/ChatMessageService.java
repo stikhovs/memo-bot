@@ -90,7 +90,7 @@ public class ChatMessageService {
     }
 
     public void delete(Long chatId, List<Integer> messageIds) {
-//        log.info("Deleting chat messages for chatId {} and messageIds in {}", chatId, messageIds);
+        log.info("Deleting chat messages for chatId {} and messageIds in {}", chatId, messageIds);
         chatMessageRepository.deleteByChatIdAndMessages(chatId, messageIds);
     }
 

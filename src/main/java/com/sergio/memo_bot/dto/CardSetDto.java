@@ -13,6 +13,7 @@ public class CardSetDto {
     private Long id;
     private String title;
     private Long telegramChatId;
+    private Long categoryId;
     private UUID uuid;
     private List<CardDto> cards;
 }

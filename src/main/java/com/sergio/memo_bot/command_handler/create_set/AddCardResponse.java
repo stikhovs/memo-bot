@@ -93,7 +93,7 @@ public class AddCardResponse implements CommandHandler {
                     .cards(cards)
                     .build();
         } else {
-            Optional<ChatTempData> titleOptional = chatTempDataService.find(chatId, CommandType.NAME_SET);
+            Optional<ChatTempData> titleOptional = chatTempDataService.find(chatId, CommandType.NAME_SET_RESPONSE);
             if (titleOptional.isPresent()) {
                 ChatTempData title = titleOptional.get();
 

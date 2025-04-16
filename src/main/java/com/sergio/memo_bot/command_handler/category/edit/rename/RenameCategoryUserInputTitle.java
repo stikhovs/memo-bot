@@ -1,60 +1,60 @@
-package com.sergio.memo_bot.command_handler.create_set;
+package com.sergio.memo_bot.command_handler.category.edit.rename;
 
+import com.google.gson.Gson;
 import com.sergio.memo_bot.command_handler.CommandHandler;
+import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatAwaitsInputService;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.state.CommandType;
+import com.sergio.memo_bot.util.ApiCallService;
 import com.sergio.memo_bot.util.BotPartReply;
-import com.sergio.memo_bot.util.EmojiConverter;
 import com.sergio.memo_bot.util.Reply;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class NameSetApproval implements CommandHandler {
+public class RenameCategoryUserInputTitle implements CommandHandler {
 
+    private final ApiCallService apiCallService;
     private final ChatTempDataService chatTempDataService;
     private final ChatAwaitsInputService chatAwaitsInputService;
 
     @Override
     public boolean canHandle(CommandType commandType) {
-        return CommandType.NAME_SET == commandType;
+        return CommandType.RENAME_CATEGORY_USER_INPUT_TITLE == commandType;
     }
 
-    @SneakyThrows
     @Override
-    @Transactional
     public Reply getReply(ProcessableMessage processableMessage) {
         Long chatId = processableMessage.getChatId();
-
         chatAwaitsInputService.clear(chatId);
 
-        /*CardSetDto cardSet = CardSetDto.builder()
-                .title(processableMessage.getText())
-                .build();
-        System.out.println(new Gson().toJson(cardSet));*/
+        String categoryTitle = processableMessage.getText();
+        CategoryDto categoryDto = chatTempDataService.mapDataToType(chatId, CommandType.GET_CATEGORY_INFO_RESPONSE, CategoryDto.class);
+
+
+        CategoryDto updatedCategory = apiCallService.updateCategory(categoryDto.toBuilder()
+                .title(categoryTitle)
+                .build());
+
+        log.info("Updated category: {}", updatedCategory);
 
         chatTempDataService.clearAndSave(chatId,
                 ChatTempData.builder()
                         .chatId(chatId)
-                        .data(processableMessage.getText())
-                        .command(CommandType.NAME_SET)
-                        .build()
-        );
+                        .command(CommandType.GET_CATEGORY_INFO_RESPONSE)
+                        .data(new Gson().toJson(updatedCategory))
+                        .build());
 
         return BotPartReply.builder()
-                .nextCommand(CommandType.ADD_CARD_REQUEST)
-//                .type(BotReplyType.MESSAGE)
-                .previousProcessableMessage(processableMessage)
                 .chatId(chatId)
-                .text(EmojiConverter.getEmoji("U+2705") + " Будет создан набор: \"%s\"".formatted(processableMessage.getText()))
+                .previousProcessableMessage(processableMessage)
+                .nextCommand(CommandType.RENAME_CATEGORY_RESPONSE)
                 .build();
     }
 }
