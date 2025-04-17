@@ -13,7 +13,9 @@ public enum CommandType {
     MAIN_MENU("/main_menu"),
     CATEGORY_MENU("/category_menu"),
     CARD_SET_MENU("/card_set_menu"),
-    EXERCISES_FROM_MENU("/exercises_from_menu"),
+    EXERCISES_FROM_CARD_SET("/exercises_from_card_set"),
+    EXERCISES_FROM_CATEGORY("/exercises_from_category"),
+    EXERCISES_FROM_MAIN_MENU("/exercises_from_main_menu"),
 
     CATEGORY_MENU_DATA("/category_menu_data"),
     CARD_SET_MENU_DATA("/card_set_menu_data"),
@@ -60,7 +62,8 @@ public enum CommandType {
     REMOVE_CARD_REQUEST("/remove_card_request"),
     REMOVE_CARD_RESPONSE("/remove_card_response"),
 
-    GET_EXERCISES("/get_exercises"),
+    EXERCISES_DATA_PREPARE("/prepare_exercise_data"),
+    EXERCISES_RESPONSE("/exercises_response"),
 
     FLASH_CARDS_PREPARE("/flash_cards_prepare"),
     FLASH_CARD("/flash_card"),
@@ -116,7 +119,12 @@ public enum CommandType {
     SET_CATEGORY_REQUEST("/set_category_request"),
     SET_CATEGORY_RESPONSE("/set_category_response__%s"),
 
-    ;
+    CHOOSE_SET_REQUEST("/choose_set_request"),
+
+    MOVE_SET_TO_ANOTHER_CATEGORY("/move_set_to_another_category"),
+    CHOOSE_CATEGORY_FOR_SET_MOVING("/choose_category_for_set_moving__%s"),
+
+    EXERCISES_FROM_MAIN_MENU_CHOOSE_SET("/exercises_from_main_menu_set_id__%s");
 
     private final String commandText;
 
@@ -136,7 +144,9 @@ public enum CommandType {
                 || containsCategoryInfoRequest(text)
                 || containsChooseSetsForCategory(text)
                 || containsSetChosenForCategory(text)
-                || containsSetCategoryResponse(text);
+                || containsSetCategoryResponse(text)
+                || containsExFromMainMenuChooseSet(text)
+                || containsChooseCategoryForSetMoving(text);
     }
 
     public static CommandType getByCommandText(String text) {
@@ -151,6 +161,8 @@ public enum CommandType {
         if (containsChooseSetsForCategory(text)) return CHOOSE_SETS_FOR_CATEGORY_PREPARE;
         if (containsSetChosenForCategory(text)) return SET_CHOSEN_FOR_CATEGORY;
         if (containsSetCategoryResponse(text)) return SET_CATEGORY_RESPONSE;
+        if (containsExFromMainMenuChooseSet(text)) return EXERCISES_FROM_MAIN_MENU_CHOOSE_SET;
+        if (containsChooseCategoryForSetMoving(text)) return CHOOSE_CATEGORY_FOR_SET_MOVING;
 
         throw new UnsupportedOperationException("Couldn't map text [%s] to CommandType".formatted(text));
     }
@@ -181,6 +193,14 @@ public enum CommandType {
 
     private static boolean containsSetCategoryResponse(String text) {
         return text.contains("/set_category_response__");
+    }
+
+    private static boolean containsChooseCategoryForSetMoving(String text) {
+        return text.contains("/choose_category_for_set_moving__");
+    }
+
+    private static boolean containsExFromMainMenuChooseSet(String text) {
+        return text.contains("/exercises_from_main_menu_set_id__");
     }
 
 }

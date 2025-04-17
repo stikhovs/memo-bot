@@ -78,7 +78,7 @@ public class ConnectWordsRequest implements CommandHandler {
                         .chatId(processableMessage.getChatId())
                         .text("Завершено!")
                         .nextReply(NextReply.builder()
-                                .nextCommand(CommandType.GET_EXERCISES)
+                                .nextCommand(CommandType.EXERCISES_DATA_PREPARE)
                                 .previousProcessableMessage(processableMessage)
                                 .build())
                         .build();
@@ -103,7 +103,7 @@ public class ConnectWordsRequest implements CommandHandler {
                                                 .skip(currentButtons.size() / 2)
                                                 .toList()
                                 ),
-                                new InlineKeyboardRow(InlineKeyboardButton.builder().text("Назад").callbackData(CommandType.GET_EXERCISES.getCommandText()).build())
+                                new InlineKeyboardRow(InlineKeyboardButton.builder().text("Назад").callbackData(CommandType.EXERCISES_DATA_PREPARE.getCommandText()).build())
                                 ))
                         .build())
                 .build();

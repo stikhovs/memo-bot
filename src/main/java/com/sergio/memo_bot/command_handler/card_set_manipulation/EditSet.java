@@ -36,8 +36,6 @@ public class EditSet implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
-//                .type(BotReplyType.EDIT_MESSAGE_TEXT)
-//                .messageId(processableMessage.getMessageId())
                 .text("Что хотите отредактировать?")
                 .replyMarkup(
                         InlineKeyboardMarkup.builder()
@@ -50,7 +48,7 @@ public class EditSet implements CommandHandler {
     private List<InlineKeyboardRow> buildRows(CardSetDto cardSetDto) {
         ArrayList<InlineKeyboardRow> rows = new ArrayList<>();
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                .text("Изменить заголовок: %s".formatted(cardSetDto.getTitle()))
+                .text("Переименовать набор: %s".formatted(cardSetDto.getTitle()))
                 .callbackData(CommandType.EDIT_TITLE_REQUEST.getCommandText())
                 .build()
         ));
@@ -70,6 +68,16 @@ public class EditSet implements CommandHandler {
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
                 .text("Добавить карточку")
                 .callbackData(CommandType.ADD_CARD_REQUEST.getCommandText())
+                .build()
+        ));
+        rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
+                .text("Перенести набор в другую категорию")
+                .callbackData(CommandType.MOVE_SET_TO_ANOTHER_CATEGORY.getCommandText())
+                .build()
+        ));
+        rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
+                .text("Удалить набор")
+                .callbackData(CommandType.REMOVE_SET_REQUEST.getCommandText())
                 .build()
         ));
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()

@@ -36,14 +36,14 @@ public class AnswerInputRequest implements CommandHandler {
         int currentIndex = answerInputData.getCurrentIndex();
 
         if (currentIndex == answerInputData.getTotalNumberOfItems()) {
-            CardSetDto cardSetDto = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.GET_CARD_SET_INFO, CardSetDto.class);
+//            CardSetDto cardSetDto = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.GET_CARD_SET_INFO, CardSetDto.class);
 
             return BotMessageReply.builder()
                     .chatId(processableMessage.getChatId())
                     .text("Упражнение завершено!")
                     .nextReply(NextReply.builder()
-                            .previousProcessableMessage(processableMessage.toBuilder().text(CommandType.GET_CARD_SET_INFO.getCommandText().formatted(cardSetDto.getId())).build())
-                            .nextCommand(CommandType.GET_CARD_SET_INFO)
+                            .previousProcessableMessage(processableMessage)
+                            .nextCommand(CommandType.EXERCISES_DATA_PREPARE)
                             .build())
                     .build();
         } else {

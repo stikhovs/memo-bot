@@ -43,7 +43,7 @@ public class MainMenu implements CommandHandler {
                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
                         Pair.of("Категории", CommandType.CATEGORY_MENU_DATA),
                         Pair.of("Наборы", CommandType.CARD_SET_MENU_DATA),
-                        Pair.of("Упражнения", CommandType.EXERCISES_FROM_MENU)
+                        Pair.of("Упражнения", CommandType.EXERCISES_FROM_MAIN_MENU)
                 )))
                 /*.replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
                         Pair.of("Создать категорию", CommandType.CREATE_CATEGORY_REQUEST),

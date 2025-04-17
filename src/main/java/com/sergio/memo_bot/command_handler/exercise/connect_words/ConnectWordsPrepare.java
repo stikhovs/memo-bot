@@ -2,9 +2,9 @@ package com.sergio.memo_bot.command_handler.exercise.connect_words;
 
 import com.google.gson.Gson;
 import com.sergio.memo_bot.command_handler.CommandHandler;
+import com.sergio.memo_bot.command_handler.exercise.ExerciseData;
 import com.sergio.memo_bot.command_handler.exercise.connect_words.dto.ConnectWordsData;
 import com.sergio.memo_bot.command_handler.exercise.connect_words.dto.WordWithHiddenAnswer;
-import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
@@ -35,10 +35,10 @@ public class ConnectWordsPrepare implements CommandHandler {
 
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
-        CardSetDto cardSetDto = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.GET_CARD_SET_INFO, CardSetDto.class);
+        ExerciseData exerciseData = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.EXERCISES_RESPONSE, ExerciseData.class);
 
         AtomicInteger atomicInteger = new AtomicInteger(0);
-        List<WordWithHiddenAnswer> wordsWithHiddenAnswers = cardSetDto.getCards().stream().flatMap(card -> Stream.of(
+        List<WordWithHiddenAnswer> wordsWithHiddenAnswers = exerciseData.getCards().stream().limit(50).flatMap(card -> Stream.of(
                 WordWithHiddenAnswer.builder().wordToShow(card.getFrontSide()).hiddenAnswer(card.getBackSide()).build(),
                 WordWithHiddenAnswer.builder().wordToShow(card.getBackSide()).hiddenAnswer(card.getFrontSide()).build()
         )).peek(wordWithHiddenAnswer -> wordWithHiddenAnswer.setId(atomicInteger.getAndIncrement())).collect(Collectors.toList());

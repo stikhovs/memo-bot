@@ -1,9 +1,9 @@
-package com.sergio.memo_bot.command_handler.exercise.poll;
+package com.sergio.memo_bot.command_handler.exercise.quiz;
 
 import com.google.gson.Gson;
 import com.sergio.memo_bot.command_handler.CommandHandler;
-import com.sergio.memo_bot.command_handler.exercise.poll.dto.QuizData;
-import com.sergio.memo_bot.command_handler.exercise.poll.dto.QuizItem;
+import com.sergio.memo_bot.command_handler.exercise.quiz.dto.QuizData;
+import com.sergio.memo_bot.command_handler.exercise.quiz.dto.QuizItem;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
@@ -36,14 +36,14 @@ public class Quiz implements CommandHandler {
         int currentIndex = quizData.getCurrentIndex();
 
         if (currentIndex == quizData.getTotalNumberOfItems()) {
-            CardSetDto cardSetDto = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.GET_CARD_SET_INFO, CardSetDto.class);
+//            CardSetDto cardSetDto = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.GET_CARD_SET_INFO, CardSetDto.class);
 
             return BotMessageReply.builder()
                     .chatId(processableMessage.getChatId())
                     .text("Квиз завершен!")
                     .nextReply(NextReply.builder()
-                            .previousProcessableMessage(processableMessage.toBuilder().text(CommandType.GET_CARD_SET_INFO.getCommandText().formatted(cardSetDto.getId())).build())
-                            .nextCommand(CommandType.GET_CARD_SET_INFO)
+                            .previousProcessableMessage(processableMessage)
+                            .nextCommand(CommandType.EXERCISES_DATA_PREPARE)
                             .build())
                     .build();
         } else {

@@ -1,11 +1,11 @@
-package com.sergio.memo_bot.command_handler.exercise.poll;
+package com.sergio.memo_bot.command_handler.exercise.quiz;
 
 import com.google.gson.Gson;
 import com.sergio.memo_bot.command_handler.CommandHandler;
-import com.sergio.memo_bot.command_handler.exercise.poll.dto.QuizData;
-import com.sergio.memo_bot.command_handler.exercise.poll.dto.QuizItem;
+import com.sergio.memo_bot.command_handler.exercise.ExerciseData;
+import com.sergio.memo_bot.command_handler.exercise.quiz.dto.QuizData;
+import com.sergio.memo_bot.command_handler.exercise.quiz.dto.QuizItem;
 import com.sergio.memo_bot.dto.CardDto;
-import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
@@ -16,7 +16,6 @@ import com.sergio.memo_bot.util.NextReply;
 import com.sergio.memo_bot.util.Reply;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.collections4.CollectionUtils.size;
 import static org.apache.commons.lang3.ObjectUtils.notEqual;
 
 @Slf4j
@@ -41,20 +41,20 @@ public class QuizPrepare implements CommandHandler {
 
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
-        CardSetDto cardSetDto = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.GET_CARD_SET_INFO, CardSetDto.class);
+        ExerciseData exerciseData = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.EXERCISES_RESPONSE, ExerciseData.class);
 
-        if (CollectionUtils.size(cardSetDto.getCards()) < 2) {
+        if (size(exerciseData.getCards()) < 2) {
             return BotMessageReply.builder()
                     .chatId(processableMessage.getChatId())
                     .text("Для квиза в наборе должно быть 2 и более карточек")
                     .nextReply(NextReply.builder()
-                            .previousProcessableMessage(processableMessage.toBuilder().text(CommandType.GET_CARD_SET_INFO.getCommandText().formatted(cardSetDto.getId())).build())
-                            .nextCommand(CommandType.GET_CARD_SET_INFO)
+                            .previousProcessableMessage(processableMessage)
+                            .nextCommand(CommandType.EXERCISES_DATA_PREPARE)
                             .build())
                     .build();
         }
 
-        List<QuizItem> preparedQuiz = prepare(cardSetDto);
+        List<QuizItem> preparedQuiz = prepare(exerciseData);
 
         chatTempDataService.clearAndSave(processableMessage.getChatId(), ChatTempData.builder()
                 .chatId(processableMessage.getChatId())
@@ -74,8 +74,8 @@ public class QuizPrepare implements CommandHandler {
                 .build();
     }
 
-    private List<QuizItem> prepare(CardSetDto cardSetDto) {
-        List<CardDto> cards = cardSetDto.getCards();
+    private List<QuizItem> prepare(ExerciseData exerciseData) {
+        List<CardDto> cards = exerciseData.getCards();
         ArrayList<QuizItem> result = new ArrayList<>();
 
         for (int i = 0; i < cards.size(); i++) {

@@ -1,4 +1,4 @@
-package com.sergio.memo_bot.command_handler.exercise.poll.dto;
+package com.sergio.memo_bot.command_handler.exercise.quiz.dto;
 
 import lombok.Builder;
 import lombok.Data;

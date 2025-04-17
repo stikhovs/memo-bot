@@ -1,4 +1,4 @@
-package com.sergio.memo_bot.command_handler.create_set;
+package com.sergio.memo_bot.command_handler.card_set_manipulation.move_to_category;
 
 import com.google.gson.Gson;
 import com.sergio.memo_bot.command_handler.CommandHandler;
@@ -7,26 +7,20 @@ import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.util.BotMessageReply;
 import com.sergio.memo_bot.util.BotPartReply;
-import com.sergio.memo_bot.util.NextReply;
 import com.sergio.memo_bot.util.Reply;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class SetCategoryResponse implements CommandHandler {
-
+public class ChooseCategoryForSetMoving implements CommandHandler {
     private final ChatTempDataService chatTempDataService;
-
     @Override
     public boolean canHandle(CommandType commandType) {
-        return CommandType.SET_CATEGORY_RESPONSE == commandType;
+        return CommandType.CHOOSE_CATEGORY_FOR_SET_MOVING == commandType;
     }
 
     @Override
@@ -36,23 +30,22 @@ public class SetCategoryResponse implements CommandHandler {
         String[] commandAndCategoryId = processableMessage.getText().split("__");
         Long categoryId = Long.valueOf(commandAndCategoryId[1]);
 
-        List<CategoryDto> categories = chatTempDataService.mapDataToList(chatId, CommandType.SET_CATEGORY_REQUEST, CategoryDto.class);
-
-        CategoryDto chosenCategory = categories.stream().filter(it -> it.getId().equals(categoryId)).findFirst().orElseThrow();
+        CategoryDto chosenCategory = chatTempDataService.mapDataToList(chatId, CommandType.MOVE_SET_TO_ANOTHER_CATEGORY, CategoryDto.class)
+                .stream()
+                .filter(categoryDto -> categoryDto.getId().equals(categoryId))
+                .findFirst()
+                .orElseThrow();
 
         chatTempDataService.clearAndSave(chatId, ChatTempData.builder()
-                        .chatId(chatId)
-                        .command(CommandType.GET_CATEGORY_INFO_RESPONSE)
-                        .data(new Gson().toJson(chosenCategory))
+                .chatId(chatId)
+                .command(CommandType.CHOOSE_CATEGORY_FOR_SET_MOVING)
+                .data(new Gson().toJson(chosenCategory))
                 .build());
 
-        return BotMessageReply.builder()
+        return BotPartReply.builder()
                 .chatId(chatId)
-                .text("Набор будет создан под категорией \"%s\"".formatted(chosenCategory.getTitle()))
-                .nextReply(NextReply.builder()
-                        .previousProcessableMessage(processableMessage)
-                        .nextCommand(CommandType.NAME_SET_REQUEST)
-                        .build())
+                .previousProcessableMessage(processableMessage)
+                .nextCommand(CommandType.SAVE_NEW_CATEGORY_FOR_SETS)
                 .build();
     }
 }

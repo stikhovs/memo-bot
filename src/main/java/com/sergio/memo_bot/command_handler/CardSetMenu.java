@@ -28,9 +28,9 @@ public class CardSetMenu implements CommandHandler {
                 .text("Наборы")
                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
                         Pair.of("Создать набор", CommandType.SET_CREATION_START),
-                        Pair.of("Переименовать набор", CommandType.EDIT_SET),
-//                        Pair.of("Перенести набор в другую категорию", CommandType.MOVE_SET_TO_ANOTHER_CATEGORY),
-                        Pair.of("Удалить набор", CommandType.REMOVE_SET_REQUEST),
+                        Pair.of("Выбрать набор", CommandType.CHOOSE_SET_REQUEST),
+//                        Pair.of("Переименовать набор", CommandType.EDIT_SET),
+//                        Pair.of("Удалить набор", CommandType.REMOVE_SET_REQUEST),
                         Pair.of("Назад", CommandType.MAIN_MENU)
                 )))
                 .build();

@@ -20,6 +20,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -61,9 +63,14 @@ public class ChooseSetsForCategoryRequest implements CommandHandler {
                         cardSetDto -> CommandType.SET_CHOSEN_FOR_CATEGORY.getCommandText().formatted(cardSetDto.getId())
                 )));
 
+        if (isNotEmpty(addSetToCategoryData.getChosenCardSets())) {
+            rows.add(new InlineKeyboardRow(
+                    InlineKeyboardButton.builder().text("Сохранить").callbackData(CommandType.SAVE_NEW_CATEGORY_FOR_SETS.getCommandText()).build()
+            ));
+        }
+
         rows.add(new InlineKeyboardRow(
-                InlineKeyboardButton.builder().text("Сохранить").callbackData(CommandType.SAVE_NEW_CATEGORY_FOR_SETS.getCommandText()).build(),
-                InlineKeyboardButton.builder().text("Назад").callbackData(CommandType.CHOOSE_SETS_FOR_CATEGORY_PREPARE.getCommandText()).build()
+                InlineKeyboardButton.builder().text("Назад").callbackData(CommandType.GET_CATEGORY_INFO_RESPONSE.getCommandText()).build()
         ));
 
         return InlineKeyboardMarkup.builder()

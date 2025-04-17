@@ -2,6 +2,7 @@ package com.sergio.memo_bot.command_handler.exercise.answer_input;
 
 import com.google.gson.Gson;
 import com.sergio.memo_bot.command_handler.CommandHandler;
+import com.sergio.memo_bot.command_handler.exercise.ExerciseData;
 import com.sergio.memo_bot.command_handler.exercise.answer_input.dto.AnswerInputData;
 import com.sergio.memo_bot.command_handler.exercise.answer_input.dto.AnswerInputItem;
 import com.sergio.memo_bot.dto.CardSetDto;
@@ -31,9 +32,9 @@ public class AnswerInputPrepare implements CommandHandler {
 
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
-        CardSetDto cardSetDto = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.GET_CARD_SET_INFO, CardSetDto.class);
+        ExerciseData exerciseData = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.EXERCISES_RESPONSE, ExerciseData.class);
 
-        List<AnswerInputItem> answerInputItems = cardSetDto.getCards().stream()
+        List<AnswerInputItem> answerInputItems = exerciseData.getCards().stream()
                 .map(it -> AnswerInputItem.builder()
                         .question(it.getFrontSide())
                         .correctAnswer(it.getBackSide())

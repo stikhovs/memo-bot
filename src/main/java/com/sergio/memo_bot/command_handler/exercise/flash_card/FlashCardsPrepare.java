@@ -2,6 +2,7 @@ package com.sergio.memo_bot.command_handler.exercise.flash_card;
 
 import com.google.gson.Gson;
 import com.sergio.memo_bot.command_handler.CommandHandler;
+import com.sergio.memo_bot.command_handler.exercise.ExerciseData;
 import com.sergio.memo_bot.command_handler.exercise.flash_card.dto.FlashCardData;
 import com.sergio.memo_bot.command_handler.exercise.flash_card.dto.VisibleSide;
 import com.sergio.memo_bot.dto.CardSetDto;
@@ -29,11 +30,11 @@ public class FlashCardsPrepare implements CommandHandler {
 
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
-        CardSetDto cardSetDto = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.GET_CARD_SET_INFO, CardSetDto.class);
+        ExerciseData exerciseData = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.EXERCISES_RESPONSE, ExerciseData.class);
         chatTempDataService.clearAndSave(processableMessage.getChatId(), ChatTempData.builder()
                 .chatId(processableMessage.getChatId())
                 .command(CommandType.FLASH_CARDS_PREPARE)
-                .data(new Gson().toJson(cardSetDto.getCards()))
+                .data(new Gson().toJson(exerciseData.getCards()))
                 .build());
 
         chatTempDataService.clearAndSave(processableMessage.getChatId(), ChatTempData.builder()
@@ -41,9 +42,9 @@ public class FlashCardsPrepare implements CommandHandler {
                 .command(CommandType.FLASH_CARD)
                 .data(new Gson().toJson(
                         FlashCardData.builder()
-                                .totalNumberOfCards(cardSetDto.getCards().size())
+                                .totalNumberOfCards(exerciseData.getCards().size())
                                 .currentIndex(0)
-                                .card(cardSetDto.getCards().getFirst())
+                                .card(exerciseData.getCards().getFirst())
                                 .visibleSide(VisibleSide.FRONT)
                                 .build()))
                 .build());

@@ -1,6 +1,6 @@
 package com.sergio.memo_bot.util;
 
-import com.sergio.memo_bot.command_handler.exercise.poll.dto.QuizItem;
+import com.sergio.memo_bot.command_handler.exercise.quiz.dto.QuizItem;
 import lombok.Builder;
 import lombok.Data;
 

@@ -48,7 +48,7 @@ public class FlashCard implements CommandHandler {
                                         new InlineKeyboardRow(
                                                 InlineKeyboardButton.builder()
                                                         .text("К списку упражнений")
-                                                        .callbackData(CommandType.GET_EXERCISES.getCommandText())
+                                                        .callbackData(CommandType.EXERCISES_DATA_PREPARE.getCommandText())
                                                         .build()
                                         )
                                 ))

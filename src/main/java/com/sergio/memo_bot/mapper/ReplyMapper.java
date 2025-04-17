@@ -1,6 +1,6 @@
 package com.sergio.memo_bot.mapper;
 
-import com.sergio.memo_bot.command_handler.exercise.poll.dto.QuizItem;
+import com.sergio.memo_bot.command_handler.exercise.quiz.dto.QuizItem;
 import com.sergio.memo_bot.persistence.entity.ChatMessage;
 import com.sergio.memo_bot.persistence.service.ChatMessageService;
 import com.sergio.memo_bot.service.ReplyData;

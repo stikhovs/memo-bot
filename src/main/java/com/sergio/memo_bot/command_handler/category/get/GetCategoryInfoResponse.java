@@ -55,7 +55,7 @@ public class GetCategoryInfoResponse implements CommandHandler {
                                 Pair.of("Создать набор в этой категории", CommandType.CREATE_SET_FOR_CHOSEN_CATEGORY),
                                 Pair.of("Перенести наборы в эту категорию", CommandType.CHOOSE_SETS_FOR_CATEGORY_PREPARE),
                                 isDefaultCategory ? Pair.of(null, null) : Pair.of("Редактировать категорию", CommandType.EDIT_CATEGORY_REQUEST),
-//                                Pair.of("Упражнения с категорией", CommandType.EXERCISES_WITH_CATEGORY),
+                                Pair.of("Упражнения с категорией", CommandType.EXERCISES_FROM_CATEGORY),
                                 Pair.of("Назад", CommandType.GET_ALL_CATEGORIES_RESPONSE)
                         )))
                 .build();
