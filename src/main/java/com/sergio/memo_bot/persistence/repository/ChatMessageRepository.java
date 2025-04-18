@@ -1,7 +1,7 @@
 package com.sergio.memo_bot.persistence.repository;
 
 import com.sergio.memo_bot.persistence.entity.ChatMessage;
-import com.sergio.memo_bot.util.SenderType;
+import com.sergio.memo_bot.persistence.entity.SenderType;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;

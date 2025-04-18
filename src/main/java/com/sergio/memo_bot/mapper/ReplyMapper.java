@@ -2,21 +2,20 @@ package com.sergio.memo_bot.mapper;
 
 import com.sergio.memo_bot.command_handler.exercise.quiz.dto.QuizItem;
 import com.sergio.memo_bot.persistence.entity.ChatMessage;
+import com.sergio.memo_bot.persistence.entity.MessageContentType;
+import com.sergio.memo_bot.persistence.entity.SenderType;
 import com.sergio.memo_bot.persistence.service.ChatMessageService;
 import com.sergio.memo_bot.service.ReplyData;
-import com.sergio.memo_bot.util.BotMessageReply;
-import com.sergio.memo_bot.util.BotQuizReply;
-import com.sergio.memo_bot.util.DeleteMessageReply;
-import com.sergio.memo_bot.util.SenderType;
+import com.sergio.memo_bot.util.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessages;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.*;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
 import org.telegram.telegrambots.meta.api.objects.polls.input.InputPollOption;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
@@ -70,26 +69,54 @@ public class ReplyMapper {
                 );
             } else {
                 if (lastMessage.isHasButtons()) {
-                    replies.add(
-                            ReplyData.builder()
-                                    .reply(
-                                            EditMessageText.builder()
-                                                    .chatId(chatId)
-                                                    .messageId(lastMessage.getMessageId())
-                                                    .text(reply.getText())
-                                                    .parseMode(reply.getParseMode())
-                                                    .replyMarkup(
-                                                            reply.getReplyMarkup() != null && reply.getReplyMarkup() instanceof InlineKeyboardMarkup
-                                                                    ? (InlineKeyboardMarkup) reply.getReplyMarkup()
-                                                                    : null
-                                                            )
-                                                    .build()
-                                    )
-                                    .chatId(chatId)
-                                    .messageId(lastMessage.getMessageId())
-                                    .hasButtons(reply.getReplyMarkup() != null)
-                                    .build()
-                    );
+                    if (lastMessage.getMessageContentType() == MessageContentType.TEXT) {
+                        replies.add(
+                                ReplyData.builder()
+                                        .reply(
+                                                EditMessageText.builder()
+                                                        .chatId(chatId)
+                                                        .messageId(lastMessage.getMessageId())
+                                                        .text(reply.getText())
+                                                        .parseMode(reply.getParseMode())
+                                                        .replyMarkup(
+                                                                reply.getReplyMarkup() != null && reply.getReplyMarkup() instanceof InlineKeyboardMarkup
+                                                                        ? (InlineKeyboardMarkup) reply.getReplyMarkup()
+                                                                        : null
+                                                        )
+                                                        .build()
+                                        )
+                                        .chatId(chatId)
+                                        .messageId(lastMessage.getMessageId())
+                                        .hasButtons(reply.getReplyMarkup() != null)
+                                        .build()
+                        );
+                    } else {
+                        replies.add(
+                                ReplyData.builder()
+                                        .reply(
+                                                DeleteMessage.builder()
+                                                        .chatId(chatId)
+                                                        .messageId(lastMessage.getMessageId())
+                                                        .build()
+                                        )
+                                        .chatId(chatId)
+                                        .messageId(lastMessage.getMessageId())
+                                        .hasButtons(reply.getReplyMarkup() != null)
+                                        .build()
+                        );
+                        replies.add(
+                                ReplyData.builder()
+                                        .reply(SendMessage.builder()
+                                                .chatId(chatId)
+                                                .text(reply.getText())
+                                                .parseMode(reply.getParseMode())
+                                                .replyMarkup(reply.getReplyMarkup())
+                                                .build())
+                                        .hasButtons(reply.getReplyMarkup() != null)
+                                        .chatId(chatId)
+                                        .build()
+                        );
+                    }
                 } else {
                     replies.add(
                             ReplyData.builder()
@@ -137,6 +164,43 @@ public class ReplyMapper {
                         .correctOptionId(reply.getCorrectIndex())
                         .build())
                 .hasButtons(false)
+                .build();
+    }
+
+    public ReplyData toReplyData(BotImageReply reply) {
+        Long chatId = reply.getChatId();
+
+        Optional<ChatMessage> lastMessageOptional = chatMessageService.findLastWithButtonsMessage(chatId);
+
+        if (lastMessageOptional.isPresent()) {
+            return ReplyData.builder()
+                    .reply(EditMessageMedia.builder()
+                            .chatId(chatId)
+                            .messageId(lastMessageOptional.get().getMessageId())
+                            .media(InputMediaPhoto.builder()
+                                    .media(reply.getImage(), reply.getFileName())
+                                    .caption(reply.getCaption())
+                                    .showCaptionAboveMedia(true)
+                                    .build())
+                            .replyMarkup((InlineKeyboardMarkup) reply.getReplyMarkup())
+                            .build())
+                    .hasButtons(reply.getReplyMarkup() != null)
+                    .chatId(chatId)
+                    .build();
+        }
+
+
+        InputFile imgFile = new InputFile(reply.getImage(), reply.getFileName());
+
+        return ReplyData.builder()
+                .reply(SendPhoto.builder()
+                        .chatId(chatId)
+                        .photo(imgFile)
+                        .caption(reply.getCaption())
+                        .replyMarkup(reply.getReplyMarkup())
+                        .build())
+                .hasButtons(reply.getReplyMarkup() != null)
+                .chatId(chatId)
                 .build();
     }
 

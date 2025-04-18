@@ -1,6 +1,5 @@
 package com.sergio.memo_bot.persistence.entity;
 
-import com.sergio.memo_bot.util.SenderType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -27,6 +26,9 @@ public class ChatMessage {
 
     @Enumerated(EnumType.STRING)
     private SenderType senderType;
+
+    @Enumerated(EnumType.STRING)
+    private MessageContentType messageContentType;
 
     private boolean hasButtons;
 

@@ -4,15 +4,20 @@ import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.message.MaybeInaccessibleMessage;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.api.objects.polls.Poll;
 import org.telegram.telegrambots.meta.api.objects.polls.PollAnswer;
 import org.telegram.telegrambots.meta.api.objects.polls.PollOption;
+
+import java.util.List;
 
 
 @Slf4j
@@ -38,14 +43,19 @@ public class UpdateMapper {
         if (isCallbackData(update)) {
             CallbackQuery callbackQuery = update.getCallbackQuery();
             User user = callbackQuery.getFrom();
-            Integer messageId = callbackQuery.getMessage().getMessageId();
+            MaybeInaccessibleMessage message = callbackQuery.getMessage();
+            Integer messageId = message.getMessageId();
+
+            boolean hasPhoto = checkIfHasPhoto(callbackQuery);
+
             return ProcessableMessage.builder()
                     .processable(isFromUser(user))
                     .username(user.getUserName())
                     .userId(user.getId())
-                    .chatId(callbackQuery.getMessage().getChatId())
+                    .chatId(message.getChatId())
                     .text(callbackQuery.getData())
                     .messageId(messageId)
+                    .hasPhoto(hasPhoto)
                     .build();
         }
 
@@ -95,6 +105,14 @@ public class UpdateMapper {
                 .processable(false)
 //                .userId(update.get)
                 .build();
+    }
+
+    private boolean checkIfHasPhoto(CallbackQuery callbackQuery) {
+        if (Message.class.isAssignableFrom(callbackQuery.getMessage().getClass())) {
+            List<PhotoSize> photo = ((Message) callbackQuery.getMessage()).getPhoto();
+            return CollectionUtils.isNotEmpty(photo);
+        }
+        return false;
     }
 
     /*private Long getUserId(Update update) {

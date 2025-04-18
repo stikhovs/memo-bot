@@ -21,4 +21,6 @@ public class ProcessableMessage {
 
     private Integer messageId;
 
+    private boolean hasPhoto;
+
 }

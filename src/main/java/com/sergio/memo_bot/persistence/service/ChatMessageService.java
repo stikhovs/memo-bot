@@ -1,8 +1,9 @@
 package com.sergio.memo_bot.persistence.service;
 
 import com.sergio.memo_bot.persistence.entity.ChatMessage;
+import com.sergio.memo_bot.persistence.entity.MessageContentType;
+import com.sergio.memo_bot.persistence.entity.SenderType;
 import com.sergio.memo_bot.persistence.repository.ChatMessageRepository;
-import com.sergio.memo_bot.util.SenderType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,36 +19,42 @@ public class ChatMessageService {
 
     private final ChatMessageRepository chatMessageRepository;
 
-    public void saveFromUser(Long chatId, Integer messageId) {
-        log.info("Saving to chat_message from user: chatId {}, messageId {}", chatId, messageId);
+    public void saveFromUser(Long chatId, Integer messageId, MessageContentType messageContentType) {
+        log.info("Saving to chat_message from user: chatId {}, messageId {}, messageContentType: {}", chatId, messageId, messageContentType);
         chatMessageRepository.findOneByChatIdAndMessageId(chatId, messageId)
                 .ifPresentOrElse(it -> {
                             it.setUpdatedAt(LocalDateTime.now());
+                            it.setMessageContentType(messageContentType);
                             chatMessageRepository.save(it);
                         },
                         () -> chatMessageRepository.save(ChatMessage.builder()
                                 .chatId(chatId)
                                 .messageId(messageId)
                                 .senderType(SenderType.USER)
+                                .messageContentType(messageContentType)
                                 .hasButtons(false)
+                                .updatedAt(LocalDateTime.now())
                                 .build()
                         ));
 //        log.info("Saved to chat_message from user: chatId {}, messageId {}", chatId, messageId);
     }
 
-    public void saveFromBot(Long chatId, Integer messageId, boolean hasButtons) {
-        log.info("Saving to chat_message from bot: chatId {}, messageId {}, hasButtons {}", chatId, messageId, hasButtons);
+    public void saveFromBot(Long chatId, Integer messageId, boolean hasButtons, MessageContentType messageContentType) {
+        log.info("Saving to chat_message from bot: chatId {}, messageId {}, hasButtons {}, messageContentType: {}", chatId, messageId, hasButtons, messageContentType);
         chatMessageRepository.findOneByChatIdAndMessageId(chatId, messageId)
                 .ifPresentOrElse(it -> {
 //                            it.setUpdatedAt(LocalDateTime.now());
                             it.setHasButtons(hasButtons);
+                            it.setMessageContentType(messageContentType);
                             chatMessageRepository.save(it);
                         },
                         () -> chatMessageRepository.save(ChatMessage.builder()
                                 .chatId(chatId)
                                 .messageId(messageId)
                                 .senderType(SenderType.BOT)
+                                .messageContentType(messageContentType)
                                 .hasButtons(hasButtons)
+                                .updatedAt(LocalDateTime.now())
                                 .build()
                         ));
 //        log.info("Saved to chat_message from bot: chatId {}, messageId {}", chatId, messageId);

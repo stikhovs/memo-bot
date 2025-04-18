@@ -4,6 +4,7 @@ import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.mapper.ReplyMapper;
 import com.sergio.memo_bot.persistence.entity.AwaitsUserInput;
+import com.sergio.memo_bot.persistence.entity.MessageContentType;
 import com.sergio.memo_bot.persistence.service.ChatAwaitsInputService;
 import com.sergio.memo_bot.persistence.service.ChatMessageService;
 import com.sergio.memo_bot.state.CommandType;
@@ -35,7 +36,7 @@ public class UpdateService {
         ProcessableMessage processableMessage = updateMapper.map(update);
 
         if (processableMessage.isProcessable()) {
-            chatMessageService.saveFromUser(processableMessage.getChatId(), processableMessage.getMessageId());
+            chatMessageService.saveFromUser(processableMessage.getChatId(), processableMessage.getMessageId(), processableMessage.isHasPhoto() ? MessageContentType.IMAGE : MessageContentType.TEXT);
             if (CommandType.isCommandType(processableMessage.getText())) {
                 log.info("Consumed command: {}", processableMessage);
                 Reply reply = handleCommand(CommandType.getByCommandText(processableMessage.getText()), processableMessage);
@@ -80,6 +81,8 @@ public class UpdateService {
             chatMessageService.delete(deleteMessageReply.getChatId(), deleteMessageReply.getMessageIds());
         } else if (reply instanceof BotQuizReply quizReply) {
             senderService.send(replyMapper.toReplyData(quizReply));
+        }else if (reply instanceof BotImageReply imageReply) {
+            senderService.send(replyMapper.toReplyData(imageReply));
         }
     }
 

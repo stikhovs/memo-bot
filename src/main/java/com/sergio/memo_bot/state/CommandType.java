@@ -124,7 +124,20 @@ public enum CommandType {
     MOVE_SET_TO_ANOTHER_CATEGORY("/move_set_to_another_category"),
     CHOOSE_CATEGORY_FOR_SET_MOVING("/choose_category_for_set_moving__%s"),
 
-    EXERCISES_FROM_MAIN_MENU_CHOOSE_SET("/exercises_from_main_menu_set_id__%s");
+    EXERCISES_FROM_MAIN_MENU_CHOOSE_SET("/exercises_from_main_menu_set_id__%s"),
+
+    IMPORT_CARD_SET_MENU("/import_card_set_menu"),
+    IMPORT_CARD_SET_README_1("/import_card_set_readme1"),
+    IMPORT_CARD_SET_README_2("/import_card_set_readme2"),
+    IMPORT_CARD_SET_README_3("/import_card_set_readme3"),
+    IMPORT_CARD_SET_RESPONSE("/import_card_set_response"),
+    IMPORT_CARD_SET_TITLE_REQUEST("/import_card_set_title_request"),
+    IMPORT_CARD_SET_TITLE_RESPONSE("/import_card_set_title_response"),
+    IMPORT_CARDS_REQUEST("/import_cards_request"),
+    IMPORT_CARDS_RESPONSE("/import_cards_response"),
+    CHOOSE_CATEGORY_FOR_IMPORT_REQUEST("/choose_category_for_import_request"),
+    CHOOSE_CATEGORY_FOR_IMPORT_RESPONSE("/choose_category_for_import__%s"),
+    ;
 
     private final String commandText;
 
@@ -146,7 +159,8 @@ public enum CommandType {
                 || containsSetChosenForCategory(text)
                 || containsSetCategoryResponse(text)
                 || containsExFromMainMenuChooseSet(text)
-                || containsChooseCategoryForSetMoving(text);
+                || containsChooseCategoryForSetMoving(text)
+                || containsChooseCategoryForImport(text);
     }
 
     public static CommandType getByCommandText(String text) {
@@ -163,6 +177,7 @@ public enum CommandType {
         if (containsSetCategoryResponse(text)) return SET_CATEGORY_RESPONSE;
         if (containsExFromMainMenuChooseSet(text)) return EXERCISES_FROM_MAIN_MENU_CHOOSE_SET;
         if (containsChooseCategoryForSetMoving(text)) return CHOOSE_CATEGORY_FOR_SET_MOVING;
+        if (containsChooseCategoryForImport(text)) return CHOOSE_CATEGORY_FOR_IMPORT_RESPONSE;
 
         throw new UnsupportedOperationException("Couldn't map text [%s] to CommandType".formatted(text));
     }
@@ -201,6 +216,10 @@ public enum CommandType {
 
     private static boolean containsExFromMainMenuChooseSet(String text) {
         return text.contains("/exercises_from_main_menu_set_id__");
+    }
+
+    private static boolean containsChooseCategoryForImport(String text) {
+        return text.contains("/choose_category_for_import__");
     }
 
 }

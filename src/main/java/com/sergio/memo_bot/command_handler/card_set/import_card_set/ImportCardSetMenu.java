@@ -1,4 +1,4 @@
-package com.sergio.memo_bot.command_handler.card_set;
+package com.sergio.memo_bot.command_handler.card_set.import_card_set;
 
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.ProcessableMessage;
@@ -16,22 +16,21 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class CardSetMenu implements CommandHandler {
+public class ImportCardSetMenu implements CommandHandler {
     @Override
     public boolean canHandle(CommandType commandType) {
-        return CommandType.CARD_SET_MENU == commandType;
+        return CommandType.IMPORT_CARD_SET_MENU == commandType;
     }
 
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
+
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
-                .text("Наборы")
+                .text("Импортировать набор из Quizlet")
                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
-                        Pair.of("Создать набор", CommandType.SET_CREATION_START),
-                        Pair.of("Выбрать набор", CommandType.CHOOSE_SET_REQUEST),
-                        Pair.of("Импортировать набор", CommandType.IMPORT_CARD_SET_MENU),
-                        Pair.of("Назад", CommandType.MAIN_MENU)
+                        Pair.of("Импортировать", CommandType.CHOOSE_CATEGORY_FOR_IMPORT_REQUEST),
+                        Pair.of("Инструкция", CommandType.IMPORT_CARD_SET_README_1)
                 )))
                 .build();
     }
