@@ -19,3 +19,6 @@ bot:
   base-url: https://api.telegram.org/bot
   api-key: ${TELEGRAM_API_KEY}
   bot-secret: ${BOT_SECRET}
+
+backend:
+  url: ${BACKEND_URL}

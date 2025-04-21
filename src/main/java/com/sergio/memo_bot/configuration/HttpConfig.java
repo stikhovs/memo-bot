@@ -18,14 +18,14 @@ public class HttpConfig {
     }
 
     @Bean
-    public RestTemplate restTemplate() {
+    public RestTemplate restTemplate(BackendProperties backendProperties) {
         return new RestTemplateBuilder()
-                .uriTemplateHandler(getUriTemplateHandler())
+                .uriTemplateHandler(getUriTemplateHandler(backendProperties.getUrl()))
                 .build();
     }
 
-    private UriTemplateHandler getUriTemplateHandler() {
-        return new DefaultUriBuilderFactory("http://localhost:8081");
+    private UriTemplateHandler getUriTemplateHandler(String url) {
+        return new DefaultUriBuilderFactory(url);
     }
 
 }
