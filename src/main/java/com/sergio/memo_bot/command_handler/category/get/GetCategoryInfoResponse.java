@@ -51,11 +51,11 @@ public class GetCategoryInfoResponse implements CommandHandler {
                         ))
                 .replyMarkup(
                         MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
-                                Pair.of("Выбрать наборы", CommandType.CHOOSE_CARD_SET_IN_CATEGORY),
+                                isNotEmpty(cardSets) ? Pair.of("Выбрать наборы", CommandType.CHOOSE_CARD_SET_IN_CATEGORY) : Pair.of(null, null),
                                 Pair.of("Создать набор в этой категории", CommandType.CREATE_SET_FOR_CHOSEN_CATEGORY),
                                 Pair.of("Перенести наборы в эту категорию", CommandType.CHOOSE_SETS_FOR_CATEGORY_PREPARE),
                                 isDefaultCategory ? Pair.of(null, null) : Pair.of("Редактировать категорию", CommandType.EDIT_CATEGORY_REQUEST),
-                                Pair.of("Упражнения с категорией", CommandType.EXERCISES_FROM_CATEGORY),
+                                isNotEmpty(cardSets) ? Pair.of("Упражнения с категорией", CommandType.EXERCISES_FROM_CATEGORY) : Pair.of(null, null),
                                 Pair.of("Назад", CommandType.GET_ALL_CATEGORIES_RESPONSE)
                         )))
                 .build();

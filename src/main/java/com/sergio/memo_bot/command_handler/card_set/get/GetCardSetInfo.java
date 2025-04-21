@@ -45,15 +45,8 @@ public class GetCardSetInfo implements CommandHandler {
         if (commandAndCardSetId[1].equals("%s")) {
             chosenCardSet = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.GET_CARD_SET_INFO, CardSetDto.class);
         } else {
-            List<CardSetDto> cardSets;
-            if (chatTempDataService.find(chatId, CommandType.GET_CATEGORY_CARD_SET_INFO).isPresent()) {
-                cardSets = chatTempDataService.mapDataToList(chatId, CommandType.GET_CATEGORY_CARD_SET_INFO, CardSetDto.class);
-            } else {
-                cardSets = chatTempDataService.mapDataToList(chatId, CommandType.CARD_SET_MENU_DATA, CardSetDto.class);
-            }
             Long chosenCardSetId = Long.valueOf(commandAndCardSetId[1]);
             chosenCardSet = apiCallService.getCardSet(chosenCardSetId).orElseThrow();
-//            chosenCardSet = cardSets.stream().filter(cardSetDto -> cardSetDto.getId().equals(Long.valueOf(commandAndCardSetId[1]))).findFirst().orElseThrow();
         }
 
         chatTempDataService.clearAndSave(chatId, ChatTempData.builder()

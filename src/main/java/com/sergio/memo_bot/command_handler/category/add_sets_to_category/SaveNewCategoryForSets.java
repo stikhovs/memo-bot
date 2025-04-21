@@ -38,7 +38,7 @@ public class SaveNewCategoryForSets implements CommandHandler {
     @Transactional
     public Reply getReply(ProcessableMessage processableMessage) {
         Long chatId = processableMessage.getChatId();
-        CommandType nextCommand;
+        NextReply nextReply;
 
         Optional<ChatTempData> addSetToCategoryDataOptional = chatTempDataService.find(chatId, CommandType.CHOOSE_SETS_FOR_CATEGORY_PREPARE);
         if (addSetToCategoryDataOptional.isPresent()) {
@@ -60,7 +60,10 @@ public class SaveNewCategoryForSets implements CommandHandler {
                     .data(new Gson().toJson(movedCardSets))
                     .build());
 
-            nextCommand = CommandType.GET_CATEGORY_INFO_RESPONSE;
+            nextReply = NextReply.builder()
+                    .previousProcessableMessage(processableMessage)
+                    .nextCommand(CommandType.GET_CATEGORY_INFO_RESPONSE)
+                    .build();
         } else {
             CategoryDto categoryDto = chatTempDataService.mapDataToType(chatId, CommandType.CHOOSE_CATEGORY_FOR_SET_MOVING, CategoryDto.class);
             CardSetDto cardSetDto = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.GET_CARD_SET_INFO, CardSetDto.class);
@@ -74,16 +77,16 @@ public class SaveNewCategoryForSets implements CommandHandler {
                             .data(new Gson().toJson(updatedCardSet))
                     .build());
 
-            nextCommand = CommandType.GET_CARD_SET_INFO;
+            nextReply = NextReply.builder()
+                    .previousProcessableMessage(processableMessage.toBuilder().text(CommandType.GET_CARD_SET_INFO.getCommandText()).build())
+                    .nextCommand(CommandType.GET_CARD_SET_INFO)
+                    .build();
         }
 
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
                 .text("Успешно сохранено")
-                .nextReply(NextReply.builder()
-                        .previousProcessableMessage(processableMessage)
-                        .nextCommand(nextCommand)
-                        .build())
+                .nextReply(nextReply)
                 .build();
     }
 }
