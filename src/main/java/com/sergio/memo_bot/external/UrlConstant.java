@@ -1,4 +1,4 @@
-package com.sergio.memo_bot.util;
+package com.sergio.memo_bot.external;
 
 public class UrlConstant {
     public static final String CREATE_USER_URL = "/telegram/user/create";

@@ -1,4 +1,4 @@
-package com.sergio.memo_bot.util;
+package com.sergio.memo_bot.reply;
 
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.state.CommandType;

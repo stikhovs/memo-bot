@@ -2,8 +2,12 @@ package com.sergio.memo_bot.command_handler;
 
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.dto.UserDto;
+import com.sergio.memo_bot.external.ApiCallService;
+import com.sergio.memo_bot.reply.BotMessageReply;
+import com.sergio.memo_bot.reply.BotPartReply;
+import com.sergio.memo_bot.reply.NextReply;
+import com.sergio.memo_bot.reply.Reply;
 import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

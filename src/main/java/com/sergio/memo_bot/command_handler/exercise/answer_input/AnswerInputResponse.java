@@ -9,13 +9,12 @@ import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatAwaitsInputService;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.util.BotMessageReply;
-import com.sergio.memo_bot.util.NextReply;
-import com.sergio.memo_bot.util.Reply;
+import com.sergio.memo_bot.reply.BotMessageReply;
+import com.sergio.memo_bot.reply.NextReply;
+import com.sergio.memo_bot.reply.Reply;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.ParseMode;
 
 @Slf4j
 @Component

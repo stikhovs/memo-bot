@@ -1,4 +1,4 @@
-package com.sergio.memo_bot.util;
+package com.sergio.memo_bot.external;
 
 import com.google.gson.reflect.TypeToken;
 import com.sergio.memo_bot.dto.CardDto;
@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Optional;
 
-import static com.sergio.memo_bot.util.UrlConstant.*;
+import static com.sergio.memo_bot.external.UrlConstant.*;
 
 @Slf4j
 @Service

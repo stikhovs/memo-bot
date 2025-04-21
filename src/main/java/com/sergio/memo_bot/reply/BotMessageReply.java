@@ -1,4 +1,4 @@
-package com.sergio.memo_bot.util;
+package com.sergio.memo_bot.reply;
 
 import lombok.Builder;
 import lombok.Data;
@@ -15,8 +15,6 @@ public class BotMessageReply implements Reply {
     private String parseMode;
 
     private ReplyKeyboard replyMarkup;
-
-    private Integer messageId;
 
     private NextReply nextReply;
 

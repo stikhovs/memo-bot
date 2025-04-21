@@ -1,4 +1,4 @@
-package com.sergio.memo_bot.util;
+package com.sergio.memo_bot.reply;
 
 import lombok.Builder;
 import lombok.Data;

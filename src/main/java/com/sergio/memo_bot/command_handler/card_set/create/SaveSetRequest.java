@@ -5,19 +5,16 @@ import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.util.ApiCallService;
-import com.sergio.memo_bot.util.BotMessageReply;
-import com.sergio.memo_bot.util.BotPartReply;
-import com.sergio.memo_bot.util.Reply;
+import com.sergio.memo_bot.external.ApiCallService;
+import com.sergio.memo_bot.reply.BotMessageReply;
+import com.sergio.memo_bot.reply.BotPartReply;
+import com.sergio.memo_bot.reply.Reply;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Slf4j
 @Component

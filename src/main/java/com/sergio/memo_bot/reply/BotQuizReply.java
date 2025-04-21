@@ -1,4 +1,4 @@
-package com.sergio.memo_bot.util;
+package com.sergio.memo_bot.reply;
 
 import com.sergio.memo_bot.command_handler.exercise.quiz.dto.QuizItem;
 import lombok.Builder;

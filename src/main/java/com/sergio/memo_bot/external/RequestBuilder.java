@@ -1,4 +1,4 @@
-package com.sergio.memo_bot.util;
+package com.sergio.memo_bot.external;
 
 import com.sergio.memo_bot.configuration.BotProperties;
 import lombok.RequiredArgsConstructor;
