@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.CHOSEN_CATEGORY;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -44,7 +46,7 @@ public class ChooseCategoryForImportResponse implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(chatId)
-                .text("Выбрана категория \"%s\"".formatted(category.getTitle()))
+                .text(CHOSEN_CATEGORY.formatted(category.getTitle()))
                 .nextReply(NextReply.builder()
                         .previousProcessableMessage(processableMessage)
                         .nextCommand(CommandType.IMPORT_CARD_SET_TITLE_REQUEST)

@@ -13,8 +13,11 @@ import com.sergio.memo_bot.reply.Reply;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 
 import java.util.List;
+
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.SET_WILL_BE_CREATED_WITH_CATEGORY;
 
 @Slf4j
 @Component
@@ -47,11 +50,12 @@ public class SetCategoryResponse implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(chatId)
-                .text("Набор будет создан под категорией \"%s\"".formatted(chosenCategory.getTitle()))
+                .text(SET_WILL_BE_CREATED_WITH_CATEGORY.formatted(chosenCategory.getTitle()))
                 .nextReply(NextReply.builder()
                         .previousProcessableMessage(processableMessage)
                         .nextCommand(CommandType.NAME_SET_REQUEST)
                         .build())
+                .parseMode(ParseMode.HTML)
                 .build();
     }
 }

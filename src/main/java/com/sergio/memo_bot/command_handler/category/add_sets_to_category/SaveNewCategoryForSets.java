@@ -21,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.SUCCESSFULLY_SAVED;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -85,7 +87,7 @@ public class SaveNewCategoryForSets implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
-                .text("Успешно сохранено")
+                .text(SUCCESSFULLY_SAVED)
                 .nextReply(nextReply)
                 .build();
     }

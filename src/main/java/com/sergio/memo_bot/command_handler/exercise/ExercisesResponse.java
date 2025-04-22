@@ -3,16 +3,18 @@ package com.sergio.memo_bot.command_handler.exercise;
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.reply.BotMessageReply;
-import com.sergio.memo_bot.util.MarkUpUtil;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
+import com.sergio.memo_bot.util.MarkUpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
 
 @Slf4j
 @Component
@@ -34,13 +36,13 @@ public class ExercisesResponse implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(chatId)
-                .text("Выберите упражнение")
+                .text(CHOOSE_EXERCISE)
                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
-                        Pair.of("Флеш-карточки", CommandType.FLASH_CARDS_PREPARE),
-                        Pair.of("Квиз", CommandType.QUIZ_PREPARE),
-                        Pair.of("Самостоятельный ввод ответа", CommandType.ANSWER_INPUT_PREPARE),
-                        Pair.of("Найти пары", CommandType.CONNECT_WORDS_PREPARE),
-                        Pair.of("Назад", defineBackButton(sourceCommand))
+                        Pair.of(FLASH_CARDS, CommandType.FLASH_CARDS_PREPARE),
+                        Pair.of(QUIZ, CommandType.QUIZ_PREPARE),
+                        Pair.of(INPUT_ANSWER, CommandType.ANSWER_INPUT_PREPARE),
+                        Pair.of(FIND_PAIRS, CommandType.CONNECT_WORDS_PREPARE),
+                        Pair.of(BACK, defineBackButton(sourceCommand))
                 )))
                 .build();
     }

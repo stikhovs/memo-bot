@@ -5,13 +5,13 @@ import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
+import com.sergio.memo_bot.external.ApiCallService;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.external.ApiCallService;
 import com.sergio.memo_bot.reply.BotMessageReply;
-import com.sergio.memo_bot.util.MarkUpUtil;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
+import com.sergio.memo_bot.util.MarkUpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Slf4j
@@ -52,10 +53,10 @@ public class MoveSetToAnotherCategory implements CommandHandler {
         if (isEmpty(categories)) {
             return BotMessageReply.builder()
                     .chatId(processableMessage.getChatId())
-                    .text("Вы пока не создали категорий. Хотите создать сейчас?")
+                    .text(YOU_DO_NOT_HAVE_CATEGORIES_YET)
                     .replyMarkup(MarkUpUtil.getInlineKeyboardMarkup(List.of(
-                            Pair.of("Да", CommandType.CREATE_CATEGORY_REQUEST),
-                            Pair.of("Нет", CommandType.EDIT_SET)
+                            Pair.of(YES, CommandType.CREATE_CATEGORY_REQUEST),
+                            Pair.of(NO, CommandType.EDIT_SET)
                     )))
                     .build();
         }
@@ -68,7 +69,7 @@ public class MoveSetToAnotherCategory implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(chatId)
-                .text("Выберите категорию")
+                .text(CHOOSE_CATEGORY)
                 .replyMarkup(getKeyboard(categories))
                 .build();
     }
@@ -85,7 +86,7 @@ public class MoveSetToAnotherCategory implements CommandHandler {
 
         rows.add(new InlineKeyboardRow(
                 InlineKeyboardButton.builder()
-                        .text("Назад")
+                        .text(BACK)
                         .callbackData(CommandType.EDIT_SET.getCommandText())
                         .build()
         ));

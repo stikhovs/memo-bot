@@ -4,10 +4,10 @@ import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.reply.BotMessageReply;
-import com.sergio.memo_bot.util.MarkUpUtil;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
+import com.sergio.memo_bot.util.MarkUpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Slf4j
@@ -41,17 +42,17 @@ public class ChooseSetRequest implements CommandHandler {
         if (isEmpty(cardSets)) {
             return BotMessageReply.builder()
                     .chatId(chatId)
-                    .text("У вас пока нет наборов. Хотите создать сейчас?")
+                    .text(YOU_DO_NOT_HAVE_CARD_SETS_YET)
                     .replyMarkup(MarkUpUtil.getInlineKeyboardMarkup(List.of(
-                            Pair.of("Да", CommandType.SET_CREATION_START),
-                            Pair.of("Нет", CommandType.CARD_SET_MENU)
+                            Pair.of(YES, CommandType.SET_CREATION_START),
+                            Pair.of(NO, CommandType.CARD_SET_MENU)
                     )))
                     .build();
         }
 
         return BotMessageReply.builder()
                 .chatId(chatId)
-                .text("Выберите набор")
+                .text(CHOOSE_CARD_SET)
                 .replyMarkup(getKeyboard(cardSets))
                 .build();
     }
@@ -68,7 +69,7 @@ public class ChooseSetRequest implements CommandHandler {
 
         rows.add(new InlineKeyboardRow(
                 InlineKeyboardButton.builder()
-                        .text("Назад")
+                        .text(BACK)
                         .callbackData(CommandType.CARD_SET_MENU.getCommandText())
                         .build()
         ));

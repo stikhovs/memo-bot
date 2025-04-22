@@ -5,16 +5,18 @@ import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.external.ApiCallService;
+import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.reply.BotMessageReply;
 import com.sergio.memo_bot.reply.BotPartReply;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.SOMETHING_WENT_WRONG;
 
 @Slf4j
 @Component
@@ -49,14 +51,11 @@ public class SaveSetRequest implements CommandHandler {
             return BotPartReply.builder()
                     .nextCommand(CommandType.SAVE_CARD_SET_RESPONSE)
                     .previousProcessableMessage(processableMessage)
-//                    .messageId(processableMessage.getMessageId())
                     .chatId(chatId)
                     .build();
         } else {
-            log.warn("Что-то пошло не так");
             return BotMessageReply.builder()
-//                    .type(BotReplyType.MESSAGE)
-                    .text("Что-то пошло не так")
+                    .text(SOMETHING_WENT_WRONG)
                     .chatId(chatId)
                     .build();
         }

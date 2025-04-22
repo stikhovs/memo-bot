@@ -5,21 +5,23 @@ import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
+import com.sergio.memo_bot.external.ApiCallService;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.external.ApiCallService;
 import com.sergio.memo_bot.reply.BotMessageReply;
-import com.sergio.memo_bot.util.MarkUpUtil;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
+import com.sergio.memo_bot.util.MarkUpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 
 import java.util.List;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
 import static org.apache.commons.collections4.CollectionUtils.size;
 
 @Slf4j
@@ -57,29 +59,22 @@ public class GetCardSetInfo implements CommandHandler {
 
         CategoryDto category = apiCallService.getCategoryById(chosenCardSet.getCategoryId());
 
-
-
-        /*cardSet.ifPresent(cardSetDto ->
-            chatTempDataService.clearAndSave(chatId, ChatTempData.builder()
-                    .chatId(chatId)
-                    .data(new Gson().toJson(cardSetDto))
-                    .command(CommandType.GET_CARD_SET_INFO)
-                    .build())
-        );*/
-
         return BotMessageReply.builder()
                 .chatId(chatId)
-                .text("Набор  \"%s\". ".formatted(chosenCardSet.getTitle()) +
-                        "\n\nКатегория: %s ".formatted(category.getTitle()) +
-                        "\n\nКоличество карточек: %s ".formatted(size(chosenCardSet.getCards())))
+                .text(CARD_SET_INFO.formatted(
+                        chosenCardSet.getTitle(),
+                        category.getTitle(),
+                        size(chosenCardSet.getCards()))
+                )
                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
-                        Pair.of("Посмотреть карточки", CommandType.GET_CARDS),
-                        Pair.of("Редактировать набор", CommandType.EDIT_SET),
+                        Pair.of(SEE_CARDS, CommandType.GET_CARDS),
+                        Pair.of(EDIT_CARD_SET, CommandType.EDIT_SET),
                         CollectionUtils.isNotEmpty(chosenCardSet.getCards())
-                                ? Pair.of("Упражнения", CommandType.EXERCISES_FROM_CARD_SET)
+                                ? Pair.of(EXERCISES, CommandType.EXERCISES_FROM_CARD_SET)
                                 : Pair.of(null, null),
-                        Pair.of("Назад", CommandType.GET_ALL_SETS)
+                        Pair.of(BACK, CommandType.GET_ALL_SETS)
                 )))
+                .parseMode(ParseMode.HTML)
                 .build();
 
     }

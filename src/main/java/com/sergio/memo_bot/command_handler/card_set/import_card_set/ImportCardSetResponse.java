@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.CARD_SET_SUCCESSFULLY_IMPORTED;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -48,7 +50,7 @@ public class ImportCardSetResponse implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(chatId)
-                .text("Набор успешно импортирован")
+                .text(CARD_SET_SUCCESSFULLY_IMPORTED)
                 .nextReply(NextReply.builder()
                         .previousProcessableMessage(processableMessage)
                         .nextCommand(CommandType.CARD_SET_MENU_DATA)

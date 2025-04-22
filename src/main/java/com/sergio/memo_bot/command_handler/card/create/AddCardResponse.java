@@ -7,22 +7,23 @@ import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.reply.BotMessageReply;
-import com.sergio.memo_bot.util.EmojiConverter;
-import com.sergio.memo_bot.util.MarkUpUtil;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
+import com.sergio.memo_bot.util.MarkUpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
 
 @Slf4j
 @Component
@@ -46,26 +47,22 @@ public class AddCardResponse implements CommandHandler {
         chatTempDataService.clearAndSave(chatId, chatTempData);
 
         return BotMessageReply.builder()
-//                .type(BotReplyType.MESSAGE)
                 .text(
-                        """
-                                Предварительный набор \"%s\"
-                                Карточки: \n%s
-                                """.formatted(cardSetDto.getTitle(),
+                        CARD_CREATION_RESPONSE.formatted(cardSetDto.getTitle(),
                                 cardSetDto.getCards()
                                         .stream()
                                         .map(cardDto -> cardDto.getFrontSide() + " -> " + cardDto.getBackSide())
                                         .collect(Collectors.joining(";\n"))
                         )
                 )
-//                .messageId(processableMessage.getMessageId())
                 .chatId(chatId)
                 .replyMarkup(
                         MarkUpUtil.getInlineKeyboardMarkup(List.of(
-                                Pair.of(EmojiConverter.getEmoji("U+2705") + " Добавить еще карточку", CommandType.ADD_CARD_REQUEST),
-                                Pair.of(EmojiConverter.getEmoji("U+274C") + " Сохранить набор", CommandType.SAVE_CARD_SET_REQUEST)
+                                Pair.of(ADD_ONE_MORE_CARD, CommandType.ADD_CARD_REQUEST),
+                                Pair.of(SAVE_CARD_SET, CommandType.SAVE_CARD_SET_REQUEST)
                         ))
                 )
+                .parseMode(ParseMode.HTML)
                 .build();
     }
 
@@ -122,24 +119,6 @@ public class AddCardResponse implements CommandHandler {
                         .build();
             }
         }
-    }
-
-    private String updateTempData(ChatTempData tempData, String frontSide, String backSide) {
-        Gson gson = new Gson();
-        CardSetDto cardSetDto = gson.fromJson(tempData.getData(), CardSetDto.class);
-        CardSetDto updated;
-        if (CollectionUtils.isEmpty(cardSetDto.getCards())) {
-            updated = cardSetDto.toBuilder()
-                    .cards(List.of(CardDto.builder().frontSide(frontSide).backSide(backSide).build()))
-                    .build();
-        } else {
-            List<CardDto> cards = cardSetDto.getCards();
-            cards.add(CardDto.builder().frontSide(frontSide).backSide(backSide).build());
-            updated = cardSetDto.toBuilder()
-                    .cards(cards)
-                    .build();
-        }
-        return gson.toJson(updated);
     }
 
 }

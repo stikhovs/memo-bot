@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.BACK;
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.CHOOSE_CATEGORY;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -38,7 +41,7 @@ public class AddSetsToCategoryRequest implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(chatId)
-                .text("Выберите категорию")
+                .text(CHOOSE_CATEGORY)
                 .replyMarkup(getKeyboard(categories))
                 .build();
     }
@@ -53,7 +56,7 @@ public class AddSetsToCategoryRequest implements CommandHandler {
         List<InlineKeyboardRow> rows = MarkUpUtil.getKeyboardRows(buttonsMap);
 
         rows.add(new InlineKeyboardRow(
-                InlineKeyboardButton.builder().text("Назад").callbackData(CommandType.CATEGORY_MENU.getCommandText()).build()
+                InlineKeyboardButton.builder().text(BACK).callbackData(CommandType.CATEGORY_MENU.getCommandText()).build()
         ));
 
         return InlineKeyboardMarkup.builder()

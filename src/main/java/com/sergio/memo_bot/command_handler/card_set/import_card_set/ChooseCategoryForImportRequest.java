@@ -3,11 +3,11 @@ package com.sergio.memo_bot.command_handler.card_set.import_card_set;
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.external.ApiCallService;
 import com.sergio.memo_bot.reply.BotMessageReply;
-import com.sergio.memo_bot.util.MarkUpUtil;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
+import com.sergio.memo_bot.util.MarkUpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,6 +18,9 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.BACK;
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.CHOOSE_CATEGORY;
 
 @Slf4j
 @Component
@@ -38,7 +41,7 @@ public class ChooseCategoryForImportRequest implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(chatId)
-                .text("Выберите категорию")
+                .text(CHOOSE_CATEGORY)
                 .replyMarkup(getKeyboard(categories))
                 .build();
     }
@@ -53,7 +56,7 @@ public class ChooseCategoryForImportRequest implements CommandHandler {
         List<InlineKeyboardRow> rows = MarkUpUtil.getKeyboardRows(buttonsMap);
 
         rows.add(new InlineKeyboardRow(
-                InlineKeyboardButton.builder().text("Назад").callbackData(CommandType.IMPORT_CARD_SET_MENU.getCommandText()).build()
+                InlineKeyboardButton.builder().text(BACK).callbackData(CommandType.IMPORT_CARD_SET_MENU.getCommandText()).build()
         ));
 
         return InlineKeyboardMarkup.builder()

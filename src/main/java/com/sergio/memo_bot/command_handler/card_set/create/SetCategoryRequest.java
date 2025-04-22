@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.CHOOSE_CATEGORY;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -56,7 +58,7 @@ public class SetCategoryRequest implements CommandHandler {
 
             return BotMessageReply.builder()
                     .chatId(chatId)
-                    .text("Выберите категорию")
+                    .text(CHOOSE_CATEGORY)
                     .replyMarkup(getKeyboard(categories))
                     .build();
         } else {

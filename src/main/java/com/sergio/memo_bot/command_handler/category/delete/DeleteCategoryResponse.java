@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.CATEGORY_SUCCESSFULLY_DELETED;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -27,7 +29,7 @@ public class DeleteCategoryResponse implements CommandHandler {
         chatTempDataService.clear(processableMessage.getChatId(), CommandType.CATEGORY_MENU_DATA);
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
-                .text("Категория удалена")
+                .text(CATEGORY_SUCCESSFULLY_DELETED)
                 .nextReply(NextReply.builder()
                         .previousProcessableMessage(processableMessage)
                         .nextCommand(CommandType.CATEGORY_MENU_DATA)

@@ -9,7 +9,7 @@ import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.reply.BotMessageReply;
 import com.sergio.memo_bot.reply.Reply;
 import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.util.*;
+import com.sergio.memo_bot.util.MarkUpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Slf4j
@@ -40,10 +41,10 @@ public class ChooseCardSetInCategory implements CommandHandler {
         if (isEmpty(cardSets)) {
             return BotMessageReply.builder()
                     .chatId(chatId)
-                    .text("В этой категории пока нет ни одного набора. Хотите создать сейчас?")
+                    .text(YOU_DO_NOT_HAVE_CARD_SETS_IN_THIS_CATEGORY_YET)
                     .replyMarkup(MarkUpUtil.getInlineKeyboardMarkup(List.of(
-                            Pair.of("Да", CommandType.CREATE_SET_FOR_CHOSEN_CATEGORY),
-                            Pair.of("Нет", CommandType.GET_CATEGORY_INFO_RESPONSE)
+                            Pair.of(YES, CommandType.CREATE_SET_FOR_CHOSEN_CATEGORY),
+                            Pair.of(NO, CommandType.GET_CATEGORY_INFO_RESPONSE)
                     )))
                     .build();
         }
@@ -57,7 +58,7 @@ public class ChooseCardSetInCategory implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(chatId)
-                .text("Выберите набор")
+                .text(CHOOSE_CARD_SET)
                 .replyMarkup(MarkUpUtil.getInlineCardSetButtons(cardSets))
                 .build();
     }

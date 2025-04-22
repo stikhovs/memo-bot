@@ -5,14 +5,15 @@ import com.sergio.memo_bot.command_handler.category.add_sets_to_category.dto.Add
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.reply.BotMessageReply;
-import com.sergio.memo_bot.util.MarkUpUtil;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
+import com.sergio.memo_bot.util.MarkUpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
@@ -20,6 +21,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @Slf4j
@@ -43,16 +45,19 @@ public class ChooseSetsForCategoryRequest implements CommandHandler {
         String text;
 
         if (CollectionUtils.isEmpty(addSetToCategoryData.getChosenCardSets())) {
-            text = "Выберите наборы, которые будут перенесены в категорию \"%s\"".formatted(addSetToCategoryData.getCategory().getTitle());
+            text = CHOOSE_SETS_WHICH_WILL_BE_MOVED_TO_CATEGORY_1.formatted(addSetToCategoryData.getCategory().getTitle());
         } else {
-            text = ("Выберите наборы, которые будут перенесены в категорию \"%s\" \n\n".formatted(addSetToCategoryData.getCategory().getTitle()) +
-                    "Выбранные наборы: \n\n %s".formatted(addSetToCategoryData.getChosenCardSets().stream().map(CardSetDto::getTitle).collect(Collectors.joining(";\n"))));
+            text = CHOOSE_SETS_WHICH_WILL_BE_MOVED_TO_CATEGORY_2.formatted(
+                    addSetToCategoryData.getCategory().getTitle(),
+                    addSetToCategoryData.getChosenCardSets().stream().map(CardSetDto::getTitle).collect(Collectors.joining(";\n"))
+            );
         }
 
         return BotMessageReply.builder()
                 .chatId(chatId)
                 .text(text)
                 .replyMarkup(getKeyboard(addSetToCategoryData))
+                .parseMode(ParseMode.HTML)
                 .build();
     }
 
@@ -65,12 +70,12 @@ public class ChooseSetsForCategoryRequest implements CommandHandler {
 
         if (isNotEmpty(addSetToCategoryData.getChosenCardSets())) {
             rows.add(new InlineKeyboardRow(
-                    InlineKeyboardButton.builder().text("Сохранить").callbackData(CommandType.SAVE_NEW_CATEGORY_FOR_SETS.getCommandText()).build()
+                    InlineKeyboardButton.builder().text(SAVE).callbackData(CommandType.SAVE_NEW_CATEGORY_FOR_SETS.getCommandText()).build()
             ));
         }
 
         rows.add(new InlineKeyboardRow(
-                InlineKeyboardButton.builder().text("Назад").callbackData(CommandType.GET_CATEGORY_INFO_RESPONSE.getCommandText()).build()
+                InlineKeyboardButton.builder().text(BACK).callbackData(CommandType.GET_CATEGORY_INFO_RESPONSE.getCommandText()).build()
         ));
 
         return InlineKeyboardMarkup.builder()

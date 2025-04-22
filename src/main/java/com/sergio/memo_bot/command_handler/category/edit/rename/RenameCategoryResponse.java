@@ -11,6 +11,9 @@ import com.sergio.memo_bot.reply.Reply;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
+
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.CATEGORY_SUCCESSFULLY_RENAMED;
 
 @Slf4j
 @Component
@@ -31,7 +34,8 @@ public class RenameCategoryResponse implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(chatId)
-                .text("Категория успешно переименована в \"%s\"".formatted(categoryDto.getTitle()))
+                .text(CATEGORY_SUCCESSFULLY_RENAMED.formatted(categoryDto.getTitle()))
+                .parseMode(ParseMode.HTML)
                 .nextReply(NextReply.builder()
                         .nextCommand(CommandType.GET_CATEGORY_INFO_RESPONSE)
                         .previousProcessableMessage(processableMessage)

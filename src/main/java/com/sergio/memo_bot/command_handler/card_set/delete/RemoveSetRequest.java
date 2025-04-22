@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -27,12 +29,10 @@ public class RemoveSetRequest implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
-//                .type(BotReplyType.EDIT_MESSAGE_TEXT)
-//                .messageId(processableMessage.getMessageId())
-                .text("Вы уверены, что хотите удалить набор?")
+                .text(ARE_YOU_SURE_YOU_WANT_TO_DELETE_CARD_SET)
                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkup(List.of(
-                        Pair.of("Да", CommandType.REMOVE_SET_RESPONSE),
-                        Pair.of("Нет", CommandType.GET_CARD_SET_INFO)
+                        Pair.of(YES, CommandType.REMOVE_SET_RESPONSE),
+                        Pair.of(NO, CommandType.GET_CARD_SET_INFO)
                 )))
                 .build();
     }

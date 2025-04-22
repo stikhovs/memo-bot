@@ -15,6 +15,10 @@ import com.sergio.memo_bot.reply.Reply;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
+
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.CORRECT;
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.INCORRECT;
 
 @Slf4j
 @Component
@@ -38,9 +42,9 @@ public class AnswerInputResponse implements CommandHandler {
 
         String text;
         if (answerInputItem.getCorrectAnswer().equalsIgnoreCase(processableMessage.getText())) {
-            text = "Верно!";
+            text = CORRECT;
         } else {
-            text = "Неверно. Правильный ответ: %s".formatted(answerInputItem.getCorrectAnswer());
+            text = INCORRECT.formatted(answerInputItem.getCorrectAnswer());
         }
 
         chatAwaitsInputService.clear(processableMessage.getChatId());
@@ -58,6 +62,7 @@ public class AnswerInputResponse implements CommandHandler {
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
                 .text(text)
+                .parseMode(ParseMode.HTML)
                 .nextReply(NextReply.builder()
                         .nextCommand(CommandType.ANSWER_INPUT_REQUEST)
                         .previousProcessableMessage(processableMessage)

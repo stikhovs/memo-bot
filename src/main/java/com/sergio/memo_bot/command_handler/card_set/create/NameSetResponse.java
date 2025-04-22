@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.SET_WILL_HAVE_TITLE;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -47,7 +49,7 @@ public class NameSetResponse implements CommandHandler {
         return BotPartReply.builder()
                 .chatId(chatId)
                 .previousProcessableMessage(processableMessage)
-                .text(EmojiConverter.getEmoji("U+2705") + " Будет создан набор: \"%s\"".formatted(processableMessage.getText()))
+                .text(SET_WILL_HAVE_TITLE.formatted(processableMessage.getText()))
                 .nextCommand(CommandType.ADD_CARD_REQUEST)
                 .build();
     }

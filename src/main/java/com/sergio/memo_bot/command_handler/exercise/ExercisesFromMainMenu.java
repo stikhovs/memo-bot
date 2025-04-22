@@ -4,13 +4,13 @@ import com.google.gson.Gson;
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
+import com.sergio.memo_bot.external.ApiCallService;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.external.ApiCallService;
 import com.sergio.memo_bot.reply.BotMessageReply;
-import com.sergio.memo_bot.util.MarkUpUtil;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
+import com.sergio.memo_bot.util.MarkUpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Slf4j
@@ -46,11 +47,11 @@ public class ExercisesFromMainMenu implements CommandHandler {
         if (isEmpty(cardSets)) {
             return BotMessageReply.builder()
                     .chatId(processableMessage.getChatId())
-                    .text("Вы пока не создали ни одного набора. Хотите создать сейчас?")
+                    .text(YOU_DO_NOT_HAVE_CARD_SETS_YET)
                     .replyMarkup(InlineKeyboardMarkup.builder()
                             .keyboardRow(new InlineKeyboardRow(
-                                    InlineKeyboardButton.builder().text("Да").callbackData(CommandType.NAME_SET_REQUEST.getCommandText()).build(),
-                                    InlineKeyboardButton.builder().text("Нет").callbackData(CommandType.MAIN_MENU.getCommandText()).build()
+                                    InlineKeyboardButton.builder().text(YES).callbackData(CommandType.NAME_SET_REQUEST.getCommandText()).build(),
+                                    InlineKeyboardButton.builder().text(NO).callbackData(CommandType.MAIN_MENU.getCommandText()).build()
                             ))
                             .build())
                     .build();
@@ -65,7 +66,7 @@ public class ExercisesFromMainMenu implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
-                .text("Выберите набор")
+                .text(CHOOSE_CARD_SET)
                 .replyMarkup(getKeyboard(cardSets))
                 .build();
     }
@@ -82,7 +83,7 @@ public class ExercisesFromMainMenu implements CommandHandler {
 
         rows.add(new InlineKeyboardRow(
                 InlineKeyboardButton.builder()
-                        .text("Назад")
+                        .text(BACK)
                         .callbackData(CommandType.MAIN_MENU.getCommandText())
                         .build()
         ));

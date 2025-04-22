@@ -6,10 +6,10 @@ import com.sergio.memo_bot.command_handler.exercise.connect_words.dto.ConnectedP
 import com.sergio.memo_bot.command_handler.exercise.connect_words.dto.WordWithHiddenAnswer;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.reply.BotMessageReply;
 import com.sergio.memo_bot.reply.NextReply;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
@@ -49,7 +50,7 @@ public class ConnectWordsRequest implements CommandHandler {
 
         if (activePair.isEmpty() && isEmpty(connectWordsData.getConnectedPairs())) {
             currentButtons = connectWordsData.getWordsWithHiddenAnswers();
-            text = "Найдите все пары";
+            text = FIND_ALL_PAIRS;
         } else {
             List<ConnectedPair> correctAnswers = connectWordsData.getConnectedPairs();
 
@@ -66,17 +67,18 @@ public class ConnectWordsRequest implements CommandHandler {
                 if (isNotEmpty(correctAnswers)) {
                     String correctStr = getCorrectStr(correctAnswers);
 
-                    text = "Найдите все пары \n\nСейчас ищем пару для: %s \n\nКоличество ошибок: %s \n\nНайденные пары: \n\n%s".formatted(activePair.get().getWordToShow(), connectWordsData.getMistakeCount(), correctStr);
+                    text = FIND_ALL_PAIRS_1.formatted(activePair.get().getWordToShow(), connectWordsData.getMistakeCount(), correctStr);
                 } else {
-                    text = "Найдите все пары \n\nСейчас ищем пару для: %s\n\nКоличество ошибок: %s \n\n".formatted(activePair.get().getWordToShow(), connectWordsData.getMistakeCount());
+                    text = FIND_ALL_PAIRS_2.formatted(activePair.get().getWordToShow(), connectWordsData.getMistakeCount());
                 }
             } else if (isNotEmpty(connectWordsData.getWordsWithHiddenAnswers())) {
                 String correctStr = getCorrectStr(correctAnswers);
-                text = "Найдите все пары \n\nКоличество ошибок: %s \n\nНайденные пары: \n\n%s".formatted(connectWordsData.getMistakeCount(), correctStr);
+                text = FIND_ALL_PAIRS_3.formatted(connectWordsData.getMistakeCount(), correctStr);
             } else {
                 return BotMessageReply.builder()
                         .chatId(processableMessage.getChatId())
-                        .text("Завершено!")
+                        .text(EXERCISE_FINISHED)
+                        .parseMode(ParseMode.HTML)
                         .nextReply(NextReply.builder()
                                 .nextCommand(CommandType.EXERCISES_DATA_PREPARE)
                                 .previousProcessableMessage(processableMessage)
@@ -103,7 +105,7 @@ public class ConnectWordsRequest implements CommandHandler {
                                                 .skip(currentButtons.size() / 2)
                                                 .toList()
                                 ),
-                                new InlineKeyboardRow(InlineKeyboardButton.builder().text("Назад").callbackData(CommandType.EXERCISES_DATA_PREPARE.getCommandText()).build())
+                                new InlineKeyboardRow(InlineKeyboardButton.builder().text(BACK).callbackData(CommandType.EXERCISES_DATA_PREPARE.getCommandText()).build())
                                 ))
                         .build())
                 .build();
@@ -112,7 +114,7 @@ public class ConnectWordsRequest implements CommandHandler {
     private String getCorrectStr(List<ConnectedPair> correctAnswers) {
         return correctAnswers.stream()
                 .map(connectedPair -> connectedPair.getWordOne() + " — " + connectedPair.getWordTwo())
-                .collect(Collectors.joining("\n"));
+                .collect(Collectors.joining("\n     "));
     }
 
 }

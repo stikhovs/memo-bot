@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -26,12 +28,12 @@ public class CardSetMenu implements CommandHandler {
     public Reply getReply(ProcessableMessage processableMessage) {
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
-                .text("Наборы")
+                .text(CARD_SETS)
                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
-                        Pair.of("Создать набор", CommandType.SET_CREATION_START),
-                        Pair.of("Выбрать набор", CommandType.CHOOSE_SET_REQUEST),
-                        Pair.of("Импортировать набор", CommandType.IMPORT_CARD_SET_MENU),
-                        Pair.of("Назад", CommandType.MAIN_MENU)
+                        Pair.of(CREATE_SET, CommandType.SET_CREATION_START),
+                        Pair.of(CHOOSE_SET, CommandType.CHOOSE_SET_REQUEST),
+                        Pair.of(IMPORT_SET, CommandType.IMPORT_CARD_SET_MENU),
+                        Pair.of(BACK, CommandType.MAIN_MENU)
                 )))
                 .build();
     }

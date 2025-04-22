@@ -19,6 +19,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.QUIZ_FINISHED;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -38,11 +40,9 @@ public class Quiz implements CommandHandler {
         int currentIndex = quizData.getCurrentIndex();
 
         if (currentIndex == quizData.getTotalNumberOfItems()) {
-//            CardSetDto cardSetDto = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.GET_CARD_SET_INFO, CardSetDto.class);
-
             return BotMessageReply.builder()
                     .chatId(processableMessage.getChatId())
-                    .text("Квиз завершен!")
+                    .text(QUIZ_FINISHED)
                     .nextReply(NextReply.builder()
                             .previousProcessableMessage(processableMessage)
                             .nextCommand(CommandType.EXERCISES_DATA_PREPARE)

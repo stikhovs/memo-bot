@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @Slf4j
@@ -36,11 +37,11 @@ public class CategoryMenu implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
-                .text("Категории")
+                .text(CATEGORIES)
                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
-                        isNotEmpty(categories) ? Pair.of("Выбрать категорию", CommandType.CHOOSE_CATEGORY_REQUEST) : Pair.of(null, null),
-                        Pair.of("Создать категорию", CommandType.CREATE_CATEGORY_REQUEST),
-                        Pair.of("Назад", CommandType.MAIN_MENU)
+                        isNotEmpty(categories) ? Pair.of(CHOOSE_CATEGORY_MENU, CommandType.CHOOSE_CATEGORY_REQUEST) : Pair.of(null, null),
+                        Pair.of(CREATE_CATEGORY, CommandType.CREATE_CATEGORY_REQUEST),
+                        Pair.of(BACK, CommandType.MAIN_MENU)
                 )))
                 .build();
     }

@@ -5,14 +5,16 @@ import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatAwaitsInputService;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.reply.BotMessageReply;
 import com.sergio.memo_bot.reply.NextReply;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.CARD_WAS_ADDED;
 
 
 @Slf4j
@@ -34,12 +36,6 @@ public class BackSideReceived implements CommandHandler {
         Long chatId = processableMessage.getChatId();
 
         chatAwaitsInputService.clear(chatId);
-//        System.out.println("Before delete: " + chatAwaitsInputRepository.findAll());
-//        chatAwaitsInputRepository.deleteByChatId(processableMessage.getChatId());
-//        System.out.println("After delete: " + chatAwaitsInputRepository.findAll());
-
-//        ChatTempData chatTempData = chatTempDataService.get(processableMessage.getChatId(), CommandType.BACK_SIDE_RECEIVED);
-//        String updated = updateTempData(chatTempData, processableMessage.getText());
         ChatTempData backSide = chatTempDataService.clearAndSave(chatId,
                 ChatTempData.builder()
                         .chatId(chatId)
@@ -50,10 +46,8 @@ public class BackSideReceived implements CommandHandler {
         ChatTempData frontSide = chatTempDataService.get(chatId, CommandType.FRONT_SIDE_RECEIVED);
 
         return BotMessageReply.builder()
-//                .type(BotReplyType.MESSAGE)
                 .chatId(chatId)
-                .text("Добавлена карточка: %s - %s".formatted(frontSide.getData(), backSide.getData()))
-//                .messageId(processableMessage.getMessageId())
+                .text(CARD_WAS_ADDED.formatted(frontSide.getData(), backSide.getData()))
                 .nextReply(NextReply.builder()
                         .nextCommand(CommandType.ADD_CARD_RESPONSE)
                         .previousProcessableMessage(processableMessage)
@@ -61,18 +55,4 @@ public class BackSideReceived implements CommandHandler {
                 .build();
     }
 
-    /*@SneakyThrows
-    private String updateTempData(ChatTempData tempData, String backSide) {
-        Gson gson = new Gson();
-//        System.out.println(tempData.getData());
-        CardSetDto cardSetDto = gson.fromJson(tempData.getData(), CardSetDto.class);
-        CardSetDto updated = cardSetDto.toBuilder()
-                .cards(cardSetDto.getCards().stream().peek(cardDto -> {
-                    if (StringUtils.isBlank(cardDto.getBackSide())) {
-                        cardDto.setBackSide(backSide);
-                    }
-                }).toList())
-                .build();
-        return gson.toJson(updated);
-    }*/
 }

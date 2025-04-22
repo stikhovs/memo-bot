@@ -5,9 +5,9 @@ import com.sergio.memo_bot.command_handler.exercise.flash_card.dto.FlashCardData
 import com.sergio.memo_bot.command_handler.exercise.flash_card.dto.VisibleSide;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.reply.BotMessageReply;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,6 +17,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
 
 @Slf4j
 @Component
@@ -43,11 +45,11 @@ public class FlashCard implements CommandHandler {
                 .replyMarkup(
                         InlineKeyboardMarkup.builder()
                                 .keyboard(List.of(
-                                        new InlineKeyboardRow(getFlipButton(data)),
+                                        new InlineKeyboardRow(getFlipButton()),
                                         new InlineKeyboardRow(defineBackAndNextButtons(data)),
                                         new InlineKeyboardRow(
                                                 InlineKeyboardButton.builder()
-                                                        .text("К списку упражнений")
+                                                        .text(TO_EXERCISES_LIST)
                                                         .callbackData(CommandType.EXERCISES_DATA_PREPARE.getCommandText())
                                                         .build()
                                         )
@@ -65,26 +67,26 @@ public class FlashCard implements CommandHandler {
         } else {
 
             if (data.getCurrentIndex() > 0) {
-                buttons.addFirst(getBackButton(data));
+                buttons.addFirst(getBackButton());
             }
 
             if (data.getCurrentIndex() < data.getTotalNumberOfCards() - 1) {
-                buttons.addLast(getNextButton(data));
+                buttons.addLast(getNextButton());
             }
 
             return buttons;
         }
     }
 
-    private InlineKeyboardButton getFlipButton(FlashCardData data) {
-        return InlineKeyboardButton.builder().text("Перевернуть").callbackData(CommandType.FLIP_REQUEST.getCommandText()).build();
+    private InlineKeyboardButton getFlipButton() {
+        return InlineKeyboardButton.builder().text(FLIP_CARD).callbackData(CommandType.FLIP_REQUEST.getCommandText()).build();
     }
 
-    private InlineKeyboardButton getNextButton(FlashCardData data) {
-        return InlineKeyboardButton.builder().text("Далее").callbackData(CommandType.NEXT_FLASH_CARD_REQUEST.getCommandText()).build();
+    private InlineKeyboardButton getNextButton() {
+        return InlineKeyboardButton.builder().text(NEXT_ARROW).callbackData(CommandType.NEXT_FLASH_CARD_REQUEST.getCommandText()).build();
     }
 
-    private InlineKeyboardButton getBackButton(FlashCardData data) {
-        return InlineKeyboardButton.builder().text("Назад").callbackData(CommandType.PREVIOUS_FLASH_CARD_REQUEST.getCommandText()).build();
+    private InlineKeyboardButton getBackButton() {
+        return InlineKeyboardButton.builder().text(BACK_ARROW).callbackData(CommandType.PREVIOUS_FLASH_CARD_REQUEST.getCommandText()).build();
     }
 }

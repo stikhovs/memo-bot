@@ -5,10 +5,10 @@ import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.reply.BotMessageReply;
-import com.sergio.memo_bot.util.MarkUpUtil;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
+import com.sergio.memo_bot.util.MarkUpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.collections4.CollectionUtils.size;
 
@@ -43,20 +44,23 @@ public class GetCategoryInfoResponse implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(chatId)
-                .text("Категория \"%s\". ".formatted(categoryDto.getTitle()) +
-                        "\n\nКоличество наборов: %s. ".formatted(size(cardSets)) +
-                        (isNotEmpty(cardSets)
-                                ? "\n\nНаборы: \n" + cardSets.stream().map(CardSetDto::getTitle).collect(Collectors.joining(";\n"))
-                                : ""
-                        ))
+                .text(isNotEmpty(cardSets)
+                        ? CATEGORY_INFO_WITH_CARD_SETS.formatted(
+                        categoryDto.getTitle(),
+                        size(cardSets),
+                        cardSets.stream().map(CardSetDto::getTitle).collect(Collectors.joining(";\n")))
+                        : CATEGORY_INFO_WITHOUT_CARD_SETS.formatted(
+                        categoryDto.getTitle(),
+                        size(cardSets))
+                )
                 .replyMarkup(
                         MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
-                                isNotEmpty(cardSets) ? Pair.of("Выбрать наборы", CommandType.CHOOSE_CARD_SET_IN_CATEGORY) : Pair.of(null, null),
-                                Pair.of("Создать набор в этой категории", CommandType.CREATE_SET_FOR_CHOSEN_CATEGORY),
-                                Pair.of("Перенести наборы в эту категорию", CommandType.CHOOSE_SETS_FOR_CATEGORY_PREPARE),
-                                isDefaultCategory ? Pair.of(null, null) : Pair.of("Редактировать категорию", CommandType.EDIT_CATEGORY_REQUEST),
-                                isNotEmpty(cardSets) ? Pair.of("Упражнения с категорией", CommandType.EXERCISES_FROM_CATEGORY) : Pair.of(null, null),
-                                Pair.of("Назад", CommandType.GET_ALL_CATEGORIES_RESPONSE)
+                                isNotEmpty(cardSets) ? Pair.of(CHOOSE_CARD_SETS, CommandType.CHOOSE_CARD_SET_IN_CATEGORY) : Pair.of(null, null),
+                                Pair.of(CREATE_CARD_SET_IN_THIS_CATEGORY, CommandType.CREATE_SET_FOR_CHOSEN_CATEGORY),
+                                Pair.of(MOVE_CARD_SETS_TO_THIS_CATEGORY, CommandType.CHOOSE_SETS_FOR_CATEGORY_PREPARE),
+                                isDefaultCategory ? Pair.of(null, null) : Pair.of(EDIT_THIS_CATEGORY, CommandType.EDIT_CATEGORY_REQUEST),
+                                isNotEmpty(cardSets) ? Pair.of(EXERCISES, CommandType.EXERCISES_FROM_CATEGORY) : Pair.of(null, null),
+                                Pair.of(BACK, CommandType.GET_ALL_CATEGORIES_RESPONSE)
                         )))
                 .build();
     }

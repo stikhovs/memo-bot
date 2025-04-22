@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.NEW_CARD_SET_TITLE_SUCCESSFULLY_SAVED;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -33,44 +35,22 @@ public class EditTitleResponse implements CommandHandler {
 
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
+        Long chatId = processableMessage.getChatId();
 
-        CardSetDto cardSetDto = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.GET_CARD_SET_INFO, CardSetDto.class);
-
+        CardSetDto cardSetDto = chatTempDataService.mapDataToType(chatId, CommandType.GET_CARD_SET_INFO, CardSetDto.class);
 
         CardSetDto newCardSet = cardSetDto.toBuilder().title(processableMessage.getText()).build();
         CardSetDto savedCardSet = apiCallService.updateCardSet(newCardSet);
-        Integer messageId = chatMessageService.findAllBotMessages(processableMessage.getChatId())
-                .stream().filter(ChatMessage::isHasButtons)
-                .findFirst()
-                .map(ChatMessage::getMessageId)
-                .orElse(null);
 
-        chatTempDataService.clearAndSave(processableMessage.getChatId(), ChatTempData.builder()
-                .chatId(processableMessage.getChatId())
+        chatTempDataService.clearAndSave(chatId, ChatTempData.builder()
+                .chatId(chatId)
                 .data(new Gson().toJson(savedCardSet))
                 .command(CommandType.GET_CARD_SET_INFO)
                 .build());
 
-        /*return BotReply.builder()
-                .type(BotReplyType.EDIT_MESSAGE_REPLY_MARKUP)
-                .chatId(processableMessage.getChatId())
-                .messageId(messageId)
-                .nextReply(
-                        MultipleBotReply.builder()
-                                .type(BotReplyType.MESSAGE)
-                                .text("Новое название успешно сохранено")
-                                .messageId(processableMessage.getMessageId())
-                                .chatId(processableMessage.getChatId())
-                                .previousProcessableMessage(processableMessage.toBuilder().text(CommandType.GET_CARD_SET_INFO.getCommandText()).build())
-                                .nextCommand(CommandType.GET_CARD_SET_INFO)
-                                .build()
-                )
-                .build();*/
         return BotMessageReply.builder()
-                .chatId(processableMessage.getChatId())
-//                .type(BotReplyType.MESSAGE)
-                .text("Новое название успешно сохранено")
-//                .messageId(processableMessage.getMessageId())
+                .chatId(chatId)
+                .text(NEW_CARD_SET_TITLE_SUCCESSFULLY_SAVED)
                 .nextReply(NextReply.builder()
                         .nextCommand(CommandType.GET_CARD_SET_INFO)
                         .previousProcessableMessage(processableMessage.toBuilder().text(CommandType.GET_CARD_SET_INFO.getCommandText()).build())

@@ -40,17 +40,6 @@ public class CategoryMenuDataRequest implements CommandHandler {
                 .data(new Gson().toJson(categories))
                 .build());
 
-        /*if (isEmpty(categories)) {
-            return BotMessageReply.builder()
-                    .chatId(processableMessage.getChatId())
-                    .text("Вы пока не создали категорий. Хотите создать сейчас?")
-                    .replyMarkup(MarkUpUtil.getInlineKeyboardMarkup(List.of(
-                            Pair.of("Да", CommandType.CREATE_CATEGORY_REQUEST),
-                            Pair.of("Нет", CommandType.MAIN_MENU)
-                    )))
-                    .build();
-        }*/
-
         return BotPartReply.builder()
                 .chatId(chatId)
                 .nextCommand(CommandType.CATEGORY_MENU)

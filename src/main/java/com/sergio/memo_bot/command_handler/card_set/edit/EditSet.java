@@ -17,6 +17,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -36,7 +38,7 @@ public class EditSet implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
-                .text("Что хотите отредактировать?")
+                .text(WHAT_DO_YOU_WANT_TO_EDIT)
                 .replyMarkup(
                         InlineKeyboardMarkup.builder()
                                 .keyboard(buildRows(cardSetDto))
@@ -48,7 +50,7 @@ public class EditSet implements CommandHandler {
     private List<InlineKeyboardRow> buildRows(CardSetDto cardSetDto) {
         ArrayList<InlineKeyboardRow> rows = new ArrayList<>();
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                .text("Переименовать набор: %s".formatted(cardSetDto.getTitle()))
+                .text(RENAME_CARD_SET.formatted(cardSetDto.getTitle()))
                 .callbackData(CommandType.EDIT_TITLE_REQUEST.getCommandText())
                 .build()
         ));
@@ -59,29 +61,29 @@ public class EditSet implements CommandHandler {
                         .map(it ->
                                 new InlineKeyboardRow(
                                         InlineKeyboardButton.builder()
-                                                .text("Изменить карточку: %s — %s".formatted(it.getFrontSide(), it.getBackSide()))
+                                                .text(EDIT_CARD.formatted(it.getFrontSide(), it.getBackSide()))
                                                 .callbackData(CommandType.EDIT_CARD_REQUEST.getCommandText().formatted(it.getId()))
                                                 .build()
                                 ))
                         .toList()
         );
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                .text("Добавить карточку")
+                .text(ADD_CARD)
                 .callbackData(CommandType.ADD_CARD_REQUEST.getCommandText())
                 .build()
         ));
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                .text("Перенести набор в другую категорию")
+                .text(MOVE_CARD_SET_TO_ANOTHER_CATEGORY)
                 .callbackData(CommandType.MOVE_SET_TO_ANOTHER_CATEGORY.getCommandText())
                 .build()
         ));
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                .text("Удалить набор")
+                .text(DELETE_CARD_SET)
                 .callbackData(CommandType.REMOVE_SET_REQUEST.getCommandText())
                 .build()
         ));
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                .text("Назад")
+                .text(BACK)
                 .callbackData(CommandType.GET_CARD_SET_INFO.getCommandText().formatted(cardSetDto.getId()))
                 .build()));
         return rows;

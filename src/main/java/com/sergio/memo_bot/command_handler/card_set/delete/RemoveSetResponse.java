@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.CARD_SET_IS_DELETED;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -37,9 +39,7 @@ public class RemoveSetResponse implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(chatId)
-//                .type(BotReplyType.MESSAGE)
-//                .messageId(processableMessage.getMessageId())
-                .text("Набор удален")
+                .text(CARD_SET_IS_DELETED)
                 .nextReply(NextReply.builder()
                         .nextCommand(CommandType.MAIN_MENU)
                         .previousProcessableMessage(processableMessage)

@@ -2,14 +2,16 @@ package com.sergio.memo_bot.command_handler.card_set.create;
 
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.reply.BotMessageReply;
 import com.sergio.memo_bot.reply.NextReply;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.CARD_SET_SUCCESSFULLY_SAVED;
 
 @Slf4j
 @Component
@@ -26,29 +28,12 @@ public class SaveSetResponse implements CommandHandler {
     public Reply getReply(ProcessableMessage processableMessage) {
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
-                .text("Набор карточек успешно сохранен!")
+                .text(CARD_SET_SUCCESSFULLY_SAVED)
                 .nextReply(NextReply.builder()
                         .nextCommand(CommandType.MAIN_MENU)
                         .previousProcessableMessage(processableMessage)
                         .build())
                 .build();
-
-                /*BotReply.builder()
-                .type(BotReplyType.EDIT_MESSAGE_REPLY_MARKUP)
-                .chatId(processableMessage.getChatId())
-                .messageId(processableMessage.getMessageId())
-                .nextReply(
-                        MultipleBotReply.builder()
-                                .type(BotReplyType.MESSAGE)
-                                .messageId(processableMessage.getMessageId())
-                                .chatId(processableMessage.getChatId())
-                                .text("Набор карточек успешно сохранен!")
-                                .nextCommand(CommandType.MAIN_MENU)
-                                .previousProcessableMessage(processableMessage)
-                                .build()
-                )
-                .build();*/
-
     }
 
 }

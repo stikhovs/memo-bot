@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import java.io.InputStream;
 import java.util.List;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -30,10 +32,10 @@ public class ReadMe3 implements CommandHandler {
                 .chatId(processableMessage.getChatId())
                 .image(img)
                 .fileName("import_readme_3")
-                .caption("Шаг 3")
+                .caption(IMPORT_README_3)
                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkup(List.of(
-                        Pair.of("Назад", CommandType.IMPORT_CARD_SET_README_2),
-                        Pair.of("Импортировать", CommandType.IMPORT_CARD_SET_TITLE_REQUEST)
+                        Pair.of(BACK, CommandType.IMPORT_CARD_SET_README_2),
+                        Pair.of(IMPORT_SET, CommandType.IMPORT_CARD_SET_TITLE_REQUEST)
                 )))
                 .build();
     }

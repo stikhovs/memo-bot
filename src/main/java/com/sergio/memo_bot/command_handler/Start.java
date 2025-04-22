@@ -7,6 +7,7 @@ import com.sergio.memo_bot.reply.BotMessageReply;
 import com.sergio.memo_bot.reply.BotPartReply;
 import com.sergio.memo_bot.reply.NextReply;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.reply_text.ReplyTextConstant;
 import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,6 @@ public class Start implements CommandHandler {
             return BotPartReply.builder()
                     .previousProcessableMessage(processableMessage)
                     .chatId(processableMessage.getChatId())
-//                    .messageId(processableMessage.getMessageId())
                     .nextCommand(CommandType.MAIN_MENU)
                     .build();
         }
@@ -48,22 +48,14 @@ public class Start implements CommandHandler {
         callCreateUserApi(processableMessage);
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
-                .text("Добро пожаловать!")
+                .text(ReplyTextConstant.START)
                 .nextReply(NextReply.builder()
                         .nextCommand(CommandType.MAIN_MENU)
                         .previousProcessableMessage(processableMessage)
                         .build())
                 .chatId(processableMessage.getChatId())
-//                .messageId(processableMessage.getMessageId())
                 .build();
     }
-
-    /*private InlineKeyboardMarkup getInlineKeyboardMarkup() {
-        return MarkUpUtil.getInlineKeyboardMarkup(List.of(
-                Pair.of("Создать набор", CommandType.CREATE_SET),
-                Pair.of("Импортировать набор", CommandType.IMPORT_SET)
-        ));
-    }*/
 
     private UserDto callCreateUserApi(ProcessableMessage processableMessage) {
         return apiCallService.saveUser(UserDto.builder()

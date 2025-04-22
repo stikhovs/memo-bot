@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.INSERT_CATEGORY_NEW_TITLE;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -28,7 +30,7 @@ public class RenameCategoryRequest implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
-                .text("Введите новое название категории")
+                .text(INSERT_CATEGORY_NEW_TITLE)
                 .build();
     }
 }

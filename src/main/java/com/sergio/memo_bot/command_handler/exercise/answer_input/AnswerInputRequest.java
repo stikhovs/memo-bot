@@ -15,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.EXERCISE_FINISHED;
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.INSERT_ANSWER_FOR;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -35,11 +38,10 @@ public class AnswerInputRequest implements CommandHandler {
         int currentIndex = answerInputData.getCurrentIndex();
 
         if (currentIndex == answerInputData.getTotalNumberOfItems()) {
-//            CardSetDto cardSetDto = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.GET_CARD_SET_INFO, CardSetDto.class);
 
             return BotMessageReply.builder()
                     .chatId(processableMessage.getChatId())
-                    .text("Упражнение завершено!")
+                    .text(EXERCISE_FINISHED)
                     .nextReply(NextReply.builder()
                             .previousProcessableMessage(processableMessage)
                             .nextCommand(CommandType.EXERCISES_DATA_PREPARE)
@@ -51,7 +53,7 @@ public class AnswerInputRequest implements CommandHandler {
 
             return BotMessageReply.builder()
                     .chatId(processableMessage.getChatId())
-                    .text("Введите ответ для: \n\n <strong>%s</strong>".formatted(answerInputItem.getQuestion()))
+                    .text(INSERT_ANSWER_FOR.formatted(answerInputItem.getQuestion()))
                     .parseMode(ParseMode.HTML)
                     .build();
         }

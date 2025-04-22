@@ -9,11 +9,11 @@ import com.sergio.memo_bot.dto.CardDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.reply.BotMessageReply;
 import com.sergio.memo_bot.reply.BotPartReply;
 import com.sergio.memo_bot.reply.NextReply;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
@@ -22,8 +22,8 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.THERE_SHOULD_BE_TWO_OR_MORE_CARDS_FOR_QUIZ;
 import static org.apache.commons.collections4.CollectionUtils.size;
 import static org.apache.commons.lang3.ObjectUtils.notEqual;
 
@@ -46,7 +46,7 @@ public class QuizPrepare implements CommandHandler {
         if (size(exerciseData.getCards()) < 2) {
             return BotMessageReply.builder()
                     .chatId(processableMessage.getChatId())
-                    .text("Для квиза в наборе должно быть 2 и более карточек")
+                    .text(THERE_SHOULD_BE_TWO_OR_MORE_CARDS_FOR_QUIZ)
                     .nextReply(NextReply.builder()
                             .previousProcessableMessage(processableMessage)
                             .nextCommand(CommandType.EXERCISES_DATA_PREPARE)
@@ -106,7 +106,7 @@ public class QuizPrepare implements CommandHandler {
     private void putIncorrectOptions(List<CardDto> cards, String correctAnswer, List<Pair<String, Boolean>> answerOptions) {
         List<CardDto> excludedCorrectAnswer = cards.stream()
                 .filter(cardDto -> notEqual(cardDto.getBackSide(), correctAnswer))
-                .collect(Collectors.toList());
+                .toList();
 
         if (cards.size() > 3) {
             for (int i = 0; i < 3; i++) {

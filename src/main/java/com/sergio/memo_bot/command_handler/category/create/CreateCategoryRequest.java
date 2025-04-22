@@ -3,12 +3,14 @@ package com.sergio.memo_bot.command_handler.category.create;
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.service.ChatAwaitsInputService;
-import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.reply.BotMessageReply;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.INSERT_CATEGORY_TITLE;
 
 @Slf4j
 @Component
@@ -28,7 +30,7 @@ public class CreateCategoryRequest implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
-                .text("Введите название категории")
+                .text(INSERT_CATEGORY_TITLE)
                 .build();
     }
 }

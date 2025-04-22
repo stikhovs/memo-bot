@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.BACK;
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.CHOOSE_CATEGORY;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -36,22 +39,9 @@ public class GetAllCategoriesResponse implements CommandHandler {
         Long chatId = processableMessage.getChatId();
         List<CategoryDto> categories = chatTempDataService.mapDataToList(chatId, CommandType.CATEGORY_MENU_DATA, CategoryDto.class);
 
-        /*if (categories.isEmpty()) {
-            return BotMessageReply.builder()
-                    .chatId(processableMessage.getChatId())
-                    .text("Вы пока не создали категорий. Хотите создать сейчас?")
-                    .replyMarkup(InlineKeyboardMarkup.builder()
-                            .keyboardRow(new InlineKeyboardRow(
-                                    InlineKeyboardButton.builder().text("Да").callbackData(CommandType.CREATE_CATEGORY_REQUEST.getCommandText()).build(),
-                                    InlineKeyboardButton.builder().text("Нет").callbackData(CommandType.CATEGORY_MENU.getCommandText()).build()
-                            ))
-                            .build())
-                    .build();
-        }*/
-
         return BotMessageReply.builder()
                 .chatId(chatId)
-                .text("Выберите категорию")
+                .text(CHOOSE_CATEGORY)
                 .replyMarkup(getKeyboard(categories))
                 .build();
     }
@@ -68,7 +58,7 @@ public class GetAllCategoriesResponse implements CommandHandler {
 
         rows.add(new InlineKeyboardRow(
                 InlineKeyboardButton.builder()
-                        .text("Назад")
+                        .text(BACK)
                         .callbackData(CommandType.CATEGORY_MENU.getCommandText())
                         .build()
         ));

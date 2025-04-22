@@ -2,16 +2,18 @@ package com.sergio.memo_bot.command_handler.card_set.import_card_set;
 
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.reply.BotMessageReply;
-import com.sergio.memo_bot.util.MarkUpUtil;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
+import com.sergio.memo_bot.util.MarkUpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
 
 @Slf4j
 @Component
@@ -27,10 +29,10 @@ public class ImportCardSetMenu implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
-                .text("Импортировать набор из Quizlet")
+                .text(IMPORT_CARD_SET_FROM_QUIZLET)
                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
-                        Pair.of("Импортировать", CommandType.CHOOSE_CATEGORY_FOR_IMPORT_REQUEST),
-                        Pair.of("Инструкция", CommandType.IMPORT_CARD_SET_README_1)
+                        Pair.of(IMPORT_SET, CommandType.CHOOSE_CATEGORY_FOR_IMPORT_REQUEST),
+                        Pair.of(IMPORT_INSTRUCTION, CommandType.IMPORT_CARD_SET_README_1)
                 )))
                 .build();
     }

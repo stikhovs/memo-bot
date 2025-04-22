@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.COPY_HERE_CARD_SET_CONTENT_FROM_QUIZLET;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -31,7 +33,7 @@ public class ImportCardsRequest implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(chatId)
-                .text("Скопируйте сюда содержимое набора из Quizlet")
+                .text(COPY_HERE_CARD_SET_CONTENT_FROM_QUIZLET)
                 .build();
     }
 }

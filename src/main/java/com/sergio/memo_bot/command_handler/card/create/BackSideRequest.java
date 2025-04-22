@@ -3,12 +3,14 @@ package com.sergio.memo_bot.command_handler.card.create;
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.service.ChatAwaitsInputService;
-import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.reply.BotMessageReply;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.INSERT_BACK_SIDE;
 
 
 @Slf4j
@@ -28,11 +30,8 @@ public class BackSideRequest implements CommandHandler {
         chatAwaitsInputService.update(processableMessage.getChatId(), CommandType.BACK_SIDE_RECEIVED);
 
         return BotMessageReply.builder()
-//                .type(BotReplyType.MESSAGE)
-                .text("Введите заднюю сторону карточки")
-//                .messageId(processableMessage.getMessageId())
+                .text(INSERT_BACK_SIDE)
                 .chatId(processableMessage.getChatId())
-//                .replyMarkup(MarkUpUtil.getForceReplyMarkup("Задняя сторона"))
                 .build();
     }
 }
