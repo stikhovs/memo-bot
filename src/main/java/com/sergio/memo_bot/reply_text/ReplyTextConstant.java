@@ -44,7 +44,7 @@ public final class ReplyTextConstant {
     public static final String SAVE_CARD_SET = EmojiConverter.getEmoji("U+1F4BE") + " Сохранить набор";
     public static final String CARD_WAS_ADDED = EmojiConverter.getEmoji("U+2705") + " Добавлена карточка: %s - %s";
     public static final String INSERT_BACK_SIDE = "Введите заднюю сторону карточки";
-    public static final String INSERT_FRONT_SIDE = "Введите переднюю сторону карточки";
+    public static final String INSERT_FRONT_SIDE = "Введите лицевую сторону карточки";
     public static final String CARD_SET_SUCCESSFULLY_SAVED = EmojiConverter.getEmoji("U+2705") + " Набор карточек успешно сохранен!";
 
     public static final String ARE_YOU_SURE_YOU_WANT_TO_DELETE_CARD_SET = EmojiConverter.getEmoji("U+26A0") + " Вы уверены, что хотите удалить набор?";
@@ -159,9 +159,9 @@ public final class ReplyTextConstant {
                  %s
             """;
 
-    public static final String NEXT_ARROW = EmojiConverter.getEmoji("U+27A1");
-    public static final String BACK_ARROW = EmojiConverter.getEmoji("U+2B05");
-    public static final String FLIP_CARD = EmojiConverter.getEmoji("U+2195") + " Перевернуть";
+    public static final String NEXT_ARROW = "Далее " + EmojiConverter.getEmoji("U+27A1");
+    public static final String BACK_ARROW = EmojiConverter.getEmoji("U+2B05") + " Назад";
+    public static final String FLIP_CARD = EmojiConverter.getEmoji("U+1F503") + " Перевернуть";
     public static final String TO_EXERCISES_LIST = "К списку упражнений";
 
 
@@ -169,11 +169,13 @@ public final class ReplyTextConstant {
     public static final String THERE_SHOULD_BE_TWO_OR_MORE_CARDS_FOR_QUIZ =  EmojiConverter.getEmoji("U+1F645") + " Для квиза в наборе должно быть 2 и более карточек";
 
     public static final String CHOOSE_EXERCISE = "Выберите упражнение";
-    public static final String FLASH_CARDS = EmojiConverter.getEmoji("U+1F9D1") + " Флеш-карточки";
+    public static final String FLASH_CARDS = EmojiConverter.getEmoji("U+1F4A1") + " Флеш-карточки";
     public static final String QUIZ = EmojiConverter.getEmoji("U+1F3B0") + " Квиз";
     public static final String INPUT_ANSWER = EmojiConverter.getEmoji("U+270F") + " Ввод ответа";
     public static final String FIND_PAIRS = """
             🅰 - 🅱 Найти пары
             """;
 
+    public static final String FLACH_CARD_FRONT_SIDE = "===== Лицевая сторона ======\n\n\n\n";
+    public static final String FLACH_CARD_BACK_SIDE = "===== Обратная сторона =====\n\n\n\n";
 }

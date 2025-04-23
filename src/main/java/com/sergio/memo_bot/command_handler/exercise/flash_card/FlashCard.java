@@ -11,6 +11,7 @@ import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
@@ -36,12 +37,17 @@ public class FlashCard implements CommandHandler {
     public Reply getReply(ProcessableMessage processableMessage) {
         FlashCardData data = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.FLASH_CARD, FlashCardData.class);
 
-        String text = data.getVisibleSide() == VisibleSide.FRONT ? data.getCard().getFrontSide() : data.getCard().getBackSide();
+        String text = data.getVisibleSide() == VisibleSide.FRONT
+                ? FLACH_CARD_FRONT_SIDE + "<strong>" + data.getCard().getFrontSide() + "</strong>"
+                : FLACH_CARD_BACK_SIDE + "<strong>" + data.getCard().getBackSide() + "</strong>";
+
+        String currentNumber = "\n\n\n\n<i><u>%s/%s</u></i>".formatted(data.getCurrentIndex()+1, data.getTotalNumberOfCards());
 
 
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
-                .text(text)
+                .text(text + currentNumber)
+                .parseMode(ParseMode.HTML)
                 .replyMarkup(
                         InlineKeyboardMarkup.builder()
                                 .keyboard(List.of(
