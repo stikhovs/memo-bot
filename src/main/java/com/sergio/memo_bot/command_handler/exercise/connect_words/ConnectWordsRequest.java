@@ -18,6 +18,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,6 +31,9 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 @Component
 @RequiredArgsConstructor
 public class ConnectWordsRequest implements CommandHandler {
+
+    private static final int MAX_NUMBER_OF_BUTTONS_IN_ONE_ROW = 4;
+    private static final int MAX_NUMBER_OF_SYMBOLS_IN_ONE_ROW = 24;
 
     private final ChatTempDataService chatTempDataService;
 
@@ -57,8 +61,8 @@ public class ConnectWordsRequest implements CommandHandler {
             currentButtons = connectWordsData.getWordsWithHiddenAnswers().stream()
                     .filter(wordWithHiddenAnswer -> correctAnswers.stream()
                             .noneMatch(
-                                    it -> it.getWordOne().equals(wordWithHiddenAnswer.getWordToShow())
-                                            || it.getWordTwo().equals(wordWithHiddenAnswer.getWordToShow())
+                                    it -> it.getWordOneId().equals(wordWithHiddenAnswer.getId())
+                                            || it.getWordTwoId().equals(wordWithHiddenAnswer.getId())
                             ))
                     .filter(wordWithHiddenAnswer -> !wordWithHiddenAnswer.isActive())
                     .toList();
@@ -92,21 +96,7 @@ public class ConnectWordsRequest implements CommandHandler {
                 .text(text)
                 .parseMode(ParseMode.HTML)
                 .replyMarkup(InlineKeyboardMarkup.builder()
-                        .keyboard(List.of(
-                                new InlineKeyboardRow(
-                                        currentButtons.stream()
-                                                .map(btn -> InlineKeyboardButton.builder().text(btn.getWordToShow()).callbackData(CommandType.CONNECT_WORDS_RESPONSE.getCommandText().formatted(btn.getId())).build())
-                                                .limit(currentButtons.size() / 2)
-                                                .toList()
-                                ),
-                                new InlineKeyboardRow(
-                                        currentButtons.stream()
-                                                .map(btn -> InlineKeyboardButton.builder().text(btn.getWordToShow()).callbackData(CommandType.CONNECT_WORDS_RESPONSE.getCommandText().formatted(btn.getId())).build())
-                                                .skip(currentButtons.size() / 2)
-                                                .toList()
-                                ),
-                                new InlineKeyboardRow(InlineKeyboardButton.builder().text(BACK).callbackData(CommandType.EXERCISES_DATA_PREPARE.getCommandText()).build())
-                                ))
+                        .keyboard(getButtons(currentButtons))
                         .build())
                 .build();
     }
@@ -115,6 +105,51 @@ public class ConnectWordsRequest implements CommandHandler {
         return correctAnswers.stream()
                 .map(connectedPair -> connectedPair.getWordOne() + " — " + connectedPair.getWordTwo())
                 .collect(Collectors.joining("\n     "));
+    }
+
+    private List<InlineKeyboardRow> getButtons(List<WordWithHiddenAnswer> currentButtons) {
+        List<InlineKeyboardRow> rows = new ArrayList<>();
+
+        List<InlineKeyboardButton> buttons = currentButtons.stream()
+                .map(btn -> InlineKeyboardButton.builder()
+                        .text(btn.getWordToShow())
+                        .callbackData(CommandType.CONNECT_WORDS_RESPONSE.getCommandText().formatted(btn.getId()))
+                        .build())
+                .collect(Collectors.toList());
+
+        List<InlineKeyboardButton> currentRow = new ArrayList<>();
+        int currentRowSymbols = 0;
+
+        for (InlineKeyboardButton button : buttons) {
+            int btnLength = button.getText().length();
+
+            // если следующая кнопка не влезает по длине или по количеству
+            if (currentRow.size() >= MAX_NUMBER_OF_BUTTONS_IN_ONE_ROW ||
+                    currentRowSymbols + btnLength > MAX_NUMBER_OF_SYMBOLS_IN_ONE_ROW) {
+
+                // сохранить строку
+                if (!currentRow.isEmpty()) {
+                    rows.add(new InlineKeyboardRow(currentRow));
+                    currentRow = new ArrayList<>();
+                    currentRowSymbols = 0;
+                }
+            }
+
+            currentRow.add(button);
+            currentRowSymbols += btnLength;
+        }
+
+        // добавить остатки
+        if (!currentRow.isEmpty()) {
+            rows.add(new InlineKeyboardRow(currentRow));
+        }
+
+        rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
+                .text(BACK)
+                .callbackData(CommandType.EXERCISES_DATA_PREPARE.getCommandText())
+                .build()));
+
+        return rows;
     }
 
 }

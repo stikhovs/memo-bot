@@ -8,17 +8,15 @@ import com.sergio.memo_bot.command_handler.exercise.connect_words.dto.WordWithHi
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.reply.BotPartReply;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.NumberUtils;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -50,7 +48,9 @@ public class ConnectWordsResponse implements CommandHandler {
             if (isCorrect) {
                 connectWordsData.getConnectedPairs().add(ConnectedPair.builder()
                         .wordOne(activePair.get().getWordToShow())
+                        .wordOneId(activePair.get().getId())
                         .wordTwo(chosenWord.getWordToShow())
+                        .wordTwoId(chosenWord.getId())
                         .build());
                 connectWordsData.setWordsWithHiddenAnswers(
                         connectWordsData.getWordsWithHiddenAnswers().stream()
@@ -81,12 +81,6 @@ public class ConnectWordsResponse implements CommandHandler {
                 .previousProcessableMessage(processableMessage)
                 .nextCommand(CommandType.CONNECT_WORDS_REQUEST)
                 .build();
-    }
-
-    private String getCorrectStr(List<ConnectedPair> correctAnswers) {
-        return correctAnswers.stream()
-                .map(connectedPair -> connectedPair.getWordOne() + " — " + connectedPair.getWordTwo())
-                .collect(Collectors.joining("\n"));
     }
 
 }

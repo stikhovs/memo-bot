@@ -8,6 +8,8 @@ import lombok.Data;
 public class ConnectedPair {
 
     private String wordOne;
+    private Integer wordOneId;
     private String wordTwo;
+    private Integer wordTwoId;
 
 }
