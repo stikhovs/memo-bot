@@ -47,7 +47,7 @@ public class GetCategoryInfoResponse implements CommandHandler {
                         ? CATEGORY_INFO_WITH_CARD_SETS.formatted(
                         categoryDto.getTitle(),
                         size(cardSets),
-                        cardSets.stream().map(CardSetDto::getTitle).collect(Collectors.joining(";\n")))
+                        cardSets.stream().map(CardSetDto::getTitle).collect(Collectors.joining("\n")))
                         : CATEGORY_INFO_WITHOUT_CARD_SETS.formatted(
                         categoryDto.getTitle(),
                         size(cardSets))

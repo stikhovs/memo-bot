@@ -18,16 +18,27 @@ public final class ReplyTextConstant {
 
     public static final String CARD_SETS = EmojiConverter.getEmoji("U+1F4DD") + " Наборы карточек";
     public static final String CATEGORIES = EmojiConverter.getEmoji("U+1F516") + " Категории";
+    public static final String CATEGORIES_DESCR_TEXT = EmojiConverter.getEmoji("U+1F516") + """
+             <strong>Категории</strong>
+             
+            Создавайте категории, группируйте наборы карточек и используйте объединенные наборы в упражнениях
+            """;
     public static final String EXERCISES = EmojiConverter.getEmoji("U+1F393") + " Упражнения";
 
     public static final String BACK = EmojiConverter.getEmoji("U+2B05") + " Назад";
 
     public static final String CREATE_SET = EmojiConverter.getEmoji("U+270F") + " Создать набор";
     public static final String CHOOSE_SET = EmojiConverter.getEmoji("U+1F4D1") + " Выбрать набор";
-    public static final String IMPORT_SET = EmojiConverter.getEmoji("U+1FA84") + " Импортировать набор";
+    public static final String IMPORT_SET = EmojiConverter.getEmoji("U+2728") + " Импортировать набор";
 
 
     public static final String CHOOSE_CATEGORY = "Выберите категорию";
+    public static final String CHOOSE_CATEGORY_FOR_SET_CREATION = """
+            Вы можете выбрать категорию, к которой будет относиться ваш набор.
+            Если это не требуется, нажмите <strong>Пропустить</strong>.
+            """;
+
+    public static final String SKIP = "Пропустить " + EmojiConverter.getEmoji("U+23ED");
     public static final String WHAT_IS_THE_NAME_OF_THE_SET = "Как будет называться ваш новый набор?";
     public static final String SET_WILL_BE_CREATED_WITH_CATEGORY = "Набор будет создан под категорией \"<strong>%s</strong>\"";
     public static final String SET_WILL_HAVE_TITLE = EmojiConverter.getEmoji("U+2705") + " Будет создан набор: \"<strong>%s</strong>\"";
@@ -87,7 +98,7 @@ public final class ReplyTextConstant {
 
     public static final String CHOSEN_CATEGORY = "Выбрана категория \"%s\"";
     public static final String IMPORT_CARD_SET_FROM_QUIZLET = "Импортировать набор из Quizlet";
-    public static final String IMPORT_INSTRUCTION = "Инструкция";
+    public static final String IMPORT_INSTRUCTION = EmojiConverter.getEmoji("U+1F4C4") + " Инструкция";
     public static final String CARD_SET_SUCCESSFULLY_IMPORTED = "Набор успешно импортирован";
 
     public static final String INSERT_CARD_SET_TITLE = "Введите название набора";
@@ -128,12 +139,12 @@ public final class ReplyTextConstant {
             
             Количество наборов: %s.
             """;
-    public static final String CHOOSE_CARD_SETS = "Выбрать наборы";
-    public static final String CREATE_CARD_SET_IN_THIS_CATEGORY = "Создать набор в этой категории";
-    public static final String MOVE_CARD_SETS_TO_THIS_CATEGORY = "Перенести наборы в эту категорию";
-    public static final String EDIT_THIS_CATEGORY = "Редактировать категорию";
-    public static final String CHOOSE_CATEGORY_MENU = "Выбрать категорию";
-    public static final String CREATE_CATEGORY = "Создать категорию";
+    public static final String CHOOSE_CARD_SETS = EmojiConverter.getEmoji("U+1F5C2") + " Выбрать наборы";
+    public static final String CREATE_CARD_SET_IN_THIS_CATEGORY = EmojiConverter.getEmoji("U+2728") + " Создать набор в этой категории";
+    public static final String MOVE_CARD_SETS_TO_THIS_CATEGORY = EmojiConverter.getEmoji("U+1F516") + " Перенести наборы в эту категорию";
+    public static final String EDIT_THIS_CATEGORY = EmojiConverter.getEmoji("U+1F527") + " Редактировать категорию";
+    public static final String CHOOSE_CATEGORY_MENU = EmojiConverter.getEmoji("U+1F440") + " Выбрать категорию";
+    public static final String CREATE_CATEGORY = EmojiConverter.getEmoji("U+2728") + " Создать категорию";
     public static final String YOU_DO_NOT_HAVE_CARD_SETS_IN_THIS_CATEGORY_YET = "В этой категории пока нет ни одного набора. Хотите создать сейчас?";
 
     public static final String EXERCISE_FINISHED = EmojiConverter.getEmoji("U+1F3C6") + " Упражнение завершено!";

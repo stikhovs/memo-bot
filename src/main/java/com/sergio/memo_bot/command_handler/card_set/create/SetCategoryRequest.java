@@ -11,11 +11,12 @@ import com.sergio.memo_bot.reply.BotMessageReply;
 import com.sergio.memo_bot.reply.BotPartReply;
 import com.sergio.memo_bot.reply.Reply;
 import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.util.*;
+import com.sergio.memo_bot.util.MarkUpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
@@ -25,8 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.sergio.memo_bot.reply_text.ReplyTextConstant.BACK;
-import static com.sergio.memo_bot.reply_text.ReplyTextConstant.CHOOSE_CATEGORY;
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
 
 @Slf4j
 @Component
@@ -59,8 +59,9 @@ public class SetCategoryRequest implements CommandHandler {
 
             return BotMessageReply.builder()
                     .chatId(chatId)
-                    .text(CHOOSE_CATEGORY)
+                    .text(CHOOSE_CATEGORY_FOR_SET_CREATION)
                     .replyMarkup(getKeyboard(categories))
+                    .parseMode(ParseMode.HTML)
                     .build();
         } else {
             return BotPartReply.builder()
@@ -76,7 +77,7 @@ public class SetCategoryRequest implements CommandHandler {
         Map<String, String> buttonsMap = categories
                 .stream()
                 .collect(Collectors.toMap(
-                        categoryDto -> categoryDto.isDefault() ? "Пропустить" : categoryDto.getTitle(),
+                        categoryDto -> categoryDto.isDefault() ? SKIP : categoryDto.getTitle(),
                         categoryDto -> CommandType.SET_CATEGORY_RESPONSE.getCommandText().formatted(categoryDto.getId())
                 ));
 

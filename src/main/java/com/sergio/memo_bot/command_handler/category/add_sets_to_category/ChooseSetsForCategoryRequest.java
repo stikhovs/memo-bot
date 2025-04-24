@@ -49,7 +49,7 @@ public class ChooseSetsForCategoryRequest implements CommandHandler {
         } else {
             text = CHOOSE_SETS_WHICH_WILL_BE_MOVED_TO_CATEGORY_2.formatted(
                     addSetToCategoryData.getCategory().getTitle(),
-                    addSetToCategoryData.getChosenCardSets().stream().map(CardSetDto::getTitle).collect(Collectors.joining(";\n"))
+                    addSetToCategoryData.getChosenCardSets().stream().map(CardSetDto::getTitle).collect(Collectors.joining("\n"))
             );
         }
 

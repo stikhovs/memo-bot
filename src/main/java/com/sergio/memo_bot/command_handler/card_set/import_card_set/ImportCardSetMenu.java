@@ -32,7 +32,8 @@ public class ImportCardSetMenu implements CommandHandler {
                 .text(IMPORT_CARD_SET_FROM_QUIZLET)
                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
                         Pair.of(IMPORT_SET, CommandType.CHOOSE_CATEGORY_FOR_IMPORT_REQUEST),
-                        Pair.of(IMPORT_INSTRUCTION, CommandType.IMPORT_CARD_SET_README_1)
+                        Pair.of(IMPORT_INSTRUCTION, CommandType.IMPORT_CARD_SET_README_1),
+                        Pair.of(BACK, CommandType.CARD_SET_MENU)
                 )))
                 .build();
     }

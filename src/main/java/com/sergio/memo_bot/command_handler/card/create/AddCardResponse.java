@@ -52,7 +52,7 @@ public class AddCardResponse implements CommandHandler {
                                 cardSetDto.getCards()
                                         .stream()
                                         .map(cardDto -> cardDto.getFrontSide() + " -> " + cardDto.getBackSide())
-                                        .collect(Collectors.joining(";\n"))
+                                        .collect(Collectors.joining("\n"))
                         )
                 )
                 .chatId(chatId)

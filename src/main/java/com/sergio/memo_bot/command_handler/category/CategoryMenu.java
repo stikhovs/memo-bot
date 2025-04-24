@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 
 import java.util.List;
 
@@ -40,7 +41,8 @@ public class CategoryMenu implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
-                .text(CATEGORIES)
+                .text(CATEGORIES_DESCR_TEXT)
+                .parseMode(ParseMode.HTML)
                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
                         isNotEmpty(categories) ? Pair.of(CHOOSE_CATEGORY_MENU, CommandType.CHOOSE_CATEGORY_REQUEST) : Pair.of(null, null),
                         Pair.of(CREATE_CATEGORY, CommandType.CREATE_CATEGORY_REQUEST),
