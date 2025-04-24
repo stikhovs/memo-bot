@@ -20,14 +20,10 @@ public enum CommandType {
     CATEGORY_MENU_DATA("/category_menu_data"),
     CARD_SET_MENU_DATA("/card_set_menu_data"),
 
-    CLOSE("/close"),
     START("/start"),
-    IMPORT_SET("/import_set"),
     SET_CREATION_START("/set_creation_start"),
     NAME_SET_REQUEST("/name_set_request"),
     NAME_SET_RESPONSE("/name_set_response"),
-    ACCEPT_SET_NAME("/accept_set_name"),
-    DECLINE_SET_NAME("/decline_set_name"),
     ADD_CARD_REQUEST("/add_card_request"),
     INSERT_FRONT_SIDE("/insert_front_side"),
     FRONT_SIDE_RECEIVED("/front_side_received"),
@@ -35,10 +31,6 @@ public enum CommandType {
     BACK_SIDE_RECEIVED("/back_side_received"),
     ADD_CARD_RESPONSE("/add_card_response"),
 
-    ACCEPT_FRONT_SIDE("/accept_front_side"),
-    DECLINE_FRONT_SIDE("/decline_front_side"),
-    ACCEPT_BACK_SIDE("/accept_back_side"),
-    DECLINE_BACK_SIDE("/decline_back_side"),
     SAVE_CARD_SET_REQUEST("/request_to_save_card_set"),
     SAVE_CARD_SET_RESPONSE("/save_card_set_response"),
 
@@ -54,7 +46,6 @@ public enum CommandType {
     EDIT_CARD_FRONT_SIDE_RESPONSE("/edit_card_front_response"),
     EDIT_CARD_BACK_SIDE_REQUEST("/edit_card_back_request"),
     EDIT_CARD_BACK_SIDE_RESPONSE("/edit_card_back_response"),
-    EDIT_CARD_RESPONSE("/edit_card_response"),
 
     REMOVE_SET_REQUEST("/remove_set_request"),
     REMOVE_SET_RESPONSE("/remove_set_response"),
@@ -101,17 +92,14 @@ public enum CommandType {
     DELETE_CATEGORY_WITH_SETS_REQUEST("/delete_category_with_sets_request"),
     DELETE_CATEGORY_WITHOUT_SETS_REQUEST("/delete_category_without_sets_request"),
     DELETE_CATEGORY_RESPONSE("/delete_category_response"),
-    HOW_TO_DELETE_CATEGORY("/how_to_delete_category"),
 
-    ADD_SETS_TO_CATEGORY_REQUEST("/add_sets_to_category_request"),
+//    ADD_SETS_TO_CATEGORY_REQUEST("/add_sets_to_category_request"),
     CHOOSE_SETS_FOR_CATEGORY_PREPARE("/choose_sets_for_category__%s"),
     CHOOSE_SETS_FOR_CATEGORY_REQUEST("/choose_sets_for_category_request"),
     SET_CHOSEN_FOR_CATEGORY("/set_chosen_for_category__%s"),
-    ADD_SETS_TO_CATEGORY_RESPONSE("/add_sets_to_category_response"),
     SAVE_NEW_CATEGORY_FOR_SETS("/save_new_category_for_sets"),
 
     CHOOSE_CATEGORY_REQUEST("/choose_category_request"),
-    CHOOSE_CATEGORY_RESPONSE("/choose_category_response"),
 
     GET_CATEGORY_CARD_SET_INFO("/get_category_card_set_info"),
     CREATE_SET_FOR_CHOSEN_CATEGORY("/create_card_set_for_chosen_category"),

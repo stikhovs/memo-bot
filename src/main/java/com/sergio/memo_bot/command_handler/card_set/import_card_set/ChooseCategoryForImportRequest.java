@@ -50,7 +50,7 @@ public class ChooseCategoryForImportRequest implements CommandHandler {
         Map<String, String> buttonsMap = categories
                 .stream()
                 .collect(Collectors.toMap(
-                        CategoryDto::getTitle,
+                        categoryDto -> categoryDto.isDefault() ? "Пропустить" : categoryDto.getTitle(),
                         categoryDto -> CommandType.CHOOSE_CATEGORY_FOR_IMPORT_RESPONSE.getCommandText().formatted(categoryDto.getId())
                 ));
         List<InlineKeyboardRow> rows = MarkUpUtil.getKeyboardRows(buttonsMap);

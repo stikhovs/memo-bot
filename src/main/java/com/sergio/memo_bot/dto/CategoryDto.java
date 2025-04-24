@@ -8,5 +8,6 @@ import lombok.Data;
 public class CategoryDto {
     private Long id;
     private String title;
+    private boolean isDefault;
     private Integer userId;
 }

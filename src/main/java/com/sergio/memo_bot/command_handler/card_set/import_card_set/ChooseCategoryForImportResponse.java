@@ -7,6 +7,7 @@ import com.sergio.memo_bot.external.ApiCallService;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.reply.BotMessageReply;
+import com.sergio.memo_bot.reply.BotPartReply;
 import com.sergio.memo_bot.reply.NextReply;
 import com.sergio.memo_bot.reply.Reply;
 import com.sergio.memo_bot.state.CommandType;
@@ -43,6 +44,14 @@ public class ChooseCategoryForImportResponse implements CommandHandler {
                         .command(CommandType.CHOOSE_CATEGORY_FOR_IMPORT_RESPONSE)
                         .data(categoryId)
                 .build());
+
+        if (category.isDefault()) {
+            return BotPartReply.builder()
+                    .chatId(chatId)
+                    .previousProcessableMessage(processableMessage)
+                    .nextCommand(CommandType.IMPORT_CARD_SET_TITLE_REQUEST)
+                    .build();
+        }
 
         return BotMessageReply.builder()
                 .chatId(chatId)

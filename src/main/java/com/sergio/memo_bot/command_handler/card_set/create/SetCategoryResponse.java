@@ -6,6 +6,7 @@ import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
+import com.sergio.memo_bot.reply.BotPartReply;
 import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.reply.BotMessageReply;
 import com.sergio.memo_bot.reply.NextReply;
@@ -47,6 +48,14 @@ public class SetCategoryResponse implements CommandHandler {
                         .command(CommandType.GET_CATEGORY_INFO_RESPONSE)
                         .data(new Gson().toJson(chosenCategory))
                 .build());
+
+        if (chosenCategory.isDefault()) {
+            return BotPartReply.builder()
+                    .chatId(chatId)
+                    .previousProcessableMessage(processableMessage)
+                    .nextCommand(CommandType.NAME_SET_REQUEST)
+                    .build();
+        }
 
         return BotMessageReply.builder()
                 .chatId(chatId)

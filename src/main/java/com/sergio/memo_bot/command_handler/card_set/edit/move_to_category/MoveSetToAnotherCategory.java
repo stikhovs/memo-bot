@@ -78,7 +78,7 @@ public class MoveSetToAnotherCategory implements CommandHandler {
         Map<String, String> buttonsMap = categories
                 .stream()
                 .collect(Collectors.toMap(
-                        CategoryDto::getTitle,
+                        categoryDto -> categoryDto.isDefault() ? "Убрать из категории" : categoryDto.getTitle(),
                         categoryDto -> CommandType.CHOOSE_CATEGORY_FOR_SET_MOVING.getCommandText().formatted(categoryDto.getId())
                 ));
 

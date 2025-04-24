@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,8 +41,6 @@ public class GetCategoryInfoResponse implements CommandHandler {
         CategoryDto categoryDto = chatTempDataService.mapDataToType(chatId, CommandType.GET_CATEGORY_INFO_RESPONSE, CategoryDto.class);
         List<CardSetDto> cardSets = chatTempDataService.mapDataToList(chatId, CommandType.GET_CATEGORY_CARD_SET_INFO, CardSetDto.class);
 
-        boolean isDefaultCategory = categoryDto.getTitle().equals("default");
-
         return BotMessageReply.builder()
                 .chatId(chatId)
                 .text(isNotEmpty(cardSets)
@@ -53,14 +52,15 @@ public class GetCategoryInfoResponse implements CommandHandler {
                         categoryDto.getTitle(),
                         size(cardSets))
                 )
+                .parseMode(ParseMode.HTML)
                 .replyMarkup(
                         MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
                                 isNotEmpty(cardSets) ? Pair.of(CHOOSE_CARD_SETS, CommandType.CHOOSE_CARD_SET_IN_CATEGORY) : Pair.of(null, null),
                                 Pair.of(CREATE_CARD_SET_IN_THIS_CATEGORY, CommandType.CREATE_SET_FOR_CHOSEN_CATEGORY),
                                 Pair.of(MOVE_CARD_SETS_TO_THIS_CATEGORY, CommandType.CHOOSE_SETS_FOR_CATEGORY_PREPARE),
-                                isDefaultCategory ? Pair.of(null, null) : Pair.of(EDIT_THIS_CATEGORY, CommandType.EDIT_CATEGORY_REQUEST),
+                                categoryDto.isDefault() ? Pair.of(null, null) : Pair.of(EDIT_THIS_CATEGORY, CommandType.EDIT_CATEGORY_REQUEST),
                                 isNotEmpty(cardSets) ? Pair.of(EXERCISES, CommandType.EXERCISES_FROM_CATEGORY) : Pair.of(null, null),
-                                Pair.of(BACK, CommandType.GET_ALL_CATEGORIES_RESPONSE)
+                                Pair.of(BACK, CommandType.CHOOSE_CATEGORY_REQUEST)
                         )))
                 .build();
     }

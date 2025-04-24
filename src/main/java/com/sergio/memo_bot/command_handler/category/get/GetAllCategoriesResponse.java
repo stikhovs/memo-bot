@@ -22,12 +22,12 @@ import java.util.stream.Collectors;
 import static com.sergio.memo_bot.reply_text.ReplyTextConstant.BACK;
 import static com.sergio.memo_bot.reply_text.ReplyTextConstant.CHOOSE_CATEGORY;
 
-@Slf4j
-@Component
-@RequiredArgsConstructor
-public class GetAllCategoriesResponse implements CommandHandler {
+//@Slf4j
+//@Component
+//@RequiredArgsConstructor
+public class GetAllCategoriesResponse /*implements CommandHandler*/ {
 
-    private final ChatTempDataService chatTempDataService;
+    /*private final ChatTempDataService chatTempDataService;
 
     @Override
     public boolean canHandle(CommandType commandType) {
@@ -66,6 +66,6 @@ public class GetAllCategoriesResponse implements CommandHandler {
         return InlineKeyboardMarkup.builder()
                 .keyboard(rows)
                 .build();
-    }
+    }*/
 
 }

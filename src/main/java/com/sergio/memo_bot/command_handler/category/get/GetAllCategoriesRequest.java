@@ -16,12 +16,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Slf4j
+/*@Slf4j
 @Component
-@RequiredArgsConstructor
-public class GetAllCategoriesRequest implements CommandHandler {
+@RequiredArgsConstructor*/
+public class GetAllCategoriesRequest/* implements CommandHandler*/ {
 
-    private final ApiCallService apiCallService;
+    /*private final ApiCallService apiCallService;
     private final ChatTempDataService chatTempDataService;
 
     @Override
@@ -44,5 +44,5 @@ public class GetAllCategoriesRequest implements CommandHandler {
                 .nextCommand(CommandType.GET_ALL_CATEGORIES_RESPONSE)
                 .previousProcessableMessage(processableMessage)
                 .build();
-    }
+    }*/
 }

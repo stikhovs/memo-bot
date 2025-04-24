@@ -4,10 +4,10 @@ import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.reply.BotMessageReply;
-import com.sergio.memo_bot.util.MarkUpUtil;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
+import com.sergio.memo_bot.util.MarkUpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
@@ -33,7 +33,10 @@ public class CategoryMenu implements CommandHandler {
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
         Long chatId = processableMessage.getChatId();
-        List<CategoryDto> categories = chatTempDataService.mapDataToList(chatId, CommandType.CATEGORY_MENU_DATA, CategoryDto.class);
+        List<CategoryDto> categories = chatTempDataService.mapDataToList(chatId, CommandType.CATEGORY_MENU_DATA, CategoryDto.class)
+                .stream()
+                .filter(categoryDto -> !categoryDto.isDefault())
+                .toList();
 
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())

@@ -59,7 +59,7 @@ public final class ReplyTextConstant {
     public static final String RENAME_CARD_SET = EmojiConverter.getEmoji("U+1F524") + " Переименовать набор: %s";
     public static final String EDIT_CARD = EmojiConverter.getEmoji("U+270F") + " Изменить карточку: %s — %s";
     public static final String ADD_CARD = EmojiConverter.getEmoji("U+1F4DD") + " Добавить карточку";
-    public static final String MOVE_CARD_SET_TO_ANOTHER_CATEGORY = EmojiConverter.getEmoji("U+1F516") + " Перенести набор в другую категорию";
+    public static final String MOVE_CARD_SET_TO_ANOTHER_CATEGORY = EmojiConverter.getEmoji("U+1F516") + " Перенести набор в категорию";
     public static final String DELETE_CARD_SET = EmojiConverter.getEmoji("U+1F5D1") + " Удалить набор";
     public static final String INSERT_NEW_CARD_SET_TITLE = "Введите новое название набора";
     public static final String NEW_CARD_SET_TITLE_SUCCESSFULLY_SAVED = "Новое название успешно сохранено";
@@ -69,6 +69,11 @@ public final class ReplyTextConstant {
             Набор "<strong>%s</strong>".
             
             🟣 Категория <strong>%s</strong>.
+            
+            Количество карточек: %s.
+            """;
+    public static final String CARD_SET_INFO_NO_CATEGORY = """
+            Набор "<strong>%s</strong>".
             
             Количество карточек: %s.
             """;
@@ -101,7 +106,7 @@ public final class ReplyTextConstant {
 
     public static final String INSERT_CATEGORY_TITLE = "Введите название категории";
     public static final String INSERT_CATEGORY_NEW_TITLE = "Введите новое название категории";
-    public static final String CATEGORY_SUCCESSFULLY_CREATED = "Категория \"<strong>%s</strong>\" успешно создана";
+    public static final String CATEGORY_SUCCESSFULLY_CREATED = EmojiConverter.getEmoji("U+2705") + " Категория \"<strong>%s</strong>\" успешно создана";
     public static final String CHOOSE_OPTION_TO_DELETE = "Выберите вариант для удаления";
     public static final String DELETE_CATEGORY_AND_KEEP_CARD_SETS = "Оставить наборы";
     public static final String DELETE_CATEGORY_AND_DELETE_CARD_SETS = "Удалить наборы";

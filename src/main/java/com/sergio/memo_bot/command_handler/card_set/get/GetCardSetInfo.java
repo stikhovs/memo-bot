@@ -59,13 +59,16 @@ public class GetCardSetInfo implements CommandHandler {
 
         CategoryDto category = apiCallService.getCategoryById(chosenCardSet.getCategoryId());
 
+        String text = category.isDefault()
+                ? CARD_SET_INFO_NO_CATEGORY.formatted(chosenCardSet.getTitle(), size(chosenCardSet.getCards()))
+                : CARD_SET_INFO.formatted(
+                chosenCardSet.getTitle(),
+                category.getTitle(),
+                size(chosenCardSet.getCards()));
+
         return BotMessageReply.builder()
                 .chatId(chatId)
-                .text(CARD_SET_INFO.formatted(
-                        chosenCardSet.getTitle(),
-                        category.getTitle(),
-                        size(chosenCardSet.getCards()))
-                )
+                .text(text)
                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
                         Pair.of(SEE_CARDS, CommandType.GET_CARDS),
                         Pair.of(EDIT_CARD_SET, CommandType.EDIT_SET),

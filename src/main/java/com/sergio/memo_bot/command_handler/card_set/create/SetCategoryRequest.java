@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.BACK;
 import static com.sergio.memo_bot.reply_text.ReplyTextConstant.CHOOSE_CATEGORY;
 
 @Slf4j
@@ -75,7 +76,7 @@ public class SetCategoryRequest implements CommandHandler {
         Map<String, String> buttonsMap = categories
                 .stream()
                 .collect(Collectors.toMap(
-                        CategoryDto::getTitle,
+                        categoryDto -> categoryDto.isDefault() ? "Пропустить" : categoryDto.getTitle(),
                         categoryDto -> CommandType.SET_CATEGORY_RESPONSE.getCommandText().formatted(categoryDto.getId())
                 ));
 
@@ -83,7 +84,7 @@ public class SetCategoryRequest implements CommandHandler {
 
         rows.add(new InlineKeyboardRow(
                 InlineKeyboardButton.builder()
-                        .text("Назад")
+                        .text(BACK)
                         .callbackData(CommandType.CARD_SET_MENU.getCommandText())
                         .build()
         ));
