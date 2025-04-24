@@ -5,6 +5,7 @@ import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.command_handler.exercise.ExerciseData;
 import com.sergio.memo_bot.command_handler.exercise.flash_card.dto.FlashCardData;
 import com.sergio.memo_bot.command_handler.exercise.flash_card.dto.VisibleSide;
+import com.sergio.memo_bot.dto.CardDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
@@ -14,6 +15,9 @@ import com.sergio.memo_bot.reply.Reply;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -30,10 +34,12 @@ public class FlashCardsPrepare implements CommandHandler {
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
         ExerciseData exerciseData = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.EXERCISES_RESPONSE, ExerciseData.class);
+        List<CardDto> cards = exerciseData.getCards();
+        Collections.shuffle(cards);
         chatTempDataService.clearAndSave(processableMessage.getChatId(), ChatTempData.builder()
                 .chatId(processableMessage.getChatId())
                 .command(CommandType.FLASH_CARDS_PREPARE)
-                .data(new Gson().toJson(exerciseData.getCards()))
+                .data(new Gson().toJson(cards))
                 .build());
 
         chatTempDataService.clearAndSave(processableMessage.getChatId(), ChatTempData.builder()
@@ -41,9 +47,9 @@ public class FlashCardsPrepare implements CommandHandler {
                 .command(CommandType.FLASH_CARD)
                 .data(new Gson().toJson(
                         FlashCardData.builder()
-                                .totalNumberOfCards(exerciseData.getCards().size())
+                                .totalNumberOfCards(cards.size())
                                 .currentIndex(0)
-                                .card(exerciseData.getCards().getFirst())
+                                .card(cards.getFirst())
                                 .visibleSide(VisibleSide.FRONT)
                                 .build()))
                 .build());
