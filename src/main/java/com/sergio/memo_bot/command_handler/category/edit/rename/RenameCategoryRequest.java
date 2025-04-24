@@ -26,7 +26,7 @@ public class RenameCategoryRequest implements CommandHandler {
 
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
-        chatAwaitsInputService.save(processableMessage.getChatId(), CommandType.RENAME_CATEGORY_USER_INPUT_TITLE);
+        chatAwaitsInputService.clearAndSave(processableMessage.getChatId(), CommandType.RENAME_CATEGORY_USER_INPUT_TITLE);
 
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())

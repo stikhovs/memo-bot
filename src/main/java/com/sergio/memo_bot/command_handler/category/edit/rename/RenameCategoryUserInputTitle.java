@@ -8,12 +8,18 @@ import com.sergio.memo_bot.external.ApiCallService;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatAwaitsInputService;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
+import com.sergio.memo_bot.reply.BotMessageReply;
 import com.sergio.memo_bot.reply.BotPartReply;
+import com.sergio.memo_bot.reply.NextReply;
 import com.sergio.memo_bot.reply.Reply;
 import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.STRING_IS_TOO_LONG;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.length;
 
 @Slf4j
 @Component
@@ -35,6 +41,18 @@ public class RenameCategoryUserInputTitle implements CommandHandler {
         chatAwaitsInputService.clear(chatId);
 
         String categoryTitle = processableMessage.getText();
+
+        if (isBlank(categoryTitle) || length(categoryTitle) > 100) {
+            return BotMessageReply.builder()
+                    .chatId(chatId)
+                    .text(STRING_IS_TOO_LONG)
+                    .nextReply(NextReply.builder()
+                            .previousProcessableMessage(processableMessage)
+                            .nextCommand(CommandType.RENAME_CATEGORY_REQUEST)
+                            .build())
+                    .build();
+        }
+
         CategoryDto categoryDto = chatTempDataService.mapDataToType(chatId, CommandType.GET_CATEGORY_INFO_RESPONSE, CategoryDto.class);
 
 

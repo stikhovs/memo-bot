@@ -194,4 +194,5 @@ public final class ReplyTextConstant {
 
     public static final String FLACH_CARD_FRONT_SIDE = "===== Лицевая сторона ======\n\n\n\n";
     public static final String FLACH_CARD_BACK_SIDE = "===== Обратная сторона =====\n\n\n\n";
+    public static final String STRING_IS_TOO_LONG = EmojiConverter.getEmoji("U+1F6AB") + " Название не должно превышать 100 символов. Попробуйте еще раз.";
 }

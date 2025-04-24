@@ -15,6 +15,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.sergio.memo_bot.reply_text.ReplyTextConstant.CARD_WAS_ADDED;
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.STRING_IS_TOO_LONG;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.length;
 
 
 @Slf4j
@@ -36,6 +39,18 @@ public class BackSideReceived implements CommandHandler {
         Long chatId = processableMessage.getChatId();
 
         chatAwaitsInputService.clear(chatId);
+
+        if (isBlank(processableMessage.getText()) || length(processableMessage.getText()) > 100) {
+            return BotMessageReply.builder()
+                    .chatId(chatId)
+                    .text(STRING_IS_TOO_LONG)
+                    .nextReply(NextReply.builder()
+                            .previousProcessableMessage(processableMessage)
+                            .nextCommand(CommandType.INSERT_BACK_SIDE)
+                            .build())
+                    .build();
+        }
+
         ChatTempData backSide = chatTempDataService.clearAndSave(chatId,
                 ChatTempData.builder()
                         .chatId(chatId)

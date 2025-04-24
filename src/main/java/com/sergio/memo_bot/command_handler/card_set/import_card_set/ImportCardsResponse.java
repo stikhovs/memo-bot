@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.STRING_IS_TOO_LONG;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Slf4j
@@ -79,7 +80,15 @@ public class ImportCardsResponse implements CommandHandler {
 
     private boolean validLine(String card) {
         String[] split = card.trim().split("  ");
-        return ArrayUtils.getLength(split) == 2;
+        return ArrayUtils.getLength(split) == 2 && wordIsLessThan100(split[0]) && wordIsLessThan100(split[1]);
+    }
+
+    private boolean wordIsLessThan100(String word) {
+        if (StringUtils.length(word) < 100) {
+            log.warn(STRING_IS_TOO_LONG);
+            return false;
+        }
+        return true;
     }
 
     private boolean isValid(String data) {

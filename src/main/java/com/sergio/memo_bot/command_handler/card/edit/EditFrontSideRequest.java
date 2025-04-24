@@ -29,9 +29,7 @@ public class EditFrontSideRequest implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
-//                .type(BotReplyType.MESSAGE)
                 .text("Введите лицевую сторону")
-//                .messageId(processableMessage.getMessageId())
                 .build();
     }
 }

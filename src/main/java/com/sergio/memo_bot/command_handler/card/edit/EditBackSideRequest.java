@@ -27,9 +27,7 @@ public class EditBackSideRequest implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
-//                .type(BotReplyType.MESSAGE)
                 .text("Введите обратную сторону")
-//                .messageId(processableMessage.getMessageId())
                 .build();
     }
 }

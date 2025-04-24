@@ -26,7 +26,7 @@ public class CreateCategoryRequest implements CommandHandler {
 
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
-        chatAwaitsInputService.save(processableMessage.getChatId(), CommandType.CREATE_CATEGORY_USER_INPUT_TITLE);
+        chatAwaitsInputService.clearAndSave(processableMessage.getChatId(), CommandType.CREATE_CATEGORY_USER_INPUT_TITLE);
 
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())

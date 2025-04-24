@@ -18,6 +18,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.STRING_IS_TOO_LONG;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.length;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -34,6 +38,17 @@ public class EditBackSideResponse implements CommandHandler {
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
         Long chatId = processableMessage.getChatId();
+
+        if (isBlank(processableMessage.getText()) || length(processableMessage.getText()) > 100) {
+            return BotMessageReply.builder()
+                    .chatId(chatId)
+                    .text(STRING_IS_TOO_LONG)
+                    .nextReply(NextReply.builder()
+                            .previousProcessableMessage(processableMessage)
+                            .nextCommand(CommandType.EDIT_CARD_BACK_SIDE_REQUEST)
+                            .build())
+                    .build();
+        }
 
         CardDto cardDto = chatTempDataService.mapDataToType(chatId, CommandType.EDIT_CARD_REQUEST, CardDto.class);
         CardDto updatedCard = apiCallService.updateCard(cardDto.toBuilder().backSide(processableMessage.getText()).build());
