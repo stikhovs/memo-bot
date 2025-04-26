@@ -5,7 +5,7 @@ import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.external.ApiCallService;
+import com.sergio.memo_bot.external.http.category.CategoryHttpService;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.reply.BotMessageReply;
@@ -32,7 +32,7 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 @RequiredArgsConstructor
 public class MoveSetToAnotherCategory implements CommandHandler {
 
-    private final ApiCallService apiCallService;
+    private final CategoryHttpService categoryHttpService;
     private final ChatTempDataService chatTempDataService;
 
     @Override
@@ -45,7 +45,7 @@ public class MoveSetToAnotherCategory implements CommandHandler {
         Long chatId = processableMessage.getChatId();
 
         CardSetDto cardSetDto = chatTempDataService.mapDataToType(chatId, CommandType.GET_CARD_SET_INFO, CardSetDto.class);
-        List<CategoryDto> categories = apiCallService.getCategoriesByChatId(chatId)
+        List<CategoryDto> categories = categoryHttpService.getByChatId(chatId)
                 .stream()
                 .filter(categoryDto -> !categoryDto.getId().equals(cardSetDto.getCategoryId()))
                 .toList();

@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.external.ApiCallService;
+import com.sergio.memo_bot.external.http.category.CategoryHttpService;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.reply.BotPartReply;
@@ -21,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryMenuDataRequest implements CommandHandler {
 
-    private final ApiCallService apiCallService;
+    private final CategoryHttpService categoryHttpService;
     private final ChatTempDataService chatTempDataService;
 
     @Override
@@ -32,7 +32,7 @@ public class CategoryMenuDataRequest implements CommandHandler {
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
         Long chatId = processableMessage.getChatId();
-        List<CategoryDto> categories = apiCallService.getCategoriesByChatId(chatId);
+        List<CategoryDto> categories = categoryHttpService.getByChatId(chatId);
 
         chatTempDataService.clearAndSave(chatId, ChatTempData.builder()
                 .chatId(chatId)

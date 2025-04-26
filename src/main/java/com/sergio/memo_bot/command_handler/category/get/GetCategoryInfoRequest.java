@@ -4,12 +4,12 @@ import com.google.gson.Gson;
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
+import com.sergio.memo_bot.external.http.category.CategoryHttpService;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.external.ApiCallService;
 import com.sergio.memo_bot.reply.BotPartReply;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class GetCategoryInfoRequest implements CommandHandler {
 
-    private final ApiCallService apiCallService;
+    private final CategoryHttpService categoryHttpService;
     private final ChatTempDataService chatTempDataService;
 
     @Override
@@ -34,7 +34,7 @@ public class GetCategoryInfoRequest implements CommandHandler {
         String[] commandAndCategoryId = processableMessage.getText().split("__");
         Long categoryId = Long.valueOf(commandAndCategoryId[1]);
 
-        CategoryDto category = apiCallService.getCategoryById(categoryId);
+        CategoryDto category = categoryHttpService.getById(categoryId);
 
         chatTempDataService.clearAndSave(chatId, ChatTempData.builder()
                         .chatId(chatId)

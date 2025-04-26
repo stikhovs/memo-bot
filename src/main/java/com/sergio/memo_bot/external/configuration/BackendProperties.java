@@ -1,4 +1,4 @@
-package com.sergio.memo_bot.configuration;
+package com.sergio.memo_bot.external.configuration;
 
 
 import lombok.Getter;
@@ -13,5 +13,7 @@ import org.springframework.context.annotation.Configuration;
 public class BackendProperties {
 
     private String url;
+
+    private String botSecretHeader;
 
 }

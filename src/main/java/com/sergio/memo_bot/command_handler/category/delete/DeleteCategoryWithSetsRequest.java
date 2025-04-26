@@ -3,11 +3,11 @@ package com.sergio.memo_bot.command_handler.category.delete;
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
+import com.sergio.memo_bot.external.http.category.CategoryHttpService;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.external.ApiCallService;
 import com.sergio.memo_bot.reply.BotPartReply;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class DeleteCategoryWithSetsRequest implements CommandHandler {
 
-    private final ApiCallService apiCallService;
+    private final CategoryHttpService categoryHttpService;
     private final ChatTempDataService chatTempDataService;
     @Override
     public boolean canHandle(CommandType commandType) {
@@ -28,7 +28,7 @@ public class DeleteCategoryWithSetsRequest implements CommandHandler {
     public Reply getReply(ProcessableMessage processableMessage) {
         CategoryDto categoryDto = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.GET_CATEGORY_INFO_RESPONSE, CategoryDto.class);
 
-        apiCallService.deleteCategory(categoryDto.getId(), false);
+        categoryHttpService.delete(categoryDto.getId(), false);
 
         return BotPartReply.builder()
                 .chatId(processableMessage.getChatId())

@@ -6,12 +6,12 @@ import com.sergio.memo_bot.command_handler.category.add_sets_to_category.dto.Add
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
+import com.sergio.memo_bot.external.http.card_set.CardSetHttpService;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.external.ApiCallService;
 import com.sergio.memo_bot.reply.BotPartReply;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -25,7 +25,7 @@ import static org.apache.commons.lang3.ObjectUtils.notEqual;
 @RequiredArgsConstructor
 public class ChooseSetsForCategoryPrepare implements CommandHandler {
 
-    private final ApiCallService apiCallService;
+    private final CardSetHttpService cardSetHttpService;
     private final ChatTempDataService chatTempDataService;
 
     @Override
@@ -39,7 +39,7 @@ public class ChooseSetsForCategoryPrepare implements CommandHandler {
 
         CategoryDto chosenCategory = chatTempDataService.mapDataToType(chatId, CommandType.GET_CATEGORY_INFO_RESPONSE, CategoryDto.class);
 
-        List<CardSetDto> cardSets = apiCallService.getCardSets(chatId)
+        List<CardSetDto> cardSets = cardSetHttpService.getCardSets(chatId)
                 .stream()
                 .filter(cardSetDto -> notEqual(cardSetDto.getCategoryId(), chosenCategory.getId()))
                 .toList();

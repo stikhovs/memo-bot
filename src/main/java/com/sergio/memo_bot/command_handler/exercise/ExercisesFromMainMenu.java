@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.external.ApiCallService;
+import com.sergio.memo_bot.external.http.card_set.CardSetHttpService;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.reply.BotMessageReply;
@@ -30,7 +30,7 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 @RequiredArgsConstructor
 public class ExercisesFromMainMenu implements CommandHandler {
 
-    private final ApiCallService apiCallService;
+    private final CardSetHttpService cardSetHttpService;
     private final ChatTempDataService chatTempDataService;
 
     @Override
@@ -42,7 +42,7 @@ public class ExercisesFromMainMenu implements CommandHandler {
     public Reply getReply(ProcessableMessage processableMessage) {
         Long chatId = processableMessage.getChatId();
 
-        List<CardSetDto> cardSets = apiCallService.getCardSets(chatId);
+        List<CardSetDto> cardSets = cardSetHttpService.getCardSets(chatId);
 
         if (isEmpty(cardSets)) {
             return BotMessageReply.builder()

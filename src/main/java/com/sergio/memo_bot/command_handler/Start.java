@@ -2,7 +2,7 @@ package com.sergio.memo_bot.command_handler;
 
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.dto.UserDto;
-import com.sergio.memo_bot.external.ApiCallService;
+import com.sergio.memo_bot.external.http.user.UserHttpService;
 import com.sergio.memo_bot.reply.BotMessageReply;
 import com.sergio.memo_bot.reply.BotPartReply;
 import com.sergio.memo_bot.reply.NextReply;
@@ -13,14 +13,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class Start implements CommandHandler {
 
-    private final ApiCallService apiCallService;
+    private final UserHttpService userHttpService;
 
     @Override
     public boolean canHandle(CommandType commandType) {
@@ -33,8 +31,8 @@ public class Start implements CommandHandler {
     }
 
     private Reply getOrCreateUser(ProcessableMessage processableMessage) {
-        Optional<UserDto> user = apiCallService.getUser(processableMessage.getChatId());
-        if (user.isPresent()) {
+        UserDto user = userHttpService.getUser(processableMessage.getChatId());
+        if (user != null) {
             return BotPartReply.builder()
                     .previousProcessableMessage(processableMessage)
                     .chatId(processableMessage.getChatId())
@@ -58,7 +56,7 @@ public class Start implements CommandHandler {
     }
 
     private UserDto callCreateUserApi(ProcessableMessage processableMessage) {
-        return apiCallService.saveUser(UserDto.builder()
+        return userHttpService.createUser(UserDto.builder()
                 .username(processableMessage.getUsername())
                 .telegramUserId(processableMessage.getUserId())
                 .telegramChatId(processableMessage.getChatId())

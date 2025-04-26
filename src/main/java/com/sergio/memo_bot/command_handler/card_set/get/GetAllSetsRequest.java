@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.external.ApiCallService;
+import com.sergio.memo_bot.external.http.card_set.CardSetHttpService;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.reply.BotMessageReply;
@@ -29,8 +29,8 @@ import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
 @RequiredArgsConstructor
 public class GetAllSetsRequest implements CommandHandler {
 
+    private final CardSetHttpService cardSetHttpService;
     private final ChatTempDataService chatTempDataService;
-    private final ApiCallService apiCallService;
 
     @Override
     public boolean canHandle(CommandType commandType) {
@@ -40,7 +40,7 @@ public class GetAllSetsRequest implements CommandHandler {
     @Override
     @Transactional
     public Reply getReply(ProcessableMessage processableMessage) {
-        List<CardSetDto> cardSets = apiCallService.getCardSets(processableMessage.getChatId());
+        List<CardSetDto> cardSets = cardSetHttpService.getCardSets(processableMessage.getChatId());
 
         if (CollectionUtils.isEmpty(cardSets)) {
             return BotMessageReply.builder()

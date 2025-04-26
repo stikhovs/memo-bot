@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.external.ApiCallService;
+import com.sergio.memo_bot.external.http.category.CategoryHttpService;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatAwaitsInputService;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
@@ -26,7 +26,7 @@ import static org.apache.commons.lang3.StringUtils.length;
 @RequiredArgsConstructor
 public class RenameCategoryUserInputTitle implements CommandHandler {
 
-    private final ApiCallService apiCallService;
+    private final CategoryHttpService categoryHttpService;
     private final ChatTempDataService chatTempDataService;
     private final ChatAwaitsInputService chatAwaitsInputService;
 
@@ -56,7 +56,7 @@ public class RenameCategoryUserInputTitle implements CommandHandler {
         CategoryDto categoryDto = chatTempDataService.mapDataToType(chatId, CommandType.GET_CATEGORY_INFO_RESPONSE, CategoryDto.class);
 
 
-        CategoryDto updatedCategory = apiCallService.updateCategory(categoryDto.toBuilder()
+        CategoryDto updatedCategory = categoryHttpService.update(categoryDto.toBuilder()
                 .title(categoryTitle)
                 .build());
 

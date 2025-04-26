@@ -5,12 +5,12 @@ import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
+import com.sergio.memo_bot.external.http.card_set.CardSetHttpService;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.external.ApiCallService;
 import com.sergio.memo_bot.reply.BotPartReply;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GetCategoryCardSetInfoRequest implements CommandHandler {
 
-    private final ApiCallService apiCallService;
+    private final CardSetHttpService cardSetHttpService;
     private final ChatTempDataService chatTempDataService;
 
     @Override
@@ -35,7 +35,7 @@ public class GetCategoryCardSetInfoRequest implements CommandHandler {
         Long chatId = processableMessage.getChatId();
 
         CategoryDto categoryDto = chatTempDataService.mapDataToType(chatId, CommandType.GET_CATEGORY_INFO_RESPONSE, CategoryDto.class);
-        List<CardSetDto> cardSets = apiCallService.getCardSetsByCategory(categoryDto.getId());
+        List<CardSetDto> cardSets = cardSetHttpService.getCardSetsByCategory(categoryDto.getId());
 
         chatTempDataService.clearAndSave(processableMessage.getChatId(),
                 ChatTempData.builder()

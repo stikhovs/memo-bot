@@ -5,7 +5,8 @@ import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.external.ApiCallService;
+import com.sergio.memo_bot.external.http.card_set.CardSetHttpService;
+import com.sergio.memo_bot.external.http.category.CategoryHttpService;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.reply.BotMessageReply;
@@ -30,7 +31,8 @@ import static org.apache.commons.collections4.CollectionUtils.size;
 public class GetCardSetInfo implements CommandHandler {
 
     private final ChatTempDataService chatTempDataService;
-    private final ApiCallService apiCallService;
+    private final CardSetHttpService cardSetHttpService;
+    private final CategoryHttpService categoryHttpService;
 
     @Override
     public boolean canHandle(CommandType commandType) {
@@ -48,7 +50,7 @@ public class GetCardSetInfo implements CommandHandler {
             chosenCardSet = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.GET_CARD_SET_INFO, CardSetDto.class);
         } else {
             Long chosenCardSetId = Long.valueOf(commandAndCardSetId[1]);
-            chosenCardSet = apiCallService.getCardSet(chosenCardSetId).orElseThrow();
+            chosenCardSet = cardSetHttpService.getCardSet(chosenCardSetId);
         }
 
         chatTempDataService.clearAndSave(chatId, ChatTempData.builder()
@@ -57,7 +59,7 @@ public class GetCardSetInfo implements CommandHandler {
                 .command(CommandType.GET_CARD_SET_INFO)
                 .build());
 
-        CategoryDto category = apiCallService.getCategoryById(chosenCardSet.getCategoryId());
+        CategoryDto category = categoryHttpService.getById(chosenCardSet.getCategoryId());
 
         String text = category.isDefault()
                 ? CARD_SET_INFO_NO_CATEGORY.formatted(chosenCardSet.getTitle(), size(chosenCardSet.getCards()))

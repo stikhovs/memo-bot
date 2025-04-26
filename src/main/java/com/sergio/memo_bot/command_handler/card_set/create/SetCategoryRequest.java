@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.external.ApiCallService;
+import com.sergio.memo_bot.external.http.category.CategoryHttpService;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.reply.BotMessageReply;
@@ -33,7 +33,7 @@ import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
 @RequiredArgsConstructor
 public class SetCategoryRequest implements CommandHandler {
 
-    private final ApiCallService apiCallService;
+    private final CategoryHttpService categoryHttpService;
     private final ChatTempDataService chatTempDataService;
 
     @Override
@@ -49,7 +49,7 @@ public class SetCategoryRequest implements CommandHandler {
         Optional<ChatTempData> optionalChosenCategory = chatTempDataService.find(chatId, CommandType.GET_CATEGORY_INFO_RESPONSE);
 
         if (optionalChosenCategory.isEmpty()) {
-            List<CategoryDto> categories = apiCallService.getCategoriesByChatId(chatId);
+            List<CategoryDto> categories = categoryHttpService.getByChatId(chatId);
 
             chatTempDataService.clearAndSave(chatId, ChatTempData.builder()
                             .chatId(chatId)

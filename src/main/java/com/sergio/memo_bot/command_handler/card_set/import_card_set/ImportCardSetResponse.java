@@ -4,12 +4,12 @@ import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CardDto;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
+import com.sergio.memo_bot.external.http.card_set.CardSetHttpService;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.external.ApiCallService;
 import com.sergio.memo_bot.reply.BotMessageReply;
 import com.sergio.memo_bot.reply.NextReply;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,7 +23,7 @@ import static com.sergio.memo_bot.reply_text.ReplyTextConstant.CARD_SET_SUCCESSF
 @RequiredArgsConstructor
 public class ImportCardSetResponse implements CommandHandler {
 
-    private final ApiCallService apiCallService;
+    private final CardSetHttpService cardSetHttpService;
     private final ChatTempDataService chatTempDataService;
 
     @Override
@@ -46,7 +46,7 @@ public class ImportCardSetResponse implements CommandHandler {
                 .cards(cards)
                 .build();
 
-        apiCallService.saveCardSet(cardSetDto);
+        cardSetHttpService.saveCardSet(cardSetDto);
 
         return BotMessageReply.builder()
                 .chatId(chatId)

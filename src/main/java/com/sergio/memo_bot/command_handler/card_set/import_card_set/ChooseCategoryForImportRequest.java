@@ -3,7 +3,7 @@ package com.sergio.memo_bot.command_handler.card_set.import_card_set;
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.external.ApiCallService;
+import com.sergio.memo_bot.external.http.category.CategoryHttpService;
 import com.sergio.memo_bot.reply.BotMessageReply;
 import com.sergio.memo_bot.reply.Reply;
 import com.sergio.memo_bot.state.CommandType;
@@ -27,7 +27,7 @@ import static com.sergio.memo_bot.reply_text.ReplyTextConstant.CHOOSE_CATEGORY;
 @RequiredArgsConstructor
 public class ChooseCategoryForImportRequest implements CommandHandler {
 
-    private final ApiCallService apiCallService;
+    private final CategoryHttpService categoryHttpService;
 
     @Override
     public boolean canHandle(CommandType commandType) {
@@ -37,7 +37,7 @@ public class ChooseCategoryForImportRequest implements CommandHandler {
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
         Long chatId = processableMessage.getChatId();
-        List<CategoryDto> categories = apiCallService.getCategoriesByChatId(chatId);
+        List<CategoryDto> categories = categoryHttpService.getByChatId(chatId);
 
         return BotMessageReply.builder()
                 .chatId(chatId)

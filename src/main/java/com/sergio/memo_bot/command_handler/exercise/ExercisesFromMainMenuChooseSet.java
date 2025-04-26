@@ -4,12 +4,12 @@ import com.google.gson.Gson;
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
+import com.sergio.memo_bot.external.http.card_set.CardSetHttpService;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.external.ApiCallService;
 import com.sergio.memo_bot.reply.BotPartReply;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ExercisesFromMainMenuChooseSet implements CommandHandler {
 
-    private final ApiCallService apiCallService;
+    private final CardSetHttpService cardSetHttpService;
     private final ChatTempDataService chatTempDataService;
 
     @Override
@@ -34,7 +34,7 @@ public class ExercisesFromMainMenuChooseSet implements CommandHandler {
         String[] commandAndCardSetId = processableMessage.getText().split("__");
         Long cardSetId = Long.valueOf(commandAndCardSetId[1]);
 
-        CardSetDto chosenCardSet = apiCallService.getCardSet(cardSetId).orElseThrow();
+        CardSetDto chosenCardSet = cardSetHttpService.getCardSet(cardSetId);
 
         chatTempDataService.clearAndSave(chatId, ChatTempData.builder()
                 .chatId(chatId)

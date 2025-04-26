@@ -5,7 +5,8 @@ import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.external.ApiCallService;
+import com.sergio.memo_bot.external.http.card.CardHttpService;
+import com.sergio.memo_bot.external.http.card_set.CardSetHttpService;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.reply.BotMessageReply;
 import com.sergio.memo_bot.reply.BotPartReply;
@@ -23,7 +24,8 @@ import static com.sergio.memo_bot.reply_text.ReplyTextConstant.SOMETHING_WENT_WR
 @RequiredArgsConstructor
 public class SaveSetRequest implements CommandHandler {
 
-    private final ApiCallService apiCallService;
+    private final CardHttpService cardHttpService;
+    private final CardSetHttpService cardSetHttpService;
     private final ChatTempDataService chatTempDataService;
 
     @Override
@@ -64,9 +66,9 @@ public class SaveSetRequest implements CommandHandler {
     private Runnable getAction(Long chatId, CardSetDto cardSetDto) {
         Runnable action;
         if (chatTempDataService.find(chatId, CommandType.GET_CARD_SET_INFO).isPresent()) {
-            action = () -> apiCallService.addCard(cardSetDto.getId(), cardSetDto.getCards().getLast());
+            action = () -> cardHttpService.addCard(cardSetDto.getId(), cardSetDto.getCards().getLast());
         } else {
-            action = () -> apiCallService.saveCardSet(cardSetDto);
+            action = () -> cardSetHttpService.saveCardSet(cardSetDto);
         }
         return action;
     }

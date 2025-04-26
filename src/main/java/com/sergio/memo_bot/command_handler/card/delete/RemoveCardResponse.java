@@ -5,13 +5,13 @@ import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CardDto;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
+import com.sergio.memo_bot.external.http.card.CardHttpService;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.external.ApiCallService;
 import com.sergio.memo_bot.reply.BotMessageReply;
 import com.sergio.memo_bot.reply.NextReply;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -25,7 +25,7 @@ import static org.apache.commons.lang3.ObjectUtils.notEqual;
 @RequiredArgsConstructor
 public class RemoveCardResponse implements CommandHandler {
 
-    private final ApiCallService apiCallService;
+    private final CardHttpService cardHttpService;
     private final ChatTempDataService chatTempDataService;
 
     @Override
@@ -38,7 +38,7 @@ public class RemoveCardResponse implements CommandHandler {
         Long chatId = processableMessage.getChatId();
 
         CardDto cardDto = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.EDIT_CARD_REQUEST, CardDto.class);
-        apiCallService.deleteCard(cardDto.getId());
+        cardHttpService.deleteCard(cardDto.getId());
         chatTempDataService.clear(chatId, CommandType.EDIT_CARD_REQUEST);
 
         CardSetDto updatedCardSet = removeCardFromDB(chatId, cardDto.getId());
@@ -50,8 +50,6 @@ public class RemoveCardResponse implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(chatId)
-//                .messageId(processableMessage.getMessageId())
-//                .type(BotReplyType.MESSAGE)
                 .text("Карточка удалена")
                 .nextReply(NextReply.builder()
                         .nextCommand(CommandType.GET_CARD_SET_INFO)

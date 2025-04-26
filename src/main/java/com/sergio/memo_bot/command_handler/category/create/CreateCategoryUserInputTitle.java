@@ -3,14 +3,14 @@ package com.sergio.memo_bot.command_handler.category.create;
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CategoryDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
+import com.sergio.memo_bot.external.http.category.CategoryHttpService;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.reply.BotMessageReply;
-import com.sergio.memo_bot.reply.NextReply;
-import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.external.ApiCallService;
 import com.sergio.memo_bot.reply.BotPartReply;
+import com.sergio.memo_bot.reply.NextReply;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ import static org.apache.commons.lang3.StringUtils.length;
 @RequiredArgsConstructor
 public class CreateCategoryUserInputTitle implements CommandHandler {
 
-    private final ApiCallService apiCallService;
+    private final CategoryHttpService categoryHttpService;
     private final ChatTempDataService chatTempDataService;
 
     @Override
@@ -49,7 +49,7 @@ public class CreateCategoryUserInputTitle implements CommandHandler {
                     .build();
         }
 
-        CategoryDto categoryDto = apiCallService.saveCategory(chatId, CategoryDto.builder()
+        CategoryDto categoryDto = categoryHttpService.save(chatId, CategoryDto.builder()
                 .title(categoryTitle)
                 .build());
 

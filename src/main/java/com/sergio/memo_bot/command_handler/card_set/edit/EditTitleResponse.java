@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.external.ApiCallService;
+import com.sergio.memo_bot.external.http.card_set.CardSetHttpService;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
 import com.sergio.memo_bot.reply.BotMessageReply;
@@ -25,7 +25,7 @@ import static org.apache.commons.lang3.StringUtils.length;
 @RequiredArgsConstructor
 public class EditTitleResponse implements CommandHandler {
 
-    private final ApiCallService apiCallService;
+    private final CardSetHttpService cardSetHttpService;
     private final ChatTempDataService chatTempDataService;
 
     @Override
@@ -51,7 +51,7 @@ public class EditTitleResponse implements CommandHandler {
         CardSetDto cardSetDto = chatTempDataService.mapDataToType(chatId, CommandType.GET_CARD_SET_INFO, CardSetDto.class);
 
         CardSetDto newCardSet = cardSetDto.toBuilder().title(processableMessage.getText()).build();
-        CardSetDto savedCardSet = apiCallService.updateCardSet(newCardSet);
+        CardSetDto savedCardSet = cardSetHttpService.updateCardSet(newCardSet);
 
         chatTempDataService.clearAndSave(chatId, ChatTempData.builder()
                 .chatId(chatId)

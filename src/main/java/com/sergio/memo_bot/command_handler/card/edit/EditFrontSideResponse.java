@@ -5,13 +5,13 @@ import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CardDto;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
+import com.sergio.memo_bot.external.http.card.CardHttpService;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.external.ApiCallService;
 import com.sergio.memo_bot.reply.BotMessageReply;
 import com.sergio.memo_bot.reply.NextReply;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,7 @@ import static org.apache.commons.lang3.StringUtils.length;
 @RequiredArgsConstructor
 public class EditFrontSideResponse implements CommandHandler {
 
-    private final ApiCallService apiCallService;
+    private final CardHttpService cardHttpService;
     private final ChatTempDataService chatTempDataService;
 
     @Override
@@ -51,7 +51,7 @@ public class EditFrontSideResponse implements CommandHandler {
         }
 
         CardDto cardDto = chatTempDataService.mapDataToType(chatId, CommandType.EDIT_CARD_REQUEST, CardDto.class);
-        CardDto updatedCard = apiCallService.updateCard(cardDto.toBuilder().frontSide(processableMessage.getText()).build());
+        CardDto updatedCard = cardHttpService.updateCard(cardDto.toBuilder().frontSide(processableMessage.getText()).build());
         CardSetDto updatedCardSet = getCardSetAndUpdateIt(chatId, updatedCard);
 
         chatTempDataService.clearAndSave(chatId, ChatTempData.builder()
@@ -62,9 +62,7 @@ public class EditFrontSideResponse implements CommandHandler {
 
         return BotMessageReply.builder()
                 .chatId(chatId)
-//                .type(BotReplyType.MESSAGE)
                 .text("Лицевая сторона успешно сохранена")
-//                .messageId(processableMessage.getMessageId())
                 .nextReply(NextReply.builder()
                         .nextCommand(CommandType.GET_CARD_SET_INFO)
                         .previousProcessableMessage(processableMessage.toBuilder().text(CommandType.GET_CARD_SET_INFO.getCommandText()).build())

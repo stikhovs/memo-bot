@@ -16,6 +16,4 @@ public class BotProperties {
 
     private String apiKey;
 
-    private String botSecret;
-
 }
