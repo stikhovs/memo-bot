@@ -84,7 +84,7 @@ public class ImportCardsResponse implements CommandHandler {
     }
 
     private boolean wordIsLessThan100(String word) {
-        if (StringUtils.length(word) < 100) {
+        if (StringUtils.length(word) > 100) {
             log.warn(STRING_IS_TOO_LONG);
             return false;
         }
