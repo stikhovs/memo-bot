@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.sergio.memo_bot.reply_text.ReplyTextConstant.THERE_SHOULD_BE_TWO_OR_MORE_CARDS_FOR_QUIZ;
 import static org.apache.commons.collections4.CollectionUtils.size;
@@ -106,7 +107,10 @@ public class QuizPrepare implements CommandHandler {
     private void putIncorrectOptions(List<CardDto> cards, String correctAnswer, List<Pair<String, Boolean>> answerOptions) {
         List<CardDto> excludedCorrectAnswer = cards.stream()
                 .filter(cardDto -> notEqual(cardDto.getBackSide(), correctAnswer))
-                .toList();
+                .collect(Collectors.toList());
+
+        // shuffle incorrect options
+        Collections.shuffle(excludedCorrectAnswer);
 
         if (cards.size() > 3) {
             for (int i = 0; i < 3; i++) {
