@@ -13,4 +13,6 @@ public class DeleteMessageReply implements Reply {
 
     private List<Integer> messageIds;
 
+    private NextReply nextReply;
+
 }

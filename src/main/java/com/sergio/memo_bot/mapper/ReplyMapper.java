@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.QUIZ_START;
+
 @Service
 @RequiredArgsConstructor
 public class ReplyMapper {
@@ -154,20 +156,46 @@ public class ReplyMapper {
         return replies;
     }
 
-    public ReplyData toReplyData(BotQuizReply reply) {
+    public List<ReplyData> toReplyData(BotQuizReply reply) {
+        List<ReplyData> replies = new ArrayList<>();
+        Long chatId = reply.getChatId();
+
         QuizItem quiz = reply.getQuiz();
-        return ReplyData.builder()
-                .reply(SendPoll.builder()
-                        .chatId(reply.getChatId())
-                        .type("quiz")
-                        .protectContent(true)
-                        .isAnonymous(false)
-                        .question(quiz.getQuestion())
-                        .options(quiz.getAnswerOptions().stream().map(option -> InputPollOption.builder().text(option.getFirst()).build()).toList())
-                        .correctOptionId(reply.getCorrectIndex())
-                        .build())
-                .hasButtons(false)
-                .build();
+        Optional<ChatMessage> lastWithButtonsMessage = chatMessageService.findLastWithButtonsMessage(chatId);
+        if (lastWithButtonsMessage.isPresent()) {
+            ChatMessage lastMessage = lastWithButtonsMessage.get();
+            replies.add(
+                    ReplyData.builder()
+                            .reply(
+                                    EditMessageText.builder()
+                                            .chatId(chatId)
+                                            .messageId(lastMessage.getMessageId())
+                                            .text(QUIZ_START)
+                                            .replyMarkup(null)
+                                            .build()
+                            )
+                            .chatId(chatId)
+                            .messageId(lastMessage.getMessageId())
+                            .hasButtons(false)
+                            .build()
+            );
+        }
+        replies.add(
+                ReplyData.builder()
+                        .reply(SendPoll.builder()
+                                .chatId(chatId)
+                                .type("quiz")
+                                .protectContent(true)
+                                .isAnonymous(false)
+                                .question(quiz.getQuestion())
+                                .options(quiz.getAnswerOptions().stream().map(option -> InputPollOption.builder().text(option.getFirst()).build()).toList())
+                                .correctOptionId(reply.getCorrectIndex())
+                                .build())
+                        .hasButtons(false)
+                        .chatId(chatId)
+                        .build()
+        );
+        return replies;
     }
 
     public ReplyData toReplyData(BotImageReply reply) {

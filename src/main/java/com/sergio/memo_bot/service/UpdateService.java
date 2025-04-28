@@ -9,7 +9,7 @@ import com.sergio.memo_bot.persistence.service.ChatAwaitsInputService;
 import com.sergio.memo_bot.persistence.service.ChatMessageService;
 import com.sergio.memo_bot.reply.*;
 import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.util.*;
+import com.sergio.memo_bot.util.UpdateMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -46,8 +46,6 @@ public class UpdateService {
                 List<AwaitsUserInput> ifAwaitsUserTextInput = chatAwaitsInputService.findAll(processableMessage.getChatId());
                 if (isNotEmpty(ifAwaitsUserTextInput)) {
                     log.info("Consumed user input: {}", processableMessage);
-                    /*Integer newMessageId = chatMessageService.findMessageId(processableMessage.getChatId()).orElse(null);
-                    log.info("Changing messageId from {} to {}", processableMessage.getMessageId(), newMessageId);*/
                     CommandType commandType = ifAwaitsUserTextInput.getFirst().getNextCommand();
                     Reply reply = handleCommand(commandType, processableMessage);
                     send(reply);
@@ -74,14 +72,17 @@ public class UpdateService {
                     .text(botPartReply.getText())
                     .build();
             send(handleCommand(botPartReply.getNextCommand(), processableMessage));
-        } /*else if (reply instanceof MultipleBotReply multipleBotReply) {
-            senderService.send(replyMapper.toReplyData(multipleBotReply));
-            send(handleCommand(multipleBotReply.getNextCommand(), multipleBotReply.getPreviousProcessableMessage()));
-        }*/ else if (reply instanceof DeleteMessageReply deleteMessageReply) {
+        } else if (reply instanceof DeleteMessageReply deleteMessageReply) {
             senderService.send(replyMapper.toReplyData(deleteMessageReply));
             chatMessageService.delete(deleteMessageReply.getChatId(), deleteMessageReply.getMessageIds());
+            NextReply nextReply = deleteMessageReply.getNextReply();
+            if (nextReply != null) {
+                send(handleCommand(nextReply.getNextCommand(), nextReply.getPreviousProcessableMessage()));
+            }
         } else if (reply instanceof BotQuizReply quizReply) {
-            senderService.send(replyMapper.toReplyData(quizReply));
+            for (ReplyData replyData : replyMapper.toReplyData(quizReply)) {
+                senderService.send(replyData);
+            }
         }else if (reply instanceof BotImageReply imageReply) {
             senderService.send(replyMapper.toReplyData(imageReply));
         }

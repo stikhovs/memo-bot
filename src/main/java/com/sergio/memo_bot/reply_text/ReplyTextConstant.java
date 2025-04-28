@@ -9,7 +9,7 @@ public final class ReplyTextConstant {
     public static final String MAIN_MENU = """
             Выберите одно из действий:
             
-            1. <strong>Наборы карточек</strong> — основа вашего обучения и прогресса. С помощью наборов с карточками вы можете учить, повторять и вспоминать неограниченное количество слов, определений, дат или терминов. Создавайте наборы и используйте их в упражнениях.
+            1. <strong>Наборы карточек</strong> — основа вашего обучения и прогресса. С помощью наборов вы можете учить, повторять и вспоминать неограниченное количество слов, определений, дат или терминов. Создавайте наборы и используйте их в упражнениях.
             
             2. <strong>Категории</strong> — для удобства наборы можно объединять в категории.
             
@@ -181,6 +181,7 @@ public final class ReplyTextConstant {
     public static final String TO_EXERCISES_LIST = "К списку упражнений";
 
 
+    public static final String QUIZ_START = "Начинаем квиз! " + EmojiConverter.getEmoji("U+1F64C");
     public static final String QUIZ_FINISHED = EmojiConverter.getEmoji("U+1F3C6") + " Квиз завершен!";
     public static final String THERE_SHOULD_BE_TWO_OR_MORE_CARDS_FOR_QUIZ =  EmojiConverter.getEmoji("U+1F645") + " Для квиза в наборе должно быть 2 и более карточек";
 
