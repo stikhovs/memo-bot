@@ -43,23 +43,29 @@ public class ConnectWordsResponse implements CommandHandler {
         Optional<WordWithHiddenAnswer> activePair = connectWordsData.getWordsWithHiddenAnswers().stream().filter(WordWithHiddenAnswer::isActive).findFirst();
 
         if (activePair.isPresent()) {
-            boolean isCorrect = activePair.get().getHiddenAnswer().equals(chosenWord.getWordToShow());
+            boolean isTheSame = activePair.get().getId() == chosenWord.getId();
 
-            if (isCorrect) {
-                connectWordsData.getConnectedPairs().add(ConnectedPair.builder()
-                        .wordOne(activePair.get().getWordToShow())
-                        .wordOneId(activePair.get().getId())
-                        .wordTwo(chosenWord.getWordToShow())
-                        .wordTwoId(chosenWord.getId())
-                        .build());
-                connectWordsData.setWordsWithHiddenAnswers(
-                        connectWordsData.getWordsWithHiddenAnswers().stream()
-                                .filter(it -> !it.isActive())
-                                .filter(it -> it.getId() != btnId)
-                                .toList()
-                );
+            if (isTheSame) {
+                chosenWord.setActive(false);
             } else {
-                connectWordsData.setMistakeCount(connectWordsData.getMistakeCount() + 1);
+                boolean isCorrect = activePair.get().getHiddenAnswer().equals(chosenWord.getWordToShow());
+
+                if (isCorrect) {
+                    connectWordsData.getConnectedPairs().add(ConnectedPair.builder()
+                            .wordOne(activePair.get().getWordToShow())
+                            .wordOneId(activePair.get().getId())
+                            .wordTwo(chosenWord.getWordToShow())
+                            .wordTwoId(chosenWord.getId())
+                            .build());
+                    connectWordsData.setWordsWithHiddenAnswers(
+                            connectWordsData.getWordsWithHiddenAnswers().stream()
+                                    .filter(it -> !it.isActive())
+                                    .filter(it -> it.getId() != btnId)
+                                    .toList()
+                    );
+                } else {
+                    connectWordsData.setMistakeCount(connectWordsData.getMistakeCount() + 1);
+                }
             }
 
         } else {

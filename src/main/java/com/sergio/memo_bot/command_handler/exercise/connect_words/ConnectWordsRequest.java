@@ -64,7 +64,6 @@ public class ConnectWordsRequest implements CommandHandler {
                                     it -> it.getWordOneId().equals(wordWithHiddenAnswer.getId())
                                             || it.getWordTwoId().equals(wordWithHiddenAnswer.getId())
                             ))
-                    .filter(wordWithHiddenAnswer -> !wordWithHiddenAnswer.isActive())
                     .toList();
 
             if (activePair.isPresent()) {
@@ -112,7 +111,7 @@ public class ConnectWordsRequest implements CommandHandler {
 
         List<InlineKeyboardButton> buttons = currentButtons.stream()
                 .map(btn -> InlineKeyboardButton.builder()
-                        .text(btn.getWordToShow())
+                        .text(btn.isActive() ? "| " + btn.getWordToShow() + " |" : btn.getWordToShow())
                         .callbackData(CommandType.CONNECT_WORDS_RESPONSE.getCommandText().formatted(btn.getId()))
                         .build())
                 .collect(Collectors.toList());
