@@ -14,10 +14,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.SOMETHING_WENT_WRONG;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @Slf4j
@@ -35,22 +37,32 @@ public class UpdateService {
     @Transactional
     public void process(Update update) {
         ProcessableMessage processableMessage = updateMapper.map(update);
-
-        if (processableMessage.isProcessable()) {
-            chatMessageService.saveFromUser(processableMessage.getChatId(), processableMessage.getMessageId(), processableMessage.isHasPhoto() ? MessageContentType.IMAGE : MessageContentType.TEXT);
-            if (CommandType.isCommandType(processableMessage.getText())) {
-                log.info("Consumed command: {}", processableMessage);
-                Reply reply = handleCommand(CommandType.getByCommandText(processableMessage.getText()), processableMessage);
-                send(reply);
-            } else {
-                List<AwaitsUserInput> ifAwaitsUserTextInput = chatAwaitsInputService.findAll(processableMessage.getChatId());
-                if (isNotEmpty(ifAwaitsUserTextInput)) {
-                    log.info("Consumed user input: {}", processableMessage);
-                    CommandType commandType = ifAwaitsUserTextInput.getFirst().getNextCommand();
-                    Reply reply = handleCommand(commandType, processableMessage);
+        try {
+            if (processableMessage.isProcessable()) {
+                chatMessageService.saveFromUser(processableMessage.getChatId(), processableMessage.getMessageId(), processableMessage.isHasPhoto() ? MessageContentType.IMAGE : MessageContentType.TEXT);
+                if (CommandType.isCommandType(processableMessage.getText())) {
+                    log.info("Consumed command: {}", processableMessage);
+                    Reply reply = handleCommand(CommandType.getByCommandText(processableMessage.getText()), processableMessage);
                     send(reply);
+                } else {
+                    List<AwaitsUserInput> ifAwaitsUserTextInput = chatAwaitsInputService.findAll(processableMessage.getChatId());
+                    if (isNotEmpty(ifAwaitsUserTextInput)) {
+                        log.info("Consumed user input: {}", processableMessage);
+                        CommandType commandType = ifAwaitsUserTextInput.getFirst().getNextCommand();
+                        Reply reply = handleCommand(commandType, processableMessage);
+                        send(reply);
+                    }
                 }
             }
+        } catch (Throwable ex) {
+            log.error("Something went wrong", ex);
+            senderService.send(ReplyData.builder()
+                            .chatId(processableMessage.getChatId())
+                            .reply(SendMessage.builder()
+                                    .chatId(processableMessage.getChatId())
+                                    .text(SOMETHING_WENT_WRONG)
+                                    .build())
+                    .build());
         }
 
     }
@@ -83,7 +95,7 @@ public class UpdateService {
             for (ReplyData replyData : replyMapper.toReplyData(quizReply)) {
                 senderService.send(replyData);
             }
-        }else if (reply instanceof BotImageReply imageReply) {
+        } else if (reply instanceof BotImageReply imageReply) {
             senderService.send(replyMapper.toReplyData(imageReply));
         }
     }

@@ -50,7 +50,7 @@ public final class ReplyTextConstant {
                                 Карточки: \n%s
                                 """;
 
-    public static final String SOMETHING_WENT_WRONG = "Что-то пошло не так";
+    public static final String SOMETHING_WENT_WRONG = "Что-то сломалось или пошло не так " + EmojiConverter.getEmoji("U+1F64A");
     public static final String ADD_ONE_MORE_CARD = EmojiConverter.getEmoji("U+2705") + " Добавить еще карточку";
     public static final String SAVE_CARD_SET = EmojiConverter.getEmoji("U+1F4BE") + " Сохранить набор";
     public static final String CARD_WAS_ADDED = EmojiConverter.getEmoji("U+2705") + " Добавлена карточка: %s - %s";
