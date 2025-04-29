@@ -8,6 +8,7 @@ import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,8 @@ public interface ChatMessageRepository extends ListCrudRepository<ChatMessage, L
     Optional<ChatMessage> findOneByChatIdAndMessageId(Long chatId, Integer messageId);
 
     List<ChatMessage> findByChatIdOrderByUpdatedAtDesc(Long chatId);
+
+    List<ChatMessage> findByCreatedAtBefore(LocalDateTime threshold);
 
     List<ChatMessage> findByChatIdAndSenderTypeOrderByUpdatedAtDesc(Long chatId, SenderType senderType);
 

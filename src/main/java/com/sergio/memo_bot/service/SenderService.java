@@ -56,7 +56,7 @@ public class SenderService {
             case "sendphoto", "editMessageMedia" ->
                     chatMessageService.saveFromBot(reply.getChatId(), ((Message) sentMessage).getMessageId(), reply.isHasButtons(), MessageContentType.IMAGE);
             case "sendPoll" ->
-                chatMessageService.saveFromBot(reply.getChatId(), ((Message)sentMessage).getMessageId(), false, MessageContentType.QUIZ);
+                    chatMessageService.saveFromBot(reply.getChatId(), ((Message) sentMessage).getMessageId(), false, MessageContentType.QUIZ);
         }
     }
 

@@ -43,7 +43,6 @@ public class ChatMessageService {
         log.info("Saving to chat_message from bot: chatId {}, messageId {}, hasButtons {}, messageContentType: {}", chatId, messageId, hasButtons, messageContentType);
         chatMessageRepository.findOneByChatIdAndMessageId(chatId, messageId)
                 .ifPresentOrElse(it -> {
-//                            it.setUpdatedAt(LocalDateTime.now());
                             it.setHasButtons(hasButtons);
                             it.setMessageContentType(messageContentType);
                             chatMessageRepository.save(it);
@@ -54,7 +53,6 @@ public class ChatMessageService {
                                 .senderType(SenderType.BOT)
                                 .messageContentType(messageContentType)
                                 .hasButtons(hasButtons)
-                                .updatedAt(LocalDateTime.now())
                                 .build()
                         ));
 //        log.info("Saved to chat_message from bot: chatId {}, messageId {}", chatId, messageId);
@@ -91,14 +89,18 @@ public class ChatMessageService {
         return chatMessageRepository.findByChatIdOrderByUpdatedAtDesc(chatId);
     }
 
+    public List<ChatMessage> findByCreatedAtBefore(LocalDateTime threshold) {
+        return chatMessageRepository.findByCreatedAtBefore(threshold);
+    }
+
     public void delete(Long chatId) {
-//        log.info("Deleting chat message for chatId {}", chatId);
         chatMessageRepository.deleteByChatId(chatId);
     }
 
     public void delete(Long chatId, List<Integer> messageIds) {
         log.info("Deleting chat messages for chatId {} and messageIds in {}", chatId, messageIds);
         chatMessageRepository.deleteByChatIdAndMessages(chatId, messageIds);
+        log.info("Deleted chat messages for chatId {} and messageIds in {}", chatId, messageIds);
     }
 
 

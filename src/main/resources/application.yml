@@ -18,6 +18,9 @@ spring:
 bot:
   base-url: https://api.telegram.org/bot
   api-key: ${TELEGRAM_API_KEY}
+  cleanup:
+    scheduler:
+      delay-ms: 3600000 # once in 1 hour
 
 backend:
   url: ${BACKEND_URL}
