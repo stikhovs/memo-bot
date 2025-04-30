@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
+import static org.apache.commons.collections4.CollectionUtils.size;
 
 @Slf4j
 @Component
@@ -34,17 +35,37 @@ public class ExercisesResponse implements CommandHandler {
 
         CommandType sourceCommand = defineSource(chatId);
 
-        return BotMessageReply.builder()
-                .chatId(chatId)
-                .text(CHOOSE_EXERCISE)
-                .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
-                        Pair.of(FLASH_CARDS, CommandType.FLASH_CARDS_PREPARE),
-                        Pair.of(QUIZ, CommandType.QUIZ_PREPARE),
-                        Pair.of(INPUT_ANSWER, CommandType.ANSWER_INPUT_PREPARE),
-                        Pair.of(FIND_PAIRS, CommandType.CONNECT_WORDS_PREPARE),
-                        Pair.of(BACK, defineBackButton(sourceCommand))
-                )))
-                .build();
+        ExerciseData exerciseData = chatTempDataService.mapDataToType(chatId, CommandType.EXERCISES_RESPONSE, ExerciseData.class);
+        chatTempDataService.clear(chatId, CommandType.ANSWER_INPUT_REQUEST);
+        chatTempDataService.clear(chatId, CommandType.CONNECT_WORDS_REQUEST);
+        chatTempDataService.clear(chatId, CommandType.QUIZ);
+
+        if (exerciseData.isUsePagination()) {
+            return BotMessageReply.builder()
+                    .chatId(chatId)
+                    .text(PAGEABLE_EXERCISE_EXPLANATION.formatted(size(exerciseData.getCardPages())))
+                    .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
+                            Pair.of(FLASH_CARDS, CommandType.FLASH_CARDS_PREPARE),
+                            Pair.of(QUIZ, CommandType.QUIZ_PREPARE),
+                            Pair.of(INPUT_ANSWER, CommandType.ANSWER_INPUT_PREPARE),
+                            Pair.of(FIND_PAIRS, CommandType.CONNECT_WORDS_PREPARE),
+                            Pair.of(BACK, defineBackButton(sourceCommand))
+                    )))
+                    .build();
+
+        } else {
+            return BotMessageReply.builder()
+                    .chatId(chatId)
+                    .text(CHOOSE_EXERCISE)
+                    .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
+                            Pair.of(FLASH_CARDS, CommandType.FLASH_CARDS_PREPARE),
+                            Pair.of(QUIZ, CommandType.QUIZ_PREPARE),
+                            Pair.of(INPUT_ANSWER, CommandType.ANSWER_INPUT_PREPARE),
+                            Pair.of(FIND_PAIRS, CommandType.CONNECT_WORDS_PREPARE),
+                            Pair.of(BACK, defineBackButton(sourceCommand))
+                    )))
+                    .build();
+        }
     }
 
     private CommandType defineBackButton(CommandType sourceCommand) {

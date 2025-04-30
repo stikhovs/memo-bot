@@ -13,4 +13,8 @@ public class QuizData {
     private int totalNumberOfItems;
     private int currentIndex;
 
+    private boolean pageable;
+    private int totalNumberOfPages;
+    private int currentPage;
+
 }

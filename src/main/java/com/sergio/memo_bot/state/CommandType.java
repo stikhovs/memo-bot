@@ -54,6 +54,7 @@ public enum CommandType {
     REMOVE_CARD_RESPONSE("/remove_card_response"),
 
     EXERCISES_DATA_PREPARE("/prepare_exercise_data"),
+    EXERCISES_DATA_SIZE_CHECK("/check_exercise_data_size"),
     EXERCISES_RESPONSE("/exercises_response"),
 
     FLASH_CARDS_PREPARE("/flash_cards_prepare"),

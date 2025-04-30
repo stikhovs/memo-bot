@@ -12,4 +12,7 @@ public class ExerciseData {
 
     List<CardDto> cards;
 
+    boolean usePagination;
+    List<List<CardDto>> cardPages;
+
 }

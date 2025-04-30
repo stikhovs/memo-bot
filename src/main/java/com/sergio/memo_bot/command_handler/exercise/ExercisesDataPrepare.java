@@ -15,7 +15,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -36,8 +38,11 @@ public class ExercisesDataPrepare implements CommandHandler {
 
         CommandType sourceCommand = defineSource(chatId);
 
+        List<CardDto> cards = defineCards(chatId, sourceCommand);
+        Collections.shuffle(cards);
+
         ExerciseData exerciseData = ExerciseData.builder()
-                .cards(defineCards(chatId, sourceCommand))
+                .cards(cards)
                 .build();
 
         chatTempDataService.clearAndSave(chatId, ChatTempData.builder()
@@ -49,7 +54,7 @@ public class ExercisesDataPrepare implements CommandHandler {
         return BotPartReply.builder()
                 .chatId(chatId)
                 .previousProcessableMessage(processableMessage)
-                .nextCommand(CommandType.EXERCISES_RESPONSE)
+                .nextCommand(CommandType.EXERCISES_DATA_SIZE_CHECK)
                 .build();
     }
 
@@ -61,7 +66,7 @@ public class ExercisesDataPrepare implements CommandHandler {
                     chatTempDataService.mapDataToList(chatId, CommandType.GET_CATEGORY_CARD_SET_INFO, CardSetDto.class).stream()
                             .map(cardSetDto -> cardSetHttpService.getCardSet(cardSetDto.getId()))
                             .flatMap(cardSetDto -> cardSetDto.getCards().stream())
-                            .toList();
+                            .collect(Collectors.toList());
             default ->
                     chatTempDataService.mapDataToType(chatId, CommandType.EXERCISES_FROM_MAIN_MENU_CHOOSE_SET, CardSetDto.class).getCards();
         };

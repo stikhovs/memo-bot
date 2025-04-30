@@ -8,11 +8,11 @@ public final class ReplyTextConstant {
 
     public static final String MAIN_MENU = """
             Выберите одно из действий:
-            
+                        
             1. <strong>Наборы карточек</strong> — основа вашего обучения и прогресса. С помощью наборов вы можете учить, повторять и вспоминать неограниченное количество слов, определений, дат или терминов. Создавайте наборы и используйте их в упражнениях.
-            
+                        
             2. <strong>Категории</strong> — для удобства наборы можно объединять в категории.
-            
+                        
             3. <strong>Упражнения</strong> — тренируйте свою память и оттачивайте знания с помощью различных упражнений.
             """;
 
@@ -46,9 +46,9 @@ public final class ReplyTextConstant {
     public static final String LETS_ADD_FIRST_CARD = "\nТеперь давайте добавим в него карточки";
     public static final String LETS_ADD_CARD = "Добавим карточку";
     public static final String CARD_CREATION_RESPONSE = """
-                                Предварительный набор "<strong>%s</strong>"
-                                Карточки: \n%s
-                                """;
+            Предварительный набор "<strong>%s</strong>"
+            Карточки: \n%s
+            """;
 
     public static final String SOMETHING_WENT_WRONG = "Что-то сломалось или пошло не так " + EmojiConverter.getEmoji("U+1F64A");
     public static final String ADD_ONE_MORE_CARD = EmojiConverter.getEmoji("U+2705") + " Добавить еще карточку";
@@ -78,14 +78,14 @@ public final class ReplyTextConstant {
     public static final String CHOOSE_CARD_SET = "Выберите набор";
     public static final String CARD_SET_INFO = """
             Набор "<strong>%s</strong>".
-            
+                        
             🟣 Категория <strong>%s</strong>.
-            
+                        
             Количество карточек: %s.
             """;
     public static final String CARD_SET_INFO_NO_CATEGORY = """
             Набор "<strong>%s</strong>".
-            
+                        
             Количество карточек: %s.
             """;
     public static final String YOU_DO_NOT_HAVE_CARD_SETS_YET = "Вы пока не создали ни одного набора. Хотите создать сейчас?";
@@ -107,9 +107,9 @@ public final class ReplyTextConstant {
     public static final String CHOOSE_SETS_WHICH_WILL_BE_MOVED_TO_CATEGORY_1 = "Выберите наборы, которые будут перенесены в категорию \"<strong>%s</strong>\"";
     public static final String CHOOSE_SETS_WHICH_WILL_BE_MOVED_TO_CATEGORY_2 = """
             Выберите наборы, которые будут перенесены в категорию "<strong>%s</strong>"
-            
+                        
             Выбранные наборы:
-            
+                        
             %s
             """;
     public static final String SAVE = EmojiConverter.getEmoji("U+1F4BE") + " Сохранить";
@@ -128,15 +128,15 @@ public final class ReplyTextConstant {
     public static final String DELETE_CATEGORY = "Удалить категорию";
     public static final String CATEGORY_INFO_WITH_CARD_SETS = """
             Категория "<strong>%s</strong>".
-            
+                        
             Количество наборов: %s.
-            
+                        
             Наборы:
             %s
             """;
     public static final String CATEGORY_INFO_WITHOUT_CARD_SETS = """
             Категория "<strong>%s</strong>".
-            
+                        
             Количество наборов: %s.
             """;
     public static final String CHOOSE_CARD_SETS = EmojiConverter.getEmoji("U+1F5C2") + " Выбрать наборы";
@@ -183,12 +183,12 @@ public final class ReplyTextConstant {
 
     public static final String QUIZ_START = "Начинаем квиз! " + EmojiConverter.getEmoji("U+1F64C");
     public static final String QUIZ_FINISHED = EmojiConverter.getEmoji("U+1F3C6") + " Квиз завершен!";
-    public static final String THERE_SHOULD_BE_TWO_OR_MORE_CARDS_FOR_QUIZ =  EmojiConverter.getEmoji("U+1F645") + " Для квиза в наборе должно быть 2 и более карточек";
+    public static final String THERE_SHOULD_BE_TWO_OR_MORE_CARDS_FOR_QUIZ = EmojiConverter.getEmoji("U+1F645") + " Для квиза в наборе должно быть 2 и более карточек";
 
-    public static final String CHOOSE_EXERCISE = "Выберите упражнение";
+    public static final String CHOOSE_EXERCISE = "Выберите упражнение " + EmojiConverter.getEmoji("U+1F447");
     public static final String FLASH_CARDS = EmojiConverter.getEmoji("U+1F4A1") + " Флеш-карточки";
     public static final String QUIZ = EmojiConverter.getEmoji("U+1F3B0") + " Квиз";
-    public static final String INPUT_ANSWER = EmojiConverter.getEmoji("U+270F") + " Ввод ответа";
+    public static final String INPUT_ANSWER = EmojiConverter.getEmoji("U+270D") + " Ввод ответа";
     public static final String FIND_PAIRS = """
             🅰 - 🅱 Найти пары
             """;
@@ -196,4 +196,17 @@ public final class ReplyTextConstant {
     public static final String FLACH_CARD_FRONT_SIDE = "===== Лицевая сторона ======\n\n\n\n";
     public static final String FLACH_CARD_BACK_SIDE = "===== Обратная сторона =====\n\n\n\n";
     public static final String STRING_IS_TOO_LONG = EmojiConverter.getEmoji("U+1F6AB") + " Название не должно превышать 100 символов. Попробуйте еще раз.";
+
+
+    public static final String LEVEL_FINISHED = "Уровень %s из %s завершен. Так держать! " + EmojiConverter.getEmoji("U+1F4AA");
+    public static final String NEXT_LEVEL = "Продолжить " + EmojiConverter.getEmoji("U+1F680");
+    public static final String LEAVE_LEVEL = EmojiConverter.getEmoji("U+21A9") + " Завершить";
+
+    public static final String PAGEABLE_EXERCISE_EXPLANATION = """
+            Для удобства карточки в упражнениях разделены на уровни.
+                        
+            Всего уровней: %s 🌟
+            """
+            + "\n\n" + CHOOSE_EXERCISE;
+
 }

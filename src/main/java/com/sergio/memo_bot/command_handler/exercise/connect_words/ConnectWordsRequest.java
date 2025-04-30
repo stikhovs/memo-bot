@@ -10,6 +10,7 @@ import com.sergio.memo_bot.reply.BotMessageReply;
 import com.sergio.memo_bot.reply.NextReply;
 import com.sergio.memo_bot.reply.Reply;
 import com.sergio.memo_bot.state.CommandType;
+import com.sergio.memo_bot.util.MarkUpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -44,7 +45,8 @@ public class ConnectWordsRequest implements CommandHandler {
 
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
-        ConnectWordsData connectWordsData = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.CONNECT_WORDS_REQUEST, ConnectWordsData.class);
+        Long chatId = processableMessage.getChatId();
+        ConnectWordsData connectWordsData = chatTempDataService.mapDataToType(chatId, CommandType.CONNECT_WORDS_REQUEST, ConnectWordsData.class);
 
         String text;
 
@@ -78,20 +80,47 @@ public class ConnectWordsRequest implements CommandHandler {
                 String correctStr = getCorrectStr(correctAnswers);
                 text = FIND_ALL_PAIRS_3.formatted(connectWordsData.getMistakeCount(), correctStr);
             } else {
-                return BotMessageReply.builder()
-                        .chatId(processableMessage.getChatId())
-                        .text(EXERCISE_FINISHED)
-                        .parseMode(ParseMode.HTML)
-                        .nextReply(NextReply.builder()
-                                .nextCommand(CommandType.EXERCISES_DATA_PREPARE)
-                                .previousProcessableMessage(processableMessage)
-                                .build())
-                        .build();
+
+                if (connectWordsData.isPageable()) {
+                    if (connectWordsData.getCurrentPage() + 1 == connectWordsData.getTotalNumberOfPages()) {
+                        // if it was the last page
+                        chatTempDataService.clear(chatId, CommandType.CONNECT_WORDS_REQUEST);
+                        return BotMessageReply.builder()
+                                .chatId(chatId)
+                                .text(EXERCISE_FINISHED)
+                                .parseMode(ParseMode.HTML)
+                                .nextReply(NextReply.builder()
+                                        .nextCommand(CommandType.EXERCISES_DATA_PREPARE)
+                                        .previousProcessableMessage(processableMessage)
+                                        .build())
+                                .build();
+                    } else {
+                        return BotMessageReply.builder()
+                                .chatId(chatId)
+                                .text(LEVEL_FINISHED.formatted(connectWordsData.getCurrentPage() + 1, connectWordsData.getTotalNumberOfPages()))
+                                .replyMarkup(MarkUpUtil.getInlineKeyboardMarkup(List.of(
+                                        org.apache.commons.lang3.tuple.Pair.of(LEAVE_LEVEL, CommandType.EXERCISES_DATA_PREPARE),
+                                        org.apache.commons.lang3.tuple.Pair.of(NEXT_LEVEL, CommandType.CONNECT_WORDS_PREPARE)
+                                )))
+                                .build();
+                    }
+                } else {
+
+                    return BotMessageReply.builder()
+                            .chatId(chatId)
+                            .text(EXERCISE_FINISHED)
+                            .parseMode(ParseMode.HTML)
+                            .nextReply(NextReply.builder()
+                                    .nextCommand(CommandType.EXERCISES_DATA_PREPARE)
+                                    .previousProcessableMessage(processableMessage)
+                                    .build())
+                            .build();
+                }
             }
         }
 
         return BotMessageReply.builder()
-                .chatId(processableMessage.getChatId())
+                .chatId(chatId)
                 .text(text)
                 .parseMode(ParseMode.HTML)
                 .replyMarkup(InlineKeyboardMarkup.builder()
@@ -111,7 +140,10 @@ public class ConnectWordsRequest implements CommandHandler {
 
         List<InlineKeyboardButton> buttons = currentButtons.stream()
                 .map(btn -> InlineKeyboardButton.builder()
-                        .text(btn.isActive() ? "| " + btn.getWordToShow() + " |" : btn.getWordToShow())
+                        .text(btn.isActive()
+                                ? "| " + btn.getWordToShow() + " |"
+                                : btn.getWordToShow()
+                        )
                         .callbackData(CommandType.CONNECT_WORDS_RESPONSE.getCommandText().formatted(btn.getId()))
                         .build())
                 .collect(Collectors.toList());

@@ -9,14 +9,13 @@ import com.sergio.memo_bot.dto.CardDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.entity.ChatTempData;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.reply.BotPartReply;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -35,7 +34,6 @@ public class FlashCardsPrepare implements CommandHandler {
     public Reply getReply(ProcessableMessage processableMessage) {
         ExerciseData exerciseData = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.EXERCISES_RESPONSE, ExerciseData.class);
         List<CardDto> cards = exerciseData.getCards();
-        Collections.shuffle(cards);
         chatTempDataService.clearAndSave(processableMessage.getChatId(), ChatTempData.builder()
                 .chatId(processableMessage.getChatId())
                 .command(CommandType.FLASH_CARDS_PREPARE)

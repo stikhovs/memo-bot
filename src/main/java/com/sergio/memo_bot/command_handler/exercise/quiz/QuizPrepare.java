@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.sergio.memo_bot.reply_text.ReplyTextConstant.THERE_SHOULD_BE_TWO_OR_MORE_CARDS_FOR_QUIZ;
@@ -42,11 +43,12 @@ public class QuizPrepare implements CommandHandler {
 
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
-        ExerciseData exerciseData = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.EXERCISES_RESPONSE, ExerciseData.class);
+        Long chatId = processableMessage.getChatId();
+        ExerciseData exerciseData = chatTempDataService.mapDataToType(chatId, CommandType.EXERCISES_RESPONSE, ExerciseData.class);
 
-        if (size(exerciseData.getCards()) < 2) {
+        if (!exerciseData.isUsePagination() && size(exerciseData.getCards()) < 2) {
             return BotMessageReply.builder()
-                    .chatId(processableMessage.getChatId())
+                    .chatId(chatId)
                     .text(THERE_SHOULD_BE_TWO_OR_MORE_CARDS_FOR_QUIZ)
                     .nextReply(NextReply.builder()
                             .previousProcessableMessage(processableMessage)
@@ -55,27 +57,55 @@ public class QuizPrepare implements CommandHandler {
                     .build();
         }
 
-        List<QuizItem> preparedQuiz = prepare(exerciseData);
-
-        chatTempDataService.clearAndSave(processableMessage.getChatId(), ChatTempData.builder()
-                .chatId(processableMessage.getChatId())
-                .command(CommandType.QUIZ)
-                .data(new Gson().toJson(QuizData.builder()
-                        .quizItems(preparedQuiz)
-                        .totalNumberOfItems(preparedQuiz.size())
-                        .currentIndex(0)
-                        .build()))
-                .build());
-
+        if (exerciseData.isUsePagination()) {
+            Optional<ChatTempData> chatTempData = chatTempDataService.find(chatId, CommandType.QUIZ);
+            if (chatTempData.isPresent()) {
+                QuizData quizData = new Gson().fromJson(chatTempData.get().getData(), QuizData.class);
+                int nextPageIndex = quizData.getCurrentPage() + 1;
+                List<QuizItem> quizItems = extractQuizItemsFromPages(exerciseData, nextPageIndex);
+                saveDataForPages(chatId, quizItems, size(exerciseData.getCardPages()), nextPageIndex);
+            } else {
+                // it's the first time - page = 0
+                List<QuizItem> quizItems = extractQuizItemsFromPages(exerciseData, 0);
+                saveDataForPages(chatId, quizItems, size(exerciseData.getCardPages()), 0);
+            }
+        } else {
+            // no pages
+            List<QuizItem> quizItems = extractQuizItemsFromAllCards(exerciseData);
+            saveDataWithoutPages(chatId, quizItems);
+        }
 
         return BotPartReply.builder()
-                .chatId(processableMessage.getChatId())
+                .chatId(chatId)
                 .nextCommand(CommandType.QUIZ)
                 .previousProcessableMessage(processableMessage)
                 .build();
     }
 
-    private List<QuizItem> prepare(ExerciseData exerciseData) {
+    private void saveDataForPages(Long chatId, List<QuizItem> quizItems, int totalNumberOfPages, int currentPage) {
+        saveData(chatId, quizItems, true, totalNumberOfPages, currentPage);
+    }
+
+    private void saveDataWithoutPages(Long chatId, List<QuizItem> quizItems) {
+        saveData(chatId, quizItems, false, 0, 0);
+    }
+
+    private void saveData(Long chatId, List<QuizItem> quizItems, boolean pageable, int totalNumberOfPages, int currentPage) {
+        chatTempDataService.clearAndSave(chatId, ChatTempData.builder()
+                .chatId(chatId)
+                .command(CommandType.QUIZ)
+                .data(new Gson().toJson(QuizData.builder()
+                        .quizItems(quizItems)
+                        .totalNumberOfItems(quizItems.size())
+                        .currentIndex(0)
+                        .pageable(pageable)
+                        .totalNumberOfPages(totalNumberOfPages)
+                        .currentPage(currentPage)
+                        .build()))
+                .build());
+    }
+
+    private List<QuizItem> extractQuizItemsFromAllCards(ExerciseData exerciseData) {
         List<CardDto> cards = exerciseData.getCards();
         ArrayList<QuizItem> result = new ArrayList<>();
 
@@ -86,6 +116,39 @@ public class QuizPrepare implements CommandHandler {
             answerOptions.add(Pair.of(correctAnswer, true));
 
             putIncorrectOptions(cards, correctAnswer, answerOptions);
+
+            // shuffle options
+            Collections.shuffle(answerOptions);
+
+            result.add(
+                    QuizItem.builder()
+                            .question(cards.get(i).getFrontSide())
+                            .answerOptions(answerOptions)
+                            .build()
+            );
+        }
+
+        // shuffle questions
+        Collections.shuffle(result);
+
+        return result;
+    }
+
+    private List<QuizItem> extractQuizItemsFromPages(ExerciseData exerciseData, int pageIndex) {
+        List<CardDto> cards = exerciseData.getCardPages().get(pageIndex);
+        ArrayList<QuizItem> result = new ArrayList<>();
+
+        for (int i = 0; i < cards.size(); i++) {
+            List<Pair<String, Boolean>> answerOptions = new ArrayList<>();
+
+            String correctAnswer = cards.get(i).getBackSide();
+            answerOptions.add(Pair.of(correctAnswer, true));
+
+            putIncorrectOptions(cards, correctAnswer, answerOptions);
+
+            if (answerOptions.size() < 2) {
+                putIncorrectOptions(exerciseData.getCards(), correctAnswer, answerOptions);
+            }
 
             // shuffle options
             Collections.shuffle(answerOptions);

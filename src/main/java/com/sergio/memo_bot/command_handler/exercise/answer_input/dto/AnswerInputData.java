@@ -13,4 +13,8 @@ public class AnswerInputData {
     private int currentIndex;
     private List<AnswerInputItem> answerInputItems;
 
+    private boolean pageable;
+    private int totalNumberOfPages;
+    private int currentPage;
+
 }

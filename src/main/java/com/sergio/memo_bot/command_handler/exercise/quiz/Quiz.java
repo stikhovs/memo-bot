@@ -12,6 +12,7 @@ import com.sergio.memo_bot.reply.BotQuizReply;
 import com.sergio.memo_bot.reply.NextReply;
 import com.sergio.memo_bot.reply.Reply;
 import com.sergio.memo_bot.state.CommandType;
+import com.sergio.memo_bot.util.MarkUpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static com.sergio.memo_bot.reply_text.ReplyTextConstant.QUIZ_FINISHED;
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
 
 @Slf4j
 @Component
@@ -35,24 +36,49 @@ public class Quiz implements CommandHandler {
 
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
-        QuizData quizData = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.QUIZ, QuizData.class);
+        Long chatId = processableMessage.getChatId();
+        QuizData quizData = chatTempDataService.mapDataToType(chatId, CommandType.QUIZ, QuizData.class);
 
         int currentIndex = quizData.getCurrentIndex();
 
         if (currentIndex == quizData.getTotalNumberOfItems()) {
-            return BotMessageReply.builder()
-                    .chatId(processableMessage.getChatId())
-                    .text(QUIZ_FINISHED)
-                    .nextReply(NextReply.builder()
-                            .previousProcessableMessage(processableMessage)
-                            .nextCommand(CommandType.EXERCISES_DATA_PREPARE)
-                            .build())
-                    .build();
+            if (quizData.isPageable()) {
+                if (quizData.getCurrentPage() + 1 == quizData.getTotalNumberOfPages()) {
+                    // if it was the last page
+                    chatTempDataService.clear(chatId, CommandType.QUIZ);
+                    return BotMessageReply.builder()
+                            .chatId(chatId)
+                            .text(QUIZ_FINISHED)
+                            .nextReply(NextReply.builder()
+                                    .previousProcessableMessage(processableMessage)
+                                    .nextCommand(CommandType.EXERCISES_DATA_PREPARE)
+                                    .build())
+                            .build();
+                } else {
+                    return BotMessageReply.builder()
+                            .chatId(chatId)
+                            .text(LEVEL_FINISHED.formatted(quizData.getCurrentPage() + 1, quizData.getTotalNumberOfPages()))
+                            .replyMarkup(MarkUpUtil.getInlineKeyboardMarkup(List.of(
+                                    org.apache.commons.lang3.tuple.Pair.of(LEAVE_LEVEL, CommandType.EXERCISES_DATA_PREPARE),
+                                    org.apache.commons.lang3.tuple.Pair.of(NEXT_LEVEL, CommandType.QUIZ_PREPARE)
+                            )))
+                            .build();
+                }
+            } else {
+                return BotMessageReply.builder()
+                        .chatId(chatId)
+                        .text(QUIZ_FINISHED)
+                        .nextReply(NextReply.builder()
+                                .previousProcessableMessage(processableMessage)
+                                .nextCommand(CommandType.EXERCISES_DATA_PREPARE)
+                                .build())
+                        .build();
+            }
         } else {
             QuizItem quiz = quizData.getQuizItems().get(currentIndex);
 
-            chatTempDataService.clearAndSave(processableMessage.getChatId(), ChatTempData.builder()
-                    .chatId(processableMessage.getChatId())
+            chatTempDataService.clearAndSave(chatId, ChatTempData.builder()
+                    .chatId(chatId)
                     .command(CommandType.QUIZ)
                     .data(new Gson().toJson(quizData.toBuilder()
                             .currentIndex(currentIndex + 1)
@@ -60,7 +86,7 @@ public class Quiz implements CommandHandler {
                     .build());
 
             return BotQuizReply.builder()
-                    .chatId(processableMessage.getChatId())
+                    .chatId(chatId)
                     .quiz(quiz)
                     .correctIndex(getCorrectIndex(quiz.getAnswerOptions()))
                     .build();

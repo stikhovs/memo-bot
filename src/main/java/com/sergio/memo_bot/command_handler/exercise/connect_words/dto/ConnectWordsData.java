@@ -13,4 +13,7 @@ public class ConnectWordsData {
     private List<ConnectedPair> connectedPairs;
     private int mistakeCount;
 
+    private boolean pageable;
+    private int totalNumberOfPages;
+    private int currentPage;
 }
