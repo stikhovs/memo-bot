@@ -37,5 +37,8 @@ dockerize:
 
 deploy:
   stage: deploy
-  script:
-    - echo "Deploying to VPS or elsewhere..."
+  trigger:
+    project: ${CI_PROJECT_NAMESPACE}/infra-deploy
+    branch: master
+  only:
+    - master
