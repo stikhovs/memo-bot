@@ -1,0 +1,41 @@
+stages:
+  - compile
+  - package
+  - dockerize
+  - deploy
+
+compile:
+  stage: compile
+  image: maven:3.9.9-eclipse-temurin-21
+  script:
+    - mvn clean compile
+
+package:
+  stage: package
+  image: maven:3.9.9-eclipse-temurin-21
+  dependencies:
+    - compile
+  script:
+    - mvn package -DskipTests
+  artifacts:
+    paths:
+      - target/*.jar
+
+dockerize:
+  stage: dockerize
+  image: docker:24.0.7
+  services:
+    - docker:24.0.7-dind
+  dependencies:
+    - package
+  variables:
+    DOCKER_DRIVER: overlay2
+  script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+    - docker build -t $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:latest
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploying to VPS or elsewhere..."
