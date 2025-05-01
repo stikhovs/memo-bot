@@ -2,10 +2,10 @@ package com.sergio.memo_bot.command_handler.card_set.import_card_set.readme;
 
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.ProcessableMessage;
-import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.reply.BotImageReply;
-import com.sergio.memo_bot.util.MarkUpUtil;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
+import com.sergio.memo_bot.util.MarkUpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
@@ -35,7 +35,7 @@ public class ReadMe2 implements CommandHandler {
                 .caption(IMPORT_README_2)
                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkup(List.of(
                         Pair.of(BACK, CommandType.IMPORT_CARD_SET_README_1),
-                        Pair.of(IMPORT_README_3, CommandType.IMPORT_CARD_SET_README_3)
+                        Pair.of(IMPORT_README_3_BTN_TEXT, CommandType.IMPORT_CARD_SET_README_3)
                 )))
                 .build();
     }

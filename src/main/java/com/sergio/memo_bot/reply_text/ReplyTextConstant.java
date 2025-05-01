@@ -92,9 +92,32 @@ public final class ReplyTextConstant {
     public static final String SEE_CARDS = EmojiConverter.getEmoji("U+1F440") + " Посмотреть карточки";
     public static final String EDIT_CARD_SET = EmojiConverter.getEmoji("U+1F527") + " Редактировать набор";
 
-    public static final String IMPORT_README_1 = "Шаг 1";
-    public static final String IMPORT_README_2 = "Шаг 2";
-    public static final String IMPORT_README_3 = "Шаг 3";
+    public static final String IMPORT_README_1 = """
+            Шаг 1.
+            
+            Откройте ваш набор в Quizlet и вызовите его меню, нажав на соответствующую кнопку
+            """;
+
+    public static final String IMPORT_README_2_BTN_TEXT = "Шаг 2";
+    public static final String IMPORT_README_2 = """
+            Шаг 2.
+            
+            Выберите пункт "Экспорт"
+            """;
+    public static final String IMPORT_README_3_BTN_TEXT = "Шаг 3";
+    public static final String IMPORT_README_3 = """
+            Шаг 3.
+            
+            В окне экспорта оставьте настройки по умолчанию:
+            - Разделение между лицевой и обратной сторонами - Tab
+            - Разделение между строками - переход на новую строку
+            
+            Скопируйте содержимое набора
+            
+            Вы можете вставить это содержимое в бот при импорте 👌
+            
+            Важно ☝ Термины и названия не должны превышать 100 символов по длине
+            """;
 
     public static final String CHOSEN_CATEGORY = "Выбрана категория \"%s\"";
     public static final String IMPORT_CARD_SET_FROM_QUIZLET = "Импортировать набор из Quizlet";
