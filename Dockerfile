@@ -1,9 +1,9 @@
-FROM openjdk:21-jdk-slim
+FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
-COPY target/memo-bot-0.0.1-SNAPSHOT.jar .
+COPY target/*.jar app.jar
 
-VOLUME /app/data
+EXPOSE 8080
 
-CMD ["java", "-jar", "memo-bot-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
