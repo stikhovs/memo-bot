@@ -59,8 +59,8 @@ public class MainMenu implements CommandHandler {
                     .chatId(chatId)
                     .text(MAIN_MENU)
                     .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
-                            Pair.of(CARD_SETS, CommandType.CARD_SET_MENU_DATA),
                             Pair.of(CATEGORIES, CommandType.CATEGORY_MENU_DATA),
+                            Pair.of(CARD_SETS, CommandType.CARD_SET_MENU_DATA),
                             Pair.of(EXERCISES, CommandType.EXERCISES_FROM_MAIN_MENU)
                     )))
                     .parseMode(ParseMode.HTML)
