@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -14,15 +17,18 @@ public class CardHttpService {
     private final HttpCallHelper httpCallHelper;
     private final CardHttpClient cardHttpClient;
 
-    public CardDto addCard(Long cardSetId, CardDto cardDto) {
+    public List<CardDto> addCards(Long cardSetId, List<CardDto> cards) {
         return httpCallHelper.callOrThrow(
-                () -> {
-                    log.info("Adding card to: {}", cardDto);
-                    CardDto result = cardHttpClient.add(cardSetId, cardDto);
-                    log.info("Card was added successfully. {}", result);
-                    return result;
-                },
-                CardHttpException.class, "Couldn't add card to %s".formatted(cardDto));
+                () -> cards.stream().filter(cardDto -> cardDto.getId() == null)
+                        .map(cardDto -> {
+                            log.info("Adding card to: {}", cardDto);
+                            CardDto result = cardHttpClient.add(cardSetId, cardDto);
+                            log.info("Card was added successfully. {}", result);
+                            return result;
+                        })
+                        .collect(Collectors.toList())
+                ,
+                CardHttpException.class, "Couldn't add cards %s to cardSetId %s".formatted(cards, cardSetId));
     }
 
     public CardDto updateCard(CardDto cardDto) {

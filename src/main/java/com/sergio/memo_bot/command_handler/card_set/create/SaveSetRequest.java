@@ -66,7 +66,7 @@ public class SaveSetRequest implements CommandHandler {
     private Runnable getAction(Long chatId, CardSetDto cardSetDto) {
         Runnable action;
         if (chatTempDataService.find(chatId, CommandType.GET_CARD_SET_INFO).isPresent()) {
-            action = () -> cardHttpService.addCard(cardSetDto.getId(), cardSetDto.getCards().getLast());
+            action = () -> cardHttpService.addCards(cardSetDto.getId(), cardSetDto.getCards());
         } else {
             action = () -> cardSetHttpService.saveCardSet(cardSetDto);
         }
