@@ -225,7 +225,7 @@ public final class ReplyTextConstant {
 
     public static final String LEVEL_FINISHED = "Уровень %s из %s завершен. Так держать! " + EmojiConverter.getEmoji("U+1F4AA");
     public static final String NEXT_LEVEL = "Продолжить " + EmojiConverter.getEmoji("U+1F680");
-    public static final String LEAVE_LEVEL = EmojiConverter.getEmoji("U+21A9") + " Завершить";
+    public static final String LEAVE_LEVEL = EmojiConverter.getEmoji("U+21A9") + " К упражнениям";
 
     public static final String PAGEABLE_EXERCISE_EXPLANATION = """
             Для удобства карточки в упражнениях разделены на уровни.
