@@ -73,6 +73,7 @@ public class GetCardSetInfo implements CommandHandler {
                 .text(text)
                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
                         Pair.of(SEE_CARDS, CommandType.GET_CARDS),
+                        Pair.of(ADD_CARD, CommandType.ADD_CARD_REQUEST),
                         Pair.of(EDIT_CARD_SET, CommandType.EDIT_SET),
                         CollectionUtils.isNotEmpty(chosenCardSet.getCards())
                                 ? Pair.of(EXERCISES, CommandType.EXERCISES_FROM_CARD_SET)

@@ -67,11 +67,11 @@ public class EditSet implements CommandHandler {
                                 ))
                         .toList()
         );
-        rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
+        /*rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
                 .text(ADD_CARD)
                 .callbackData(CommandType.ADD_CARD_REQUEST.getCommandText())
                 .build()
-        ));
+        ));*/
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
                 .text(MOVE_CARD_SET_TO_ANOTHER_CATEGORY)
                 .callbackData(CommandType.MOVE_SET_TO_ANOTHER_CATEGORY.getCommandText())

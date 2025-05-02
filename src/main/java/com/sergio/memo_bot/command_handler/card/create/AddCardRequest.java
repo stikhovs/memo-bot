@@ -39,42 +39,5 @@ public class AddCardRequest implements CommandHandler {
                         .build())
                 .parseMode(ParseMode.HTML)
                 .build();
-
-        /*if (processableMessage.isFromPartReply()) {
-            return BotMessageReply.builder()
-//                    .type(BotReplyType.MESSAGE)
-                    .chatId(processableMessage.getChatId())
-                    .text(processableMessage.getText() + "\n\nТеперь давайте добавим в него карточки")
-                    .nextReply(NextReply.builder()
-                            .nextCommand(CommandType.INSERT_FRONT_SIDE)
-                            .previousProcessableMessage(processableMessage)
-                            .build())
-                    .build();
-        }
-
-        return BotMessageReply.builder()
-                .chatId(processableMessage.getChatId())
-                .text("Добавим карточку")
-                .nextReply(NextReply.builder()
-                        .nextCommand(CommandType.INSERT_FRONT_SIDE)
-                        .previousProcessableMessage(processableMessage)
-                        .build())
-                .build();*/
-
-        /*BotReply.builder()
-                .type(BotReplyType.EDIT_MESSAGE_REPLY_MARKUP)
-                .chatId(processableMessage.getChatId())
-                .messageId(processableMessage.getMessageId())
-                .nextReply(
-                        MultipleBotReply.builder()
-                                .type(BotReplyType.MESSAGE)
-                                .messageId(processableMessage.getMessageId())
-                                .nextCommand(CommandType.INSERT_FRONT_SIDE)
-                                .previousProcessableMessage(processableMessage)
-                                .chatId(processableMessage.getChatId())
-                                .text("Добавим карточку")
-                                .build()
-                )
-                .build();*/
     }
 }
