@@ -43,10 +43,10 @@ public class SenderService {
             if (failedReplyMethodName.equals("editmessagetext") || failedReplyMethodName.equals("editmessagereplymarkup")) {
                 log.warn("Couldn't edit message. Reason: [{}]. This message will be deleted from the database", e.getMessage());
                 chatMessageService.delete(reply.getChatId(), List.of(reply.getMessageId()));
-            } else if (failedReplyMethodName.equals("deletemessage")) {
+            } else if (failedReplyMethodName.equalsIgnoreCase("deleteMessage")) {
                 log.warn("Couldn't delete message. Reason: [{}]. This message will be deleted from the database", e.getMessage());
                 chatMessageService.delete(reply.getChatId(), List.of(reply.getMessageId()));
-            } else if (failedReplyMethodName.equals("deletemessages")) {
+            } else if (failedReplyMethodName.equalsIgnoreCase("deleteMessages")) {
                 log.warn("Couldn't delete messages. Reason: [{}]. These messages will be deleted from the database", e.getMessage());
                 chatMessageService.delete(reply.getChatId(), ((DeleteMessages) reply.getReply()).getMessageIds());
             } else {
