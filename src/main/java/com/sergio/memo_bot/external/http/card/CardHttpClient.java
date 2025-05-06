@@ -8,10 +8,14 @@ import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
 import org.springframework.web.service.annotation.PutExchange;
 
+import java.util.List;
+
 @HttpExchange(url = "/telegram/card")
 public interface CardHttpClient {
     @PostExchange("/add")
     CardDto add(@RequestParam Long cardSetId, @RequestBody CardDto cardDto);
+    @PostExchange("/add-batch")
+    List<CardDto> addBatch(@RequestParam Long cardSetId, @RequestBody List<CardDto> cards);
     @PutExchange("/update")
     CardDto update(@RequestBody CardDto cardDto);
     @DeleteExchange("/delete")
