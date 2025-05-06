@@ -39,6 +39,7 @@ public class SenderService {
             }
         } catch (TelegramApiException e) {
             String failedReplyMethodName = reply.getReply().getMethod();
+            log.warn("Failed reply method name: {}", failedReplyMethodName);
             if (failedReplyMethodName.equals("editmessagetext") || failedReplyMethodName.equals("editmessagereplymarkup")) {
                 log.warn("Couldn't edit message. Reason: [{}]. This message will be deleted from the database", e.getMessage());
                 chatMessageService.delete(reply.getChatId(), List.of(reply.getMessageId()));
