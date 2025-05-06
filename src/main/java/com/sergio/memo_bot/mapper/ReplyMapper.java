@@ -238,6 +238,7 @@ public class ReplyMapper {
     public ReplyData toReplyData(DeleteMessageReply reply) {
         if (CollectionUtils.size(reply.getMessageIds()) > 1) {
             return ReplyData.builder()
+                    .chatId(reply.getChatId())
                     .reply(DeleteMessages.builder()
                             .chatId(reply.getChatId())
                             .messageIds(reply.getMessageIds())
@@ -246,6 +247,7 @@ public class ReplyMapper {
                     .build();
         } else {
             return ReplyData.builder()
+                    .chatId(reply.getChatId())
                     .reply(DeleteMessage.builder()
                             .chatId(reply.getChatId())
                             .messageId(reply.getMessageIds().getFirst())
