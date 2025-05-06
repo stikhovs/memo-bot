@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessages;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -41,6 +42,12 @@ public class SenderService {
             if (failedReplyMethodName.equals("editmessagetext") || failedReplyMethodName.equals("editmessagereplymarkup")) {
                 log.warn("Couldn't edit message. Reason: [{}]. This message will be deleted from the database", e.getMessage());
                 chatMessageService.delete(reply.getChatId(), List.of(reply.getMessageId()));
+            } else if (failedReplyMethodName.equals("deletemessage")) {
+                log.warn("Couldn't delete message. Reason: [{}]. This message will be deleted from the database", e.getMessage());
+                chatMessageService.delete(reply.getChatId(), List.of(reply.getMessageId()));
+            } else if (failedReplyMethodName.equals("deletemessages")) {
+                log.warn("Couldn't delete messages. Reason: [{}]. These messages will be deleted from the database", e.getMessage());
+                chatMessageService.delete(reply.getChatId(), ((DeleteMessages) reply.getReply()).getMessageIds());
             } else {
                 throw new RuntimeException(e);
             }
