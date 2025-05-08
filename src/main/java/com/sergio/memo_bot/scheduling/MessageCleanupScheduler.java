@@ -33,7 +33,7 @@ public class MessageCleanupScheduler {
     @Transactional
     @Scheduled(fixedDelayString = "${bot.cleanup.scheduler.delay-ms:3600000}")
     public void cleanupOldMessages() {
-        log.info("Start cleaning up old messages");
+        log.info("Checking for old messages to be cleaned up...");
 
         List<ChatMessage> oldMessages = chatMessageService.findByCreatedAtBefore(LocalDateTime.now().minusHours(MAX_HOURS_TTL));
         Map<Long, List<ChatMessage>> messagesByChatId = oldMessages.stream()
@@ -50,7 +50,7 @@ public class MessageCleanupScheduler {
                 delete(deleteMessages);
             });
             chatMessageService.delete(chatId, messageIds);
-            log.info("Scheduled cleanup: deleted from chat {} following messages {} ", chatId, messageIds);
+            log.info("Scheduled cleanup is done for chat {}. Following messages were deleted: {} ", chatId, messageIds);
         });
     }
 
