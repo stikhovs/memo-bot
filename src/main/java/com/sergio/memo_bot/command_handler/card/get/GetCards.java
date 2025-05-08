@@ -1,6 +1,7 @@
 package com.sergio.memo_bot.command_handler.card.get;
 
 import com.sergio.memo_bot.command_handler.CommandHandler;
+import com.sergio.memo_bot.dto.CardDto;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
@@ -15,7 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 
-import java.util.stream.Collectors;
+import java.util.List;
 
 import static com.sergio.memo_bot.reply_text.ReplyTextConstant.BACK;
 
@@ -41,7 +42,7 @@ public class GetCards implements CommandHandler {
                 .parseMode(ParseMode.HTML)
                 .text(
                         "<strong><u>%s</u></strong>\n\n".formatted(cardSetDto.getTitle())
-                        + cardSetDto.getCards().stream().map(cardDto -> cardDto.getFrontSide() + " — " + cardDto.getBackSide()).collect(Collectors.joining("\n"))
+                                + getCardsList(cardSetDto.getCards())
                 )
                 .replyMarkup(
                         InlineKeyboardMarkup.builder()
@@ -53,4 +54,21 @@ public class GetCards implements CommandHandler {
                 )
                 .build();
     }
+
+    private String getCardsList(List<CardDto> cards) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < cards.size(); i++) {
+            int currentNumber = i + 1;
+            result.append(currentNumber).append(")").append(" ");
+
+            CardDto card = cards.get(i);
+
+            result.append(card.getFrontSide())
+                    .append(" — ")
+                    .append(card.getBackSide());
+            result.append("\n\n");
+        }
+        return result.toString();
+    }
+
 }
