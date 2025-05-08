@@ -35,7 +35,13 @@ public final class ReplyTextConstant {
     public static final String CHOOSE_CATEGORY = "Выберите категорию";
     public static final String CHOOSE_CATEGORY_FOR_SET_CREATION = """
             Вы можете выбрать категорию, к которой будет относиться ваш набор.
-            Если это не требуется, нажмите <strong>Пропустить</strong>.
+            
+            Если это не требуется, нажмите
+            <strong>Пропустить</strong> ⏭
+            """;
+
+    public static final String DUPLICATED_CATEGORY = """
+            📎 У вас уже есть категория с таким названием
             """;
 
     public static final String SKIP = "Пропустить " + EmojiConverter.getEmoji("U+23ED");
@@ -68,7 +74,9 @@ public final class ReplyTextConstant {
 
     public static final String WHAT_DO_YOU_WANT_TO_EDIT = "Что хотите отредактировать?";
     public static final String RENAME_CARD_SET = EmojiConverter.getEmoji("U+1F524") + " Переименовать набор: %s";
-    public static final String EDIT_CARD = EmojiConverter.getEmoji("U+270F") + " Изменить карточку: %s — %s";
+    public static final String EDIT_CARDS = EmojiConverter.getEmoji("U+270F") + " Изменить карточки";
+    public static final String EDIT_CARD = "%s — %s";
+    public static final String CHOOSE_CARD = EmojiConverter.getEmoji("U+270F") + " Выберите карточку, которую хотите изменить";
     public static final String ADD_CARD = EmojiConverter.getEmoji("U+1F4DD") + " Добавить карточку";
     public static final String MOVE_CARD_SET_TO_ANOTHER_CATEGORY = EmojiConverter.getEmoji("U+1F516") + " Перенести набор в категорию";
     public static final String DELETE_CARD_SET = EmojiConverter.getEmoji("U+1F5D1") + " Удалить набор";
@@ -216,6 +224,32 @@ public final class ReplyTextConstant {
     public static final String INPUT_ANSWER = EmojiConverter.getEmoji("U+270D") + " Ввод ответа";
     public static final String FIND_PAIRS = """
             🅰 - 🅱 Найти пары
+            """;
+
+    public static final String EXERCISE_DATA_OPTIONS = """
+            ⚙ Опции
+            """;
+
+    public static final String CHOOSE_EXERCISE_DATA_OPTIONS = """
+            Выберите желаемое действие
+            """;
+    public static final String SWAP_FRONT_AND_BACK_SIDES = """
+            🔃 Поменять стороны местами
+            """;
+    public static final String SHUFFLE_CARDS = """
+            🔀 Перемешать карточки
+            """;
+
+    public static final String SWAPPED = """
+            Стороны перевернуты 👍
+            """;
+
+    public static final String SWAPPED_BACK = """
+            Стороны перевернуты обратно 👌
+            """;
+
+    public static final String CARDS_ARE_SHUFFLED = """
+            Карточки перемешаны 👌
             """;
 
     public static final String FLACH_CARD_FRONT_SIDE = "===== Лицевая сторона ======\n\n\n\n";

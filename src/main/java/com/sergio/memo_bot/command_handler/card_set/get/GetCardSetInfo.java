@@ -78,7 +78,7 @@ public class GetCardSetInfo implements CommandHandler {
                         CollectionUtils.isNotEmpty(chosenCardSet.getCards())
                                 ? Pair.of(EXERCISES, CommandType.EXERCISES_FROM_CARD_SET)
                                 : Pair.of(null, null),
-                        Pair.of(BACK, CommandType.GET_ALL_SETS)
+                        Pair.of(BACK, CommandType.CHOOSE_SET_REQUEST)
                 )))
                 .parseMode(ParseMode.HTML)
                 .build();

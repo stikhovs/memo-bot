@@ -1,6 +1,5 @@
 package com.sergio.memo_bot.util;
 
-import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.state.CommandType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -62,22 +61,6 @@ public class MarkUpUtil {
                                         )))
                                 .toList()
                 )
-                .build();
-    }
-
-    public static InlineKeyboardMarkup getInlineCardSetButtons(List<CardSetDto> buttons) {
-        return InlineKeyboardMarkup.builder()
-                .keyboard(
-                        buttons.stream()
-                                .map(button -> new InlineKeyboardRow(
-                                        List.of(InlineKeyboardButton.builder()
-                                                .text(button.getTitle())
-                                                .callbackData(CommandType.GET_CARD_SET_INFO.getCommandText().formatted(button.getId()))
-                                                .build()
-                                        )))
-                                .toList()
-                )
-                .keyboardRow(new InlineKeyboardRow(InlineKeyboardButton.builder().text("Назад").callbackData(CommandType.MAIN_MENU.getCommandText()).build()))
                 .build();
     }
 

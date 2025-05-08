@@ -14,8 +14,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
@@ -59,7 +64,29 @@ public class ChooseCardSetInCategory implements CommandHandler {
         return BotMessageReply.builder()
                 .chatId(chatId)
                 .text(CHOOSE_CARD_SET)
-                .replyMarkup(MarkUpUtil.getInlineCardSetButtons(cardSets))
+                .replyMarkup(getKeyboard(cardSets))
+                .build();
+    }
+
+    private InlineKeyboardMarkup getKeyboard(List<CardSetDto> cardSets) {
+        Map<String, String> buttonsMap = cardSets
+                .stream()
+                .collect(Collectors.toMap(
+                        CardSetDto::getTitle,
+                        cardSet -> CommandType.GET_CARD_SET_INFO.getCommandText().formatted(cardSet.getId())
+                ));
+
+        List<InlineKeyboardRow> rows = MarkUpUtil.getKeyboardRows(buttonsMap);
+
+        rows.add(new InlineKeyboardRow(
+                InlineKeyboardButton.builder()
+                        .text(BACK)
+                        .callbackData(CommandType.GET_CATEGORY_INFO_RESPONSE.getCommandText())
+                        .build()
+        ));
+
+        return InlineKeyboardMarkup.builder()
+                .keyboard(rows)
                 .build();
     }
 

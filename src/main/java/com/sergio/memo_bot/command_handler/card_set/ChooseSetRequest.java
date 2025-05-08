@@ -10,6 +10,7 @@ import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.util.MarkUpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -37,7 +38,10 @@ public class ChooseSetRequest implements CommandHandler {
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
         Long chatId = processableMessage.getChatId();
-        List<CardSetDto> cardSets = chatTempDataService.mapDataToList(chatId, CommandType.CARD_SET_MENU_DATA, CardSetDto.class);
+
+        Pair<CommandType, List<CardSetDto>> sourceCommandAndCardSets = getSourceCommandAndCardSets(chatId);
+        CommandType sourceCommand = sourceCommandAndCardSets.getKey();
+        List<CardSetDto> cardSets = sourceCommandAndCardSets.getValue();
 
         if (isEmpty(cardSets)) {
             return BotMessageReply.builder()
@@ -53,11 +57,11 @@ public class ChooseSetRequest implements CommandHandler {
         return BotMessageReply.builder()
                 .chatId(chatId)
                 .text(CHOOSE_CARD_SET)
-                .replyMarkup(getKeyboard(cardSets))
+                .replyMarkup(getKeyboard(cardSets, sourceCommand))
                 .build();
     }
 
-    private InlineKeyboardMarkup getKeyboard(List<CardSetDto> cardSets) {
+    private InlineKeyboardMarkup getKeyboard(List<CardSetDto> cardSets, CommandType sourceCommand) {
         Map<String, String> buttonsMap = cardSets
                 .stream()
                 .collect(Collectors.toMap(
@@ -70,12 +74,26 @@ public class ChooseSetRequest implements CommandHandler {
         rows.add(new InlineKeyboardRow(
                 InlineKeyboardButton.builder()
                         .text(BACK)
-                        .callbackData(CommandType.CARD_SET_MENU.getCommandText())
+                        .callbackData(sourceCommand.getCommandText())
                         .build()
         ));
 
         return InlineKeyboardMarkup.builder()
                 .keyboard(rows)
                 .build();
+    }
+
+    private Pair<CommandType, List<CardSetDto>> getSourceCommandAndCardSets(Long chatId) {
+        List<CardSetDto> cardSetsFromMenu = chatTempDataService.mapDataToListIfPresent(chatId, CommandType.CARD_SET_MENU_DATA, CardSetDto.class);
+        if (CollectionUtils.isNotEmpty(cardSetsFromMenu)) {
+            return Pair.of(CommandType.CARD_SET_MENU_DATA, cardSetsFromMenu);
+        }
+
+        List<CardSetDto> cardSetsFromCategory = chatTempDataService.mapDataToListIfPresent(chatId, CommandType.GET_CATEGORY_CARD_SET_INFO, CardSetDto.class);
+        if (CollectionUtils.isNotEmpty(cardSetsFromCategory)) {
+            return Pair.of(CommandType.GET_CATEGORY_CARD_SET_INFO, cardSetsFromCategory);
+        }
+
+        throw new RuntimeException("Couldn't find cardSets neither in CARD_SET_MENU_DATA, nor in GET_CATEGORY_CARD_SET_INFO");
     }
 }
