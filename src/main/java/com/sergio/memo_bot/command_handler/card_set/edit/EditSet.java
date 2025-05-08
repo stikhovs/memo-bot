@@ -4,9 +4,9 @@ import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CardSetDto;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.persistence.service.ChatTempDataService;
-import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.reply.BotMessageReply;
 import com.sergio.memo_bot.reply.Reply;
+import com.sergio.memo_bot.state.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -54,24 +54,11 @@ public class EditSet implements CommandHandler {
                 .callbackData(CommandType.EDIT_TITLE_REQUEST.getCommandText())
                 .build()
         ));
-        rows.addAll(
-                cardSetDto
-                        .getCards()
-                        .stream()
-                        .map(it ->
-                                new InlineKeyboardRow(
-                                        InlineKeyboardButton.builder()
-                                                .text(EDIT_CARD.formatted(it.getFrontSide(), it.getBackSide()))
-                                                .callbackData(CommandType.EDIT_CARD_REQUEST.getCommandText().formatted(it.getId()))
-                                                .build()
-                                ))
-                        .toList()
-        );
-        /*rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                .text(ADD_CARD)
-                .callbackData(CommandType.ADD_CARD_REQUEST.getCommandText())
+        rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
+                .text(EDIT_CARDS)
+                .callbackData(CommandType.EDIT_CARDS_REQUEST.getCommandText())
                 .build()
-        ));*/
+        ));
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
                 .text(MOVE_CARD_SET_TO_ANOTHER_CATEGORY)
                 .callbackData(CommandType.MOVE_SET_TO_ANOTHER_CATEGORY.getCommandText())

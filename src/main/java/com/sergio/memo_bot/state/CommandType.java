@@ -41,6 +41,7 @@ public enum CommandType {
     EDIT_SET("/edit_set"),
     EDIT_TITLE_REQUEST("/edit_title_request"),
     EDIT_TITLE_RESPONSE("/edit_title_response"),
+    EDIT_CARDS_REQUEST("/edit_cards_request"),
     EDIT_CARD_REQUEST("/edit_card_request__%s"),
     EDIT_CARD_FRONT_SIDE_REQUEST("/edit_card_front_request"),
     EDIT_CARD_FRONT_SIDE_RESPONSE("/edit_card_front_response"),
