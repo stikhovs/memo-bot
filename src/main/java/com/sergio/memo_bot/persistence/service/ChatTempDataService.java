@@ -34,11 +34,6 @@ public class ChatTempDataService {
         return chatTempDataRepository.save(chatTempData);
     }
 
-    /*@Transactional
-    public ChatTempData clearAndSave(Long chatId, ChatTempData chatTempData) {
-        clear(chatId);
-        return save(chatTempData);
-    }*/
     @Transactional
     public ChatTempData clearAndSave(Long chatId, ChatTempData chatTempData) {
         clear(chatId, chatTempData.getCommand());
@@ -62,6 +57,17 @@ public class ChatTempDataService {
     public <T> List<T> mapDataToList(Long chatId, CommandType commandType, Class<T> elementType) {
         ChatTempData chatTempData = get(chatId, commandType);
         return new Gson().fromJson(chatTempData.getData(), TypeToken.getParameterized(List.class, elementType).getType());
+    }
+
+    public <T> Optional<T> mapDataToTypeIfPresent(Long chatId, CommandType commandType, Class<T> resultType) {
+        return find(chatId, commandType)
+                .map(chatTempData -> new Gson().fromJson(chatTempData.getData(), resultType));
+    }
+
+    public <T> List<T> mapDataToListIfPresent(Long chatId, CommandType commandType, Class<T> elementType) {
+        return find(chatId, commandType)
+                .map(chatTempData -> new Gson().<List<T>>fromJson(chatTempData.getData(), TypeToken.getParameterized(List.class, elementType).getType()))
+                .orElse(List.of());
     }
 
     public <K, V> Map<K, V> mapDataToMap(Long chatId, CommandType commandType, Class<K> keyClass, Class<V> valueClass) {
