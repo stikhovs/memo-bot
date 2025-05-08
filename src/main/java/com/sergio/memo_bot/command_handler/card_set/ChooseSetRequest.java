@@ -18,8 +18,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
@@ -30,6 +28,7 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 public class ChooseSetRequest implements CommandHandler {
 
     private final ChatTempDataService chatTempDataService;
+
     @Override
     public boolean canHandle(CommandType commandType) {
         return CommandType.CHOOSE_SET_REQUEST == commandType;
@@ -62,14 +61,13 @@ public class ChooseSetRequest implements CommandHandler {
     }
 
     private InlineKeyboardMarkup getKeyboard(List<CardSetDto> cardSets, CommandType sourceCommand) {
-        Map<String, String> buttonsMap = cardSets
-                .stream()
-                .collect(Collectors.toMap(
-                        CardSetDto::getTitle,
-                        cardSet -> CommandType.GET_CARD_SET_INFO.getCommandText().formatted(cardSet.getId())
-                ));
+        List<Pair<String, String>> buttonsPairs = cardSets.stream()
+                .map(cardSet -> Pair.of(
+                        cardSet.getTitle(),
+                        CommandType.GET_CARD_SET_INFO.getCommandText().formatted(cardSet.getId())))
+                .toList();
 
-        List<InlineKeyboardRow> rows = MarkUpUtil.getKeyboardRows(buttonsMap);
+        List<InlineKeyboardRow> rows = MarkUpUtil.getKeyboardRows(buttonsPairs);
 
         rows.add(new InlineKeyboardRow(
                 InlineKeyboardButton.builder()

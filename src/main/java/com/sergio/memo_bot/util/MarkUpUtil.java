@@ -89,11 +89,25 @@ public class MarkUpUtil {
     public static List<InlineKeyboardRow> getKeyboardRows(Map<String, String> buttonsMap) {
         ArrayList<InlineKeyboardRow> rows = new ArrayList<>();
 
-        buttonsMap.forEach((text, callbackData)-> {
+        buttonsMap.forEach((text, callbackData) -> {
             if (rows.isEmpty() || rows.getLast().size() >= DEFAULT_NUMBER_OF_EXPECTED_COLUMNS) {
                 rows.add(new InlineKeyboardRow(getButton(text, callbackData)));
             } else {
                 rows.getLast().add(getButton(text, callbackData));
+            }
+        });
+
+        return rows;
+    }
+
+    public static List<InlineKeyboardRow> getKeyboardRows(List<Pair<String, String>> buttonsMap) {
+        ArrayList<InlineKeyboardRow> rows = new ArrayList<>();
+
+        buttonsMap.forEach(pair -> {
+            if (rows.isEmpty() || rows.getLast().size() >= DEFAULT_NUMBER_OF_EXPECTED_COLUMNS) {
+                rows.add(new InlineKeyboardRow(getButton(pair.getKey(), pair.getValue())));
+            } else {
+                rows.getLast().add(getButton(pair.getKey(), pair.getValue()));
             }
         });
 

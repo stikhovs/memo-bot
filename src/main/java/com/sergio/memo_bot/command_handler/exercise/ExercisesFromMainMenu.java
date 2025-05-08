@@ -13,14 +13,13 @@ import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.util.MarkUpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
@@ -72,14 +71,13 @@ public class ExercisesFromMainMenu implements CommandHandler {
     }
 
     private InlineKeyboardMarkup getKeyboard(List<CardSetDto> cardSets) {
-        Map<String, String> buttonsMap = cardSets
-                .stream()
-                .collect(Collectors.toMap(
-                        CardSetDto::getTitle,
-                        cardSet -> CommandType.EXERCISES_FROM_MAIN_MENU_CHOOSE_SET.getCommandText().formatted(cardSet.getId())
-                ));
+        List<Pair<String, String>> buttonsPairs = cardSets.stream()
+                .map(cardSet -> Pair.of(
+                        cardSet.getTitle(),
+                        CommandType.EXERCISES_FROM_MAIN_MENU_CHOOSE_SET.getCommandText().formatted(cardSet.getId())))
+                .toList();
 
-        List<InlineKeyboardRow> rows = MarkUpUtil.getKeyboardRows(buttonsMap);
+        List<InlineKeyboardRow> rows = MarkUpUtil.getKeyboardRows(buttonsPairs);
 
         rows.add(new InlineKeyboardRow(
                 InlineKeyboardButton.builder()

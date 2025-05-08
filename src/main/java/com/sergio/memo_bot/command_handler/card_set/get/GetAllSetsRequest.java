@@ -14,6 +14,7 @@ import com.sergio.memo_bot.util.MarkUpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -21,8 +22,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
 
@@ -72,14 +71,13 @@ public class GetAllSetsRequest implements CommandHandler {
     }
 
     private InlineKeyboardMarkup getKeyboard(List<CardSetDto> cardSets) {
-        Map<String, String> buttonsMap = cardSets
-                .stream()
-                .collect(Collectors.toMap(
-                        CardSetDto::getTitle,
-                        cardSet -> CommandType.GET_CARD_SET_INFO.getCommandText().formatted(cardSet.getId())
-                ));
+        List<Pair<String, String>> buttonsPairs = cardSets.stream()
+                .map(cardSet -> Pair.of(
+                        cardSet.getTitle(),
+                        CommandType.GET_CARD_SET_INFO.getCommandText().formatted(cardSet.getId())))
+                .toList();
 
-        List<InlineKeyboardRow> rows = MarkUpUtil.getKeyboardRows(buttonsMap);
+        List<InlineKeyboardRow> rows = MarkUpUtil.getKeyboardRows(buttonsPairs);
 
         rows.add(new InlineKeyboardRow(
                 InlineKeyboardButton.builder()

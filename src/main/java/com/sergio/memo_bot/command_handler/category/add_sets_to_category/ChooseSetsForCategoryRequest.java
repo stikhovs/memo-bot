@@ -12,6 +12,7 @@ import com.sergio.memo_bot.util.MarkUpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -62,11 +63,13 @@ public class ChooseSetsForCategoryRequest implements CommandHandler {
     }
 
     private static InlineKeyboardMarkup getKeyboard(AddSetToCategoryData addSetToCategoryData) {
-        List<InlineKeyboardRow> rows = MarkUpUtil.getKeyboardRows(addSetToCategoryData.getAllCardSets().stream()
-                .collect(Collectors.toMap(
-                        CardSetDto::getTitle,
-                        cardSetDto -> CommandType.SET_CHOSEN_FOR_CATEGORY.getCommandText().formatted(cardSetDto.getId())
-                )));
+        List<Pair<String, String>> buttonsPairs = addSetToCategoryData.getAllCardSets().stream()
+                .map(cardSet -> Pair.of(
+                        cardSet.getTitle(),
+                        CommandType.SET_CHOSEN_FOR_CATEGORY.getCommandText().formatted(cardSet.getId())))
+                .toList();
+
+        List<InlineKeyboardRow> rows = MarkUpUtil.getKeyboardRows(buttonsPairs);
 
         if (isNotEmpty(addSetToCategoryData.getChosenCardSets())) {
             rows.add(new InlineKeyboardRow(
