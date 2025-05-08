@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +38,6 @@ public class ExercisesDataPrepare implements CommandHandler {
         CommandType sourceCommand = defineSource(chatId);
 
         List<CardDto> cards = defineCards(chatId, sourceCommand);
-        Collections.shuffle(cards);
 
         ExerciseData exerciseData = ExerciseData.builder()
                 .cards(cards)

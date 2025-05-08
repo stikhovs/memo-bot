@@ -51,7 +51,7 @@ public class Quiz implements CommandHandler {
                             .text(QUIZ_FINISHED)
                             .nextReply(NextReply.builder()
                                     .previousProcessableMessage(processableMessage)
-                                    .nextCommand(CommandType.EXERCISES_DATA_PREPARE)
+                                    .nextCommand(CommandType.EXERCISES_RESPONSE)
                                     .build())
                             .build();
                 } else {
@@ -59,7 +59,7 @@ public class Quiz implements CommandHandler {
                             .chatId(chatId)
                             .text(LEVEL_FINISHED.formatted(quizData.getCurrentPage() + 1, quizData.getTotalNumberOfPages()))
                             .replyMarkup(MarkUpUtil.getInlineKeyboardMarkup(List.of(
-                                    org.apache.commons.lang3.tuple.Pair.of(LEAVE_LEVEL, CommandType.EXERCISES_DATA_PREPARE),
+                                    org.apache.commons.lang3.tuple.Pair.of(LEAVE_LEVEL, CommandType.EXERCISES_RESPONSE),
                                     org.apache.commons.lang3.tuple.Pair.of(NEXT_LEVEL, CommandType.QUIZ_PREPARE)
                             )))
                             .build();
@@ -70,7 +70,7 @@ public class Quiz implements CommandHandler {
                         .text(QUIZ_FINISHED)
                         .nextReply(NextReply.builder()
                                 .previousProcessableMessage(processableMessage)
-                                .nextCommand(CommandType.EXERCISES_DATA_PREPARE)
+                                .nextCommand(CommandType.EXERCISES_RESPONSE)
                                 .build())
                         .build();
             }

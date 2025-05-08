@@ -127,6 +127,11 @@ public enum CommandType {
     IMPORT_CARDS_RESPONSE("/import_cards_response"),
     CHOOSE_CATEGORY_FOR_IMPORT_REQUEST("/choose_category_for_import_request"),
     CHOOSE_CATEGORY_FOR_IMPORT_RESPONSE("/choose_category_for_import__%s"),
+
+    EXERCISE_DATA_OPTIONS("/exercise_data_options"),
+    SWAP_SIDES_REQUEST("/swap_sides_request"),
+    SHUFFLE_CARDS_REQUEST("/shuffle_cards_request"),
+
     ;
 
     private final String commandText;

@@ -21,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExerciseDataSizeCheck implements CommandHandler {
 
-    private static final int MAX_CARDS_NUMBER_FOR_ONE_PAGE = 15;
+    public static final int MAX_CARDS_NUMBER_FOR_ONE_PAGE = 15;
 
     private final ChatTempDataService chatTempDataService;
     @Override

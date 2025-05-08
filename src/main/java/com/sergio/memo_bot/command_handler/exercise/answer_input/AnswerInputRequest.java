@@ -13,6 +13,7 @@ import com.sergio.memo_bot.state.CommandType;
 import com.sergio.memo_bot.util.MarkUpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 
@@ -51,7 +52,7 @@ public class AnswerInputRequest implements CommandHandler {
                             .text(EXERCISE_FINISHED)
                             .nextReply(NextReply.builder()
                                     .previousProcessableMessage(processableMessage)
-                                    .nextCommand(CommandType.EXERCISES_DATA_PREPARE)
+                                    .nextCommand(CommandType.EXERCISES_RESPONSE)
                                     .build())
                             .build();
                 } else {
@@ -59,7 +60,7 @@ public class AnswerInputRequest implements CommandHandler {
                             .chatId(chatId)
                             .text(LEVEL_FINISHED.formatted(answerInputData.getCurrentPage() + 1, answerInputData.getTotalNumberOfPages()))
                             .replyMarkup(MarkUpUtil.getInlineKeyboardMarkup(List.of(
-                                    org.apache.commons.lang3.tuple.Pair.of(LEAVE_LEVEL, CommandType.EXERCISES_DATA_PREPARE),
+                                    org.apache.commons.lang3.tuple.Pair.of(LEAVE_LEVEL, CommandType.EXERCISES_RESPONSE),
                                     org.apache.commons.lang3.tuple.Pair.of(NEXT_LEVEL, CommandType.ANSWER_INPUT_PREPARE)
                             )))
                             .build();
@@ -70,7 +71,7 @@ public class AnswerInputRequest implements CommandHandler {
                         .text(EXERCISE_FINISHED)
                         .nextReply(NextReply.builder()
                                 .previousProcessableMessage(processableMessage)
-                                .nextCommand(CommandType.EXERCISES_DATA_PREPARE)
+                                .nextCommand(CommandType.EXERCISES_RESPONSE)
                                 .build())
                         .build();
             }
@@ -82,6 +83,9 @@ public class AnswerInputRequest implements CommandHandler {
                     .chatId(chatId)
                     .text(INSERT_ANSWER_FOR.formatted(answerInputItem.getQuestion()))
                     .parseMode(ParseMode.HTML)
+                    .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
+                            Pair.of(BACK, CommandType.EXERCISES_RESPONSE)
+                    )))
                     .build();
         }
     }

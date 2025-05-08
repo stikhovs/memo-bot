@@ -15,4 +15,6 @@ public class ExerciseData {
     boolean usePagination;
     List<List<CardDto>> cardPages;
 
+    boolean swappedFrontBack;
+
 }

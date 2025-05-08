@@ -90,7 +90,7 @@ public class ConnectWordsRequest implements CommandHandler {
                                 .text(EXERCISE_FINISHED)
                                 .parseMode(ParseMode.HTML)
                                 .nextReply(NextReply.builder()
-                                        .nextCommand(CommandType.EXERCISES_DATA_PREPARE)
+                                        .nextCommand(CommandType.EXERCISES_RESPONSE)
                                         .previousProcessableMessage(processableMessage)
                                         .build())
                                 .build();
@@ -99,7 +99,7 @@ public class ConnectWordsRequest implements CommandHandler {
                                 .chatId(chatId)
                                 .text(LEVEL_FINISHED.formatted(connectWordsData.getCurrentPage() + 1, connectWordsData.getTotalNumberOfPages()))
                                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkup(List.of(
-                                        org.apache.commons.lang3.tuple.Pair.of(LEAVE_LEVEL, CommandType.EXERCISES_DATA_PREPARE),
+                                        org.apache.commons.lang3.tuple.Pair.of(LEAVE_LEVEL, CommandType.EXERCISES_RESPONSE),
                                         org.apache.commons.lang3.tuple.Pair.of(NEXT_LEVEL, CommandType.CONNECT_WORDS_PREPARE)
                                 )))
                                 .build();
@@ -111,7 +111,7 @@ public class ConnectWordsRequest implements CommandHandler {
                             .text(EXERCISE_FINISHED)
                             .parseMode(ParseMode.HTML)
                             .nextReply(NextReply.builder()
-                                    .nextCommand(CommandType.EXERCISES_DATA_PREPARE)
+                                    .nextCommand(CommandType.EXERCISES_RESPONSE)
                                     .previousProcessableMessage(processableMessage)
                                     .build())
                             .build();
@@ -177,7 +177,7 @@ public class ConnectWordsRequest implements CommandHandler {
 
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
                 .text(BACK)
-                .callbackData(CommandType.EXERCISES_DATA_PREPARE.getCommandText())
+                .callbackData(CommandType.EXERCISES_RESPONSE.getCommandText())
                 .build()));
 
         return rows;

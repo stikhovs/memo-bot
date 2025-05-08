@@ -33,39 +33,38 @@ public class ExercisesResponse implements CommandHandler {
     public Reply getReply(ProcessableMessage processableMessage) {
         Long chatId = processableMessage.getChatId();
 
-        CommandType sourceCommand = defineSource(chatId);
-
         ExerciseData exerciseData = chatTempDataService.mapDataToType(chatId, CommandType.EXERCISES_RESPONSE, ExerciseData.class);
         chatTempDataService.clear(chatId, CommandType.ANSWER_INPUT_REQUEST);
         chatTempDataService.clear(chatId, CommandType.CONNECT_WORDS_REQUEST);
         chatTempDataService.clear(chatId, CommandType.QUIZ);
 
+        CommandType sourceCommand = defineSource(chatId);
+
         if (exerciseData.isUsePagination()) {
             return BotMessageReply.builder()
                     .chatId(chatId)
                     .text(PAGEABLE_EXERCISE_EXPLANATION.formatted(size(exerciseData.getCardPages())))
-                    .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
-                            Pair.of(FLASH_CARDS, CommandType.FLASH_CARDS_PREPARE),
-                            Pair.of(QUIZ, CommandType.QUIZ_PREPARE),
-                            Pair.of(INPUT_ANSWER, CommandType.ANSWER_INPUT_PREPARE),
-                            Pair.of(FIND_PAIRS, CommandType.CONNECT_WORDS_PREPARE),
-                            Pair.of(BACK, defineBackButton(sourceCommand))
-                    )))
+                    .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(getButtons(sourceCommand)))
                     .build();
 
         } else {
             return BotMessageReply.builder()
                     .chatId(chatId)
                     .text(CHOOSE_EXERCISE)
-                    .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
-                            Pair.of(FLASH_CARDS, CommandType.FLASH_CARDS_PREPARE),
-                            Pair.of(QUIZ, CommandType.QUIZ_PREPARE),
-                            Pair.of(INPUT_ANSWER, CommandType.ANSWER_INPUT_PREPARE),
-                            Pair.of(FIND_PAIRS, CommandType.CONNECT_WORDS_PREPARE),
-                            Pair.of(BACK, defineBackButton(sourceCommand))
-                    )))
+                    .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(getButtons(sourceCommand)))
                     .build();
         }
+    }
+
+    private List<Pair<String, CommandType>> getButtons(CommandType sourceCommand) {
+        return List.of(
+                Pair.of(FLASH_CARDS, CommandType.FLASH_CARDS_PREPARE),
+                Pair.of(QUIZ, CommandType.QUIZ_PREPARE),
+                Pair.of(INPUT_ANSWER, CommandType.ANSWER_INPUT_PREPARE),
+                Pair.of(FIND_PAIRS, CommandType.CONNECT_WORDS_PREPARE),
+                Pair.of(EXERCISE_DATA_OPTIONS, CommandType.EXERCISE_DATA_OPTIONS),
+                Pair.of(BACK, defineBackButton(sourceCommand))
+        );
     }
 
     private CommandType defineBackButton(CommandType sourceCommand) {
