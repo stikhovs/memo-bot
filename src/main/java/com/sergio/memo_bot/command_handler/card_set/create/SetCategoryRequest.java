@@ -52,9 +52,9 @@ public class SetCategoryRequest implements CommandHandler {
             List<CategoryDto> categories = categoryHttpService.getByChatId(chatId);
 
             chatTempDataService.clearAndSave(chatId, ChatTempData.builder()
-                            .chatId(chatId)
-                            .command(CommandType.SET_CATEGORY_REQUEST)
-                            .data(new Gson().toJson(categories))
+                    .chatId(chatId)
+                    .command(CommandType.SET_CATEGORY_REQUEST)
+                    .data(new Gson().toJson(categories))
                     .build());
 
             return BotMessageReply.builder()
@@ -76,12 +76,33 @@ public class SetCategoryRequest implements CommandHandler {
     private InlineKeyboardMarkup getKeyboard(List<CategoryDto> categories) {
         Map<String, String> buttonsMap = categories
                 .stream()
+                .filter(categoryDto -> !categoryDto.isDefault())
                 .collect(Collectors.toMap(
-                        categoryDto -> categoryDto.isDefault() ? SKIP : categoryDto.getTitle(),
+                        CategoryDto::getTitle,
                         categoryDto -> CommandType.SET_CATEGORY_RESPONSE.getCommandText().formatted(categoryDto.getId())
                 ));
 
         List<InlineKeyboardRow> rows = MarkUpUtil.getKeyboardRows(buttonsMap);
+
+        categories
+                .stream()
+                .filter(CategoryDto::isDefault)
+                .findFirst()
+                .ifPresent(defaultCategory ->
+                        rows.add(new InlineKeyboardRow(
+                                InlineKeyboardButton.builder()
+                                        .text(SKIP)
+                                        .callbackData(CommandType.SET_CATEGORY_RESPONSE.getCommandText().formatted(defaultCategory.getId()))
+                                        .build()
+                        ))
+                );
+
+        rows.add(new InlineKeyboardRow(
+                InlineKeyboardButton.builder()
+                        .text(CREATE_CATEGORY)
+                        .callbackData(CommandType.CREATE_CATEGORY_REQUEST.getCommandText())
+                        .build()
+        ));
 
         rows.add(new InlineKeyboardRow(
                 InlineKeyboardButton.builder()
