@@ -85,8 +85,6 @@ public enum CommandType {
     RENAME_CATEGORY_USER_INPUT_TITLE("/rename_category_user_input_title"),
     RENAME_CATEGORY_RESPONSE("/rename_category_response"),
 
-    GET_ALL_CATEGORIES_REQUEST("/get_all_categories_request"),
-    GET_ALL_CATEGORIES_RESPONSE("/get_all_categories_response"),
     GET_CATEGORY_INFO_REQUEST("/get_category_info_request__%s"),
     GET_CATEGORY_INFO_RESPONSE("/get_category_info_response"),
 
@@ -95,7 +93,6 @@ public enum CommandType {
     DELETE_CATEGORY_WITHOUT_SETS_REQUEST("/delete_category_without_sets_request"),
     DELETE_CATEGORY_RESPONSE("/delete_category_response"),
 
-//    ADD_SETS_TO_CATEGORY_REQUEST("/add_sets_to_category_request"),
     CHOOSE_SETS_FOR_CATEGORY_PREPARE("/choose_sets_for_category__%s"),
     CHOOSE_SETS_FOR_CATEGORY_REQUEST("/choose_sets_for_category_request"),
     SET_CHOSEN_FOR_CATEGORY("/set_chosen_for_category__%s"),
