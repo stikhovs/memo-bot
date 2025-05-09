@@ -9,7 +9,7 @@ import com.sergio.memo_bot.persistence.service.ChatAwaitsInputService;
 import com.sergio.memo_bot.persistence.service.ChatMessageService;
 import com.sergio.memo_bot.reply.*;
 import com.sergio.memo_bot.state.CommandType;
-import com.sergio.memo_bot.util.UpdateMapper;
+import com.sergio.memo_bot.mapper.UpdateMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
