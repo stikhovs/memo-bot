@@ -92,6 +92,6 @@ public class ChooseSetRequest implements CommandHandler {
             return Pair.of(CommandType.GET_CATEGORY_CARD_SET_INFO, cardSetsFromCategory);
         }
 
-        throw new RuntimeException("Couldn't find cardSets neither in CARD_SET_MENU_DATA, nor in GET_CATEGORY_CARD_SET_INFO");
+        return Pair.of(CommandType.CARD_SET_MENU_DATA, cardSetsFromMenu);
     }
 }
