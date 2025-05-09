@@ -129,6 +129,8 @@ public enum CommandType {
     SWAP_SIDES_REQUEST("/swap_sides_request"),
     SHUFFLE_CARDS_REQUEST("/shuffle_cards_request"),
 
+    INFO("/bot_info"),
+
     ;
 
     private final String commandText;

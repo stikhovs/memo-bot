@@ -61,7 +61,8 @@ public class MainMenu implements CommandHandler {
                     .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
                             Pair.of(CATEGORIES, CommandType.CATEGORY_MENU_DATA),
                             Pair.of(CARD_SETS, CommandType.CARD_SET_MENU_DATA),
-                            Pair.of(EXERCISES, CommandType.EXERCISES_FROM_MAIN_MENU)
+                            Pair.of(EXERCISES, CommandType.EXERCISES_FROM_MAIN_MENU),
+                            Pair.of(BOT_INFO, CommandType.INFO)
                     )))
                     .parseMode(ParseMode.HTML)
                     .build();

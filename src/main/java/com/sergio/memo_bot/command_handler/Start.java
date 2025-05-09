@@ -48,7 +48,7 @@ public class Start implements CommandHandler {
                 .chatId(processableMessage.getChatId())
                 .text(ReplyTextConstant.START)
                 .nextReply(NextReply.builder()
-                        .nextCommand(CommandType.MAIN_MENU)
+                        .nextCommand(CommandType.INFO)
                         .previousProcessableMessage(processableMessage)
                         .build())
                 .chatId(processableMessage.getChatId())

@@ -49,7 +49,11 @@ public class SenderService {
             } else if (failedReplyMethodName.equalsIgnoreCase("deleteMessages")) {
                 log.warn("Couldn't delete messages. Reason: [{}]. These messages will be deleted from the database", e.getMessage());
                 chatMessageService.delete(reply.getChatId(), ((DeleteMessages) reply.getReply()).getMessageIds());
+            } else if (failedReplyMethodName.equalsIgnoreCase("editMessageMedia")) {
+                log.warn("Couldn't edit message media. Reason: [{}]. This message will be deleted from the database", e.getMessage());
+                chatMessageService.delete(reply.getChatId(), List.of(reply.getMessageId()));
             } else {
+                log.error("Unhandled error", e);
                 throw new RuntimeException(e);
             }
         }

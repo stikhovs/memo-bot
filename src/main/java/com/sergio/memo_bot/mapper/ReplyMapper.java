@@ -204,19 +204,22 @@ public class ReplyMapper {
         Optional<ChatMessage> lastMessageOptional = chatMessageService.findLastWithButtonsMessage(chatId);
 
         if (lastMessageOptional.isPresent()) {
+            Integer messageId = lastMessageOptional.get().getMessageId();
             return ReplyData.builder()
                     .reply(EditMessageMedia.builder()
                             .chatId(chatId)
-                            .messageId(lastMessageOptional.get().getMessageId())
+                            .messageId(messageId)
                             .media(InputMediaPhoto.builder()
                                     .media(reply.getImage(), reply.getFileName())
                                     .caption(reply.getCaption())
                                     .showCaptionAboveMedia(true)
+                                    .parseMode(reply.getParseMode())
                                     .build())
                             .replyMarkup((InlineKeyboardMarkup) reply.getReplyMarkup())
                             .build())
                     .hasButtons(reply.getReplyMarkup() != null)
                     .chatId(chatId)
+                    .messageId(messageId)
                     .build();
         }
 
@@ -228,6 +231,8 @@ public class ReplyMapper {
                         .chatId(chatId)
                         .photo(imgFile)
                         .caption(reply.getCaption())
+                        .showCaptionAboveMedia(true)
+                        .parseMode(reply.getParseMode())
                         .replyMarkup(reply.getReplyMarkup())
                         .build())
                 .hasButtons(reply.getReplyMarkup() != null)
@@ -244,6 +249,7 @@ public class ReplyMapper {
                             .messageIds(reply.getMessageIds())
                             .build())
                     .hasButtons(false)
+                    .messageIds(reply.getMessageIds())
                     .build();
         } else {
             return ReplyData.builder()
@@ -253,6 +259,7 @@ public class ReplyMapper {
                             .messageId(reply.getMessageIds().getFirst())
                             .build())
                     .hasButtons(false)
+                    .messageId(reply.getMessageIds().getFirst())
                     .build();
         }
     }

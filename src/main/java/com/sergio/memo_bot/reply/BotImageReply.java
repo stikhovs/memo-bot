@@ -20,4 +20,5 @@ public class BotImageReply implements Reply {
 
     private ReplyKeyboard replyMarkup;
 
+    private String parseMode;
 }
