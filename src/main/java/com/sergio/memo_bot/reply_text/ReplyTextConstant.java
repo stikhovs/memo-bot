@@ -278,7 +278,7 @@ public final class ReplyTextConstant {
 
     public static final String EXPORT_BTN = EmojiConverter.getEmoji("U+1F69A") + " Экспорт";
     public static final String EXPORT_INSTRUCTION = """
-            Отправьте это кому-нибудь и пригласите в бот
+            Вы можете отправить этот набор другому пользователю, чтобы он смог импортировать его к себе
             """;
 
     public static final String CHOOSE_YOUR_IMPORT = "Выберите, как вы хотите импортировать набор";
