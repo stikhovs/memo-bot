@@ -1,4 +1,4 @@
-package com.sergio.memo_bot.command_handler.card_set.import_card_set;
+package com.sergio.memo_bot.command_handler.card_set.import_card_set.quizlet;
 
 import com.google.gson.Gson;
 import com.sergio.memo_bot.command_handler.CommandHandler;
@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.COULD_NOT_PARSE_MESSAGE;
 import static com.sergio.memo_bot.reply_text.ReplyTextConstant.STRING_IS_TOO_LONG;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
@@ -98,7 +99,7 @@ public class ImportCardsResponse implements CommandHandler {
     private Reply getErrorMessage(ProcessableMessage processableMessage) {
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
-                .text("Пожалуйста, попробуйте снова")
+                .text(COULD_NOT_PARSE_MESSAGE)
                 .nextReply(NextReply.builder()
                         .previousProcessableMessage(processableMessage)
                         .nextCommand(CommandType.IMPORT_CARDS_REQUEST)

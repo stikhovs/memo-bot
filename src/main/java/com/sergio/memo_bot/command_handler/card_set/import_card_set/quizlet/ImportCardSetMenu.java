@@ -1,4 +1,4 @@
-package com.sergio.memo_bot.command_handler.card_set;
+package com.sergio.memo_bot.command_handler.card_set.import_card_set.quizlet;
 
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.ProcessableMessage;
@@ -18,22 +18,22 @@ import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class CardSetMenu implements CommandHandler {
+public class ImportCardSetMenu implements CommandHandler {
     @Override
     public boolean canHandle(CommandType commandType) {
-        return CommandType.CARD_SET_MENU == commandType;
+        return CommandType.IMPORT_CARD_SET_FROM_QUIZLET_MENU == commandType;
     }
 
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
+
         return BotMessageReply.builder()
                 .chatId(processableMessage.getChatId())
-                .text(CARD_SETS)
+                .text(IMPORT_CARD_SET_FROM_QUIZLET)
                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
-                        Pair.of(CREATE_SET, CommandType.SET_CREATION_START),
-                        Pair.of(CHOOSE_SET, CommandType.CHOOSE_SET_REQUEST),
-                        Pair.of(IMPORT_SET, CommandType.IMPORT_CARD_SET_MENU),
-                        Pair.of(BACK, CommandType.MAIN_MENU)
+                        Pair.of(IMPORT_SET, CommandType.CHOOSE_CATEGORY_FOR_IMPORT_REQUEST),
+                        Pair.of(IMPORT_INSTRUCTION, CommandType.IMPORT_CARD_SET_README_1),
+                        Pair.of(BACK, CommandType.IMPORT_CARD_SET_MENU)
                 )))
                 .build();
     }

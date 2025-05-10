@@ -1,7 +1,8 @@
-package com.sergio.memo_bot.command_handler.card_set.import_card_set;
+package com.sergio.memo_bot.command_handler.card_set.import_card_set.quizlet;
 
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.ProcessableMessage;
+import com.sergio.memo_bot.persistence.service.ChatAwaitsInputService;
 import com.sergio.memo_bot.reply.BotMessageReply;
 import com.sergio.memo_bot.reply.Reply;
 import com.sergio.memo_bot.state.CommandType;
@@ -13,27 +14,31 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.BACK;
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.COPY_HERE_CARD_SET_CONTENT_FROM_QUIZLET;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ImportCardSetMenu implements CommandHandler {
+public class ImportCardsRequest implements CommandHandler {
+
+    private final ChatAwaitsInputService chatAwaitsInputService;
+
     @Override
     public boolean canHandle(CommandType commandType) {
-        return CommandType.IMPORT_CARD_SET_MENU == commandType;
+        return CommandType.IMPORT_CARDS_REQUEST == commandType;
     }
 
     @Override
     public Reply getReply(ProcessableMessage processableMessage) {
+        Long chatId = processableMessage.getChatId();
+        chatAwaitsInputService.clearAndSave(chatId, CommandType.IMPORT_CARDS_RESPONSE);
 
         return BotMessageReply.builder()
-                .chatId(processableMessage.getChatId())
-                .text(IMPORT_CARD_SET_FROM_QUIZLET)
+                .chatId(chatId)
+                .text(COPY_HERE_CARD_SET_CONTENT_FROM_QUIZLET)
                 .replyMarkup(MarkUpUtil.getInlineKeyboardMarkupRows(List.of(
-                        Pair.of(IMPORT_SET, CommandType.CHOOSE_CATEGORY_FOR_IMPORT_REQUEST),
-                        Pair.of(IMPORT_INSTRUCTION, CommandType.IMPORT_CARD_SET_README_1),
-                        Pair.of(BACK, CommandType.CARD_SET_MENU)
+                        Pair.of(BACK, CommandType.IMPORT_CARD_SET_TITLE_REQUEST)
                 )))
                 .build();
     }

@@ -1,4 +1,4 @@
-package com.sergio.memo_bot.command_handler.card_set.import_card_set;
+package com.sergio.memo_bot.command_handler.card_set.import_card_set.quizlet;
 
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CardDto;

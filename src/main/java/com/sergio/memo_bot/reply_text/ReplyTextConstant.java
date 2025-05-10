@@ -93,7 +93,7 @@ public final class ReplyTextConstant {
     public static final String CARD_SET_INFO = """
             Набор "<strong>%s</strong>".
                         
-            🟣 Категория <strong>%s</strong>.
+            🟠 Категория <strong>%s</strong>.
                         
             Количество карточек: %s.
             """;
@@ -134,9 +134,11 @@ public final class ReplyTextConstant {
             """;
 
     public static final String CHOSEN_CATEGORY = "Выбрана категория \"%s\"";
-    public static final String IMPORT_CARD_SET_FROM_QUIZLET = "Импортировать набор из Quizlet";
+    public static final String IMPORT_CARD_SET_FROM_QUIZLET = """
+            Импортировать набор из Quizlet 🟣
+            """;
     public static final String IMPORT_INSTRUCTION = EmojiConverter.getEmoji("U+1F4C4") + " Инструкция";
-    public static final String CARD_SET_SUCCESSFULLY_IMPORTED = "Набор успешно импортирован";
+    public static final String CARD_SET_SUCCESSFULLY_IMPORTED = "Набор успешно импортирован " + EmojiConverter.getEmoji("U+2705");
 
     public static final String INSERT_CARD_SET_TITLE = "Введите название набора";
     public static final String COPY_HERE_CARD_SET_CONTENT_FROM_QUIZLET = "Скопируйте сюда содержимое набора из Quizlet";
@@ -274,4 +276,45 @@ public final class ReplyTextConstant {
             """
             + "\n" + CHOOSE_EXERCISE;
 
+    public static final String EXPORT_BTN = EmojiConverter.getEmoji("U+1F69A") + " Экспорт";
+    public static final String EXPORT_INSTRUCTION = """
+            Отправьте это кому-нибудь и пригласите в бот
+            """;
+
+    public static final String CHOOSE_YOUR_IMPORT = "Выберите, как вы хотите импортировать набор";
+    public static final String IMPORT_FROM_QUIZLET = """
+            🟣 Из Quizlet
+            """;
+    public static final String IMPORT_FROM_MESSAGE = """
+            ✉ Из сообщения
+            """;
+    public static final String IMPORT_CARD_SET_FROM_MESSAGE = "Импортировать набор из сообщения";
+    public static final String IMPORT_CARD_SET_FROM_MESSAGE_README = """
+            Чтобы импортировать набор из сообщения, попросите другого пользователя Memorika экспортировать имеющийся у него набор.
+            Далее он должен отправить или переслать вам экспортированный набор в виде сообщения.
+            После этого вам достаточно лишь скопировать или переслать сюда содержимое этого сообщения во время импорта 🪄
+            """;
+    public static final String IMPORT_CARD_SET_FROM_MESSAGE_HERE = """
+            Пожалуйста, скопируйте или перешлите сюда набор от другого пользователя
+            """;
+    public static final String IMPORT_CARD_SET_FROM_MESSAGE_CHECK = """
+            Будет импортирован набор:
+            
+            %s
+            
+            Карточки:
+            %s
+            """;
+
+    public static final String COULD_NOT_PARSE_MESSAGE = """
+            ⚠ К сожалению, не удалось преобразовать сообщение в набор карточек. Возможно сообщение было изменено. Попробуйте снова.
+            """;
+
+    public static final String CONTINUE_IMPORT = """
+            Продолжить 🚀
+            """;
+
+    public static final String CANCEL_IMPORT = """
+            ↩ Отменить
+            """;
 }

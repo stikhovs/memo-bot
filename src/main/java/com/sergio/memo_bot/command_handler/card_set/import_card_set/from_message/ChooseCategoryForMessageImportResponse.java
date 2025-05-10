@@ -1,4 +1,4 @@
-package com.sergio.memo_bot.command_handler.card_set.import_card_set;
+package com.sergio.memo_bot.command_handler.card_set.import_card_set.from_message;
 
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CategoryDto;
@@ -20,14 +20,14 @@ import static com.sergio.memo_bot.reply_text.ReplyTextConstant.CHOSEN_CATEGORY;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ChooseCategoryForImportResponse implements CommandHandler {
+public class ChooseCategoryForMessageImportResponse implements CommandHandler {
 
     private final CategoryHttpService categoryHttpService;
     private final ChatTempDataService chatTempDataService;
 
     @Override
     public boolean canHandle(CommandType commandType) {
-        return CommandType.CHOOSE_CATEGORY_FOR_IMPORT_RESPONSE == commandType;
+        return CommandType.CHOOSE_CATEGORY_FOR_MESSAGE_IMPORT_RESPONSE == commandType;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class ChooseCategoryForImportResponse implements CommandHandler {
 
         chatTempDataService.clearAndSave(chatId, ChatTempData.builder()
                         .chatId(chatId)
-                        .command(CommandType.CHOOSE_CATEGORY_FOR_IMPORT_RESPONSE)
+                        .command(CommandType.CHOOSE_CATEGORY_FOR_MESSAGE_IMPORT_RESPONSE)
                         .data(categoryId)
                 .build());
 
@@ -49,7 +49,7 @@ public class ChooseCategoryForImportResponse implements CommandHandler {
             return BotPartReply.builder()
                     .chatId(chatId)
                     .previousProcessableMessage(processableMessage)
-                    .nextCommand(CommandType.IMPORT_CARD_SET_TITLE_REQUEST)
+                    .nextCommand(CommandType.INSERT_IMPORT_MESSAGE_REQUEST)
                     .build();
         }
 
@@ -58,7 +58,7 @@ public class ChooseCategoryForImportResponse implements CommandHandler {
                 .text(CHOSEN_CATEGORY.formatted(category.getTitle()))
                 .nextReply(NextReply.builder()
                         .previousProcessableMessage(processableMessage)
-                        .nextCommand(CommandType.IMPORT_CARD_SET_TITLE_REQUEST)
+                        .nextCommand(CommandType.INSERT_IMPORT_MESSAGE_REQUEST)
                         .build())
                 .build();
     }

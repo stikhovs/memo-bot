@@ -114,6 +114,7 @@ public enum CommandType {
     EXERCISES_FROM_MAIN_MENU_CHOOSE_SET("/exercises_from_main_menu_set_id__%s"),
 
     IMPORT_CARD_SET_MENU("/import_card_set_menu"),
+    IMPORT_CARD_SET_FROM_QUIZLET_MENU("/import_card_set_from_quizlet_menu"),
     IMPORT_CARD_SET_README_1("/import_card_set_readme1"),
     IMPORT_CARD_SET_README_2("/import_card_set_readme2"),
     IMPORT_CARD_SET_README_3("/import_card_set_readme3"),
@@ -125,11 +126,22 @@ public enum CommandType {
     CHOOSE_CATEGORY_FOR_IMPORT_REQUEST("/choose_category_for_import_request"),
     CHOOSE_CATEGORY_FOR_IMPORT_RESPONSE("/choose_category_for_import__%s"),
 
+    IMPORT_CARD_SET_FROM_MESSAGE_MENU("/import_card_set_from_message_menu"),
+    INSERT_IMPORT_MESSAGE_REQUEST("/insert_import_message_request"),
+    IMPORT_MESSAGE_CHECK("/import_message_check"),
+    IMPORT_MESSAGE_RESPONSE("/import_message_response"),
+    IMPORT_FROM_MESSAGE_README("/import_from_message_readme"),
+    CHOOSE_CATEGORY_FOR_MESSAGE_IMPORT_REQUEST("/choose_category_for_message_import_request"),
+    CHOOSE_CATEGORY_FOR_MESSAGE_IMPORT_RESPONSE("/choose_category_for_message_import__%s"),
+
     EXERCISE_DATA_OPTIONS("/exercise_data_options"),
     SWAP_SIDES_REQUEST("/swap_sides_request"),
     SHUFFLE_CARDS_REQUEST("/shuffle_cards_request"),
 
     INFO("/bot_info"),
+
+    EXPORT_CARD_SET_REQUEST("/export_card_set_request"),
+    EXPORT_CARD_SET_RESPONSE("/export_card_set_response"),
 
     ;
 
@@ -154,7 +166,8 @@ public enum CommandType {
                 || containsSetCategoryResponse(text)
                 || containsExFromMainMenuChooseSet(text)
                 || containsChooseCategoryForSetMoving(text)
-                || containsChooseCategoryForImport(text);
+                || containsChooseCategoryForImport(text)
+                || containsChooseCategoryForMessageImport(text);
     }
 
     public static CommandType getByCommandText(String text) {
@@ -172,6 +185,7 @@ public enum CommandType {
         if (containsExFromMainMenuChooseSet(text)) return EXERCISES_FROM_MAIN_MENU_CHOOSE_SET;
         if (containsChooseCategoryForSetMoving(text)) return CHOOSE_CATEGORY_FOR_SET_MOVING;
         if (containsChooseCategoryForImport(text)) return CHOOSE_CATEGORY_FOR_IMPORT_RESPONSE;
+        if (containsChooseCategoryForMessageImport(text)) return CHOOSE_CATEGORY_FOR_MESSAGE_IMPORT_RESPONSE;
 
         throw new UnsupportedOperationException("Couldn't map text [%s] to CommandType".formatted(text));
     }
@@ -214,6 +228,10 @@ public enum CommandType {
 
     private static boolean containsChooseCategoryForImport(String text) {
         return text.contains("/choose_category_for_import__");
+    }
+
+    private static boolean containsChooseCategoryForMessageImport(String text) {
+        return text.contains("/choose_category_for_message_import__");
     }
 
 }

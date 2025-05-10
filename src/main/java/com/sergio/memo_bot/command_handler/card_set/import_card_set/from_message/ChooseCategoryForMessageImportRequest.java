@@ -1,4 +1,4 @@
-package com.sergio.memo_bot.command_handler.card_set.import_card_set;
+package com.sergio.memo_bot.command_handler.card_set.import_card_set.from_message;
 
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.CategoryDto;
@@ -19,19 +19,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.sergio.memo_bot.reply_text.ReplyTextConstant.BACK;
-import static com.sergio.memo_bot.reply_text.ReplyTextConstant.CHOOSE_CATEGORY;
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.*;
+import static com.sergio.memo_bot.reply_text.ReplyTextConstant.CREATE_CATEGORY;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ChooseCategoryForImportRequest implements CommandHandler {
+public class ChooseCategoryForMessageImportRequest implements CommandHandler {
 
     private final CategoryHttpService categoryHttpService;
 
     @Override
     public boolean canHandle(CommandType commandType) {
-        return CommandType.CHOOSE_CATEGORY_FOR_IMPORT_REQUEST == commandType;
+        return CommandType.CHOOSE_CATEGORY_FOR_MESSAGE_IMPORT_REQUEST == commandType;
     }
 
     @Override
@@ -49,14 +49,39 @@ public class ChooseCategoryForImportRequest implements CommandHandler {
     private InlineKeyboardMarkup getKeyboard(List<CategoryDto> categories) {
         Map<String, String> buttonsMap = categories
                 .stream()
+                .filter(categoryDto -> !categoryDto.isDefault())
                 .collect(Collectors.toMap(
-                        categoryDto -> categoryDto.isDefault() ? "Пропустить" : categoryDto.getTitle(),
-                        categoryDto -> CommandType.CHOOSE_CATEGORY_FOR_IMPORT_RESPONSE.getCommandText().formatted(categoryDto.getId())
+                        CategoryDto::getTitle,
+                        categoryDto -> CommandType.CHOOSE_CATEGORY_FOR_MESSAGE_IMPORT_RESPONSE.getCommandText().formatted(categoryDto.getId())
                 ));
+
         List<InlineKeyboardRow> rows = MarkUpUtil.getKeyboardRows(buttonsMap);
 
+        categories
+                .stream()
+                .filter(CategoryDto::isDefault)
+                .findFirst()
+                .ifPresent(defaultCategory ->
+                        rows.add(new InlineKeyboardRow(
+                                InlineKeyboardButton.builder()
+                                        .text(SKIP)
+                                        .callbackData(CommandType.CHOOSE_CATEGORY_FOR_MESSAGE_IMPORT_RESPONSE.getCommandText().formatted(defaultCategory.getId()))
+                                        .build()
+                        ))
+                );
+
         rows.add(new InlineKeyboardRow(
-                InlineKeyboardButton.builder().text(BACK).callbackData(CommandType.IMPORT_CARD_SET_MENU.getCommandText()).build()
+                InlineKeyboardButton.builder()
+                        .text(CREATE_CATEGORY)
+                        .callbackData(CommandType.CREATE_CATEGORY_REQUEST.getCommandText())
+                        .build()
+        ));
+
+        rows.add(new InlineKeyboardRow(
+                InlineKeyboardButton.builder()
+                        .text(BACK)
+                        .callbackData(CommandType.IMPORT_CARD_SET_FROM_MESSAGE_MENU.getCommandText())
+                        .build()
         ));
 
         return InlineKeyboardMarkup.builder()

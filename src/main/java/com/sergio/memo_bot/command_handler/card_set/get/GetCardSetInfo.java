@@ -47,7 +47,7 @@ public class GetCardSetInfo implements CommandHandler {
         String[] commandAndCardSetId = processableMessage.getText().split("__");
 
         if (commandAndCardSetId[1].equals("%s")) {
-            chosenCardSet = chatTempDataService.mapDataToType(processableMessage.getChatId(), CommandType.GET_CARD_SET_INFO, CardSetDto.class);
+            chosenCardSet = chatTempDataService.mapDataToType(chatId, CommandType.GET_CARD_SET_INFO, CardSetDto.class);
         } else {
             Long chosenCardSetId = Long.valueOf(commandAndCardSetId[1]);
             chosenCardSet = cardSetHttpService.getCardSet(chosenCardSetId);
@@ -75,6 +75,7 @@ public class GetCardSetInfo implements CommandHandler {
                         Pair.of(SEE_CARDS, CommandType.GET_CARDS),
                         Pair.of(ADD_CARD, CommandType.ADD_CARD_REQUEST),
                         Pair.of(EDIT_CARD_SET, CommandType.EDIT_SET),
+                        Pair.of(EXPORT_BTN, CommandType.EXPORT_CARD_SET_REQUEST),
                         CollectionUtils.isNotEmpty(chosenCardSet.getCards())
                                 ? Pair.of(EXERCISES, CommandType.EXERCISES_FROM_CARD_SET)
                                 : Pair.of(null, null),
