@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
@@ -36,7 +37,16 @@ public class MessageCleanupScheduler {
         log.info("Checking for old messages to be cleaned up...");
 
         List<ChatMessage> oldMessages = chatMessageService.findByCreatedAtBefore(LocalDateTime.now().minusHours(MAX_HOURS_TTL));
+
+        oldMessages.stream()
+                .filter(msg -> Objects.isNull(msg.getMessageId()))
+                .forEach(msg -> {
+                    log.info("Deleting chat_message with null message_id: {}", msg);
+                    chatMessageService.deleteById(msg.getId());
+                });
+
         Map<Long, List<ChatMessage>> messagesByChatId = oldMessages.stream()
+                .filter(msg -> Objects.nonNull(msg.getMessageId()))
                 .collect(Collectors.groupingBy(ChatMessage::getChatId));
 
         messagesByChatId.forEach((chatId, messages) -> {
