@@ -319,4 +319,32 @@ public final class ReplyTextConstant {
     public static final String CANCEL_IMPORT = """
             ↩ Отменить
             """;
+
+    public static final String BOT_OPTIONS = """
+            💭 Опции
+            """;
+
+    public static final String CHOOSE_BOT_OPTION = """
+            Выберите опцию
+            """;
+
+    public static final String BOT_FEEDBACK_OPTION = """
+            📨 Обратная связь
+            """;
+
+    public static final String INSERT_YOUR_FEEDBACK = """
+            Вы можете отправить свой отзыв, поделиться мнением, предложить улучшение или сообщить об ошибке 📬
+            """;
+
+    public static final String YOUR_FEEDBACK_WAS_SENT = """
+            
+            ---
+            Ваше сообщение успешно отправлено ✅
+            """;
+
+    public static final String FEEDBACK_REPLY_FROM_ADMIN = """
+            Ответ от службы поддержки 💬
+            ---
+            
+            """;
 }

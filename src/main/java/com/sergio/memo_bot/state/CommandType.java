@@ -138,7 +138,12 @@ public enum CommandType {
     SWAP_SIDES_REQUEST("/swap_sides_request"),
     SHUFFLE_CARDS_REQUEST("/shuffle_cards_request"),
 
+    BOT_OPTIONS("/bot_options"),
     INFO("/bot_info"),
+    FEEDBACK_REQUEST("/bot_feedback_request"),
+    FEEDBACK_RESPONSE("/bot_feedback_response"),
+    FEEDBACK_REPLY("/bot_feedback_reply"),
+    RESOLVE_FEEDBACK_WITHOUT_REPLY("/bot_feedback_resolve"),
 
     EXPORT_CARD_SET_REQUEST("/export_card_set_request"),
     EXPORT_CARD_SET_RESPONSE("/export_card_set_response"),

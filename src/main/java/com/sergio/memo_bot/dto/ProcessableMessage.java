@@ -2,6 +2,9 @@ package com.sergio.memo_bot.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import org.telegram.telegrambots.meta.api.objects.PhotoSize;
+
+import java.util.List;
 
 @Data
 @Builder(toBuilder = true)
@@ -22,5 +25,9 @@ public class ProcessableMessage {
     private Integer messageId;
 
     private boolean hasPhoto;
+
+    private List<PhotoSize> photos;
+
+    private Integer replyToMessageId;
 
 }

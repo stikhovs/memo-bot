@@ -68,7 +68,7 @@ public class ReplyMapper {
                                         .parseMode(reply.getParseMode())
                                         .replyMarkup(reply.getReplyMarkup())
                                         .build())
-                                .hasButtons(reply.getReplyMarkup() != null)
+                                .hasButtons(hasInlineKeyboard(reply))
                                 .chatId(chatId)
                                 .build()
                 );
@@ -84,7 +84,7 @@ public class ReplyMapper {
                                                         .text(reply.getText())
                                                         .parseMode(reply.getParseMode())
                                                         .replyMarkup(
-                                                                reply.getReplyMarkup() != null && reply.getReplyMarkup() instanceof InlineKeyboardMarkup
+                                                                hasInlineKeyboard(reply)
                                                                         ? (InlineKeyboardMarkup) reply.getReplyMarkup()
                                                                         : null
                                                         )
@@ -106,7 +106,7 @@ public class ReplyMapper {
                                         )
                                         .chatId(chatId)
                                         .messageId(lastMessage.getMessageId())
-                                        .hasButtons(reply.getReplyMarkup() != null)
+                                        .hasButtons(hasInlineKeyboard(reply))
                                         .build()
                         );
                         replies.add(
@@ -117,7 +117,7 @@ public class ReplyMapper {
                                                 .parseMode(reply.getParseMode())
                                                 .replyMarkup(reply.getReplyMarkup())
                                                 .build())
-                                        .hasButtons(reply.getReplyMarkup() != null)
+                                        .hasButtons(hasInlineKeyboard(reply))
                                         .chatId(chatId)
                                         .build()
                         );
@@ -131,7 +131,7 @@ public class ReplyMapper {
                                             .parseMode(reply.getParseMode())
                                             .replyMarkup(reply.getReplyMarkup())
                                             .build())
-                                    .hasButtons(reply.getReplyMarkup() != null)
+                                    .hasButtons(hasInlineKeyboard(reply))
                                     .chatId(chatId)
                                     .build()
                     );
@@ -147,7 +147,7 @@ public class ReplyMapper {
                                     .parseMode(reply.getParseMode())
                                     .replyMarkup(reply.getReplyMarkup())
                                     .build())
-                            .hasButtons(reply.getReplyMarkup() != null)
+                            .hasButtons(hasInlineKeyboard(reply))
                             .chatId(chatId)
                             .build()
             );
@@ -262,6 +262,10 @@ public class ReplyMapper {
                     .messageId(reply.getMessageIds().getFirst())
                     .build();
         }
+    }
+
+    private boolean hasInlineKeyboard(BotMessageReply reply) {
+        return reply.getReplyMarkup() != null && reply.getReplyMarkup() instanceof InlineKeyboardMarkup;
     }
 
 

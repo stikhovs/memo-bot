@@ -25,18 +25,21 @@ public class ChatMessageService {
                 .ifPresentOrElse(it -> {
                             it.setUpdatedAt(LocalDateTime.now());
                             it.setMessageContentType(messageContentType);
-                            chatMessageRepository.save(it);
+                            ChatMessage saved = chatMessageRepository.save(it);
+                            log.info("Saved to chat_message from user: {}", saved);
                         },
-                        () -> chatMessageRepository.save(ChatMessage.builder()
-                                .chatId(chatId)
-                                .messageId(messageId)
-                                .senderType(SenderType.USER)
-                                .messageContentType(messageContentType)
-                                .hasButtons(false)
-                                .updatedAt(LocalDateTime.now())
-                                .build()
-                        ));
-//        log.info("Saved to chat_message from user: chatId {}, messageId {}", chatId, messageId);
+                        () -> {
+                            ChatMessage saved = chatMessageRepository.save(ChatMessage.builder()
+                                    .chatId(chatId)
+                                    .messageId(messageId)
+                                    .senderType(SenderType.USER)
+                                    .messageContentType(messageContentType)
+                                    .hasButtons(false)
+                                    .updatedAt(LocalDateTime.now())
+                                    .build()
+                            );
+                            log.info("Saved new chat_message from user: {}", saved);
+                        });
     }
 
     public void saveFromBot(Long chatId, Integer messageId, boolean hasButtons, MessageContentType messageContentType) {
@@ -45,17 +48,20 @@ public class ChatMessageService {
                 .ifPresentOrElse(it -> {
                             it.setHasButtons(hasButtons);
                             it.setMessageContentType(messageContentType);
-                            chatMessageRepository.save(it);
+                            ChatMessage saved = chatMessageRepository.save(it);
+                            log.info("Saved to chat_message from bot: {}", saved);
                         },
-                        () -> chatMessageRepository.save(ChatMessage.builder()
-                                .chatId(chatId)
-                                .messageId(messageId)
-                                .senderType(SenderType.BOT)
-                                .messageContentType(messageContentType)
-                                .hasButtons(hasButtons)
-                                .build()
-                        ));
-//        log.info("Saved to chat_message from bot: chatId {}, messageId {}", chatId, messageId);
+                        () -> {
+                            ChatMessage saved = chatMessageRepository.save(ChatMessage.builder()
+                                    .chatId(chatId)
+                                    .messageId(messageId)
+                                    .senderType(SenderType.BOT)
+                                    .messageContentType(messageContentType)
+                                    .hasButtons(hasButtons)
+                                    .build()
+                            );
+                            log.info("Saved new chat_message from bot: {}", saved);
+                        });
     }
 
     public Optional<Integer> findLastBotMessageId(Long chatId) {

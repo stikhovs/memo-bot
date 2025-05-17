@@ -1,6 +1,7 @@
 package com.sergio.memo_bot.service;
 
 import com.sergio.memo_bot.command_handler.CommandHandler;
+import com.sergio.memo_bot.configuration.BotProperties;
 import com.sergio.memo_bot.dto.ProcessableMessage;
 import com.sergio.memo_bot.mapper.ReplyMapper;
 import com.sergio.memo_bot.persistence.entity.AwaitsUserInput;
@@ -32,34 +33,39 @@ public class UpdateService {
     private final ChatAwaitsInputService chatAwaitsInputService;
     private final ChatMessageService chatMessageService;
     private final ReplyMapper replyMapper;
+    private final BotProperties botProperties;
 
 
     @Transactional
     public void process(Update update) {
         ProcessableMessage processableMessage = updateMapper.map(update);
+        Long chatId = processableMessage.getChatId();
+
         try {
             if (processableMessage.isProcessable()) {
-                chatMessageService.saveFromUser(processableMessage.getChatId(), processableMessage.getMessageId(), processableMessage.isHasPhoto() ? MessageContentType.IMAGE : MessageContentType.TEXT);
+                chatMessageService.saveFromUser(chatId, processableMessage.getMessageId(), processableMessage.isHasPhoto() ? MessageContentType.IMAGE : MessageContentType.TEXT);
                 if (CommandType.isCommandType(processableMessage.getText())) {
                     log.info("Consumed command: {}", processableMessage);
                     Reply reply = handleCommand(CommandType.getByCommandText(processableMessage.getText()), processableMessage);
                     send(reply);
                 } else {
-                    List<AwaitsUserInput> ifAwaitsUserTextInput = chatAwaitsInputService.findAll(processableMessage.getChatId());
+                    List<AwaitsUserInput> ifAwaitsUserTextInput = chatAwaitsInputService.findAll(chatId);
                     if (isNotEmpty(ifAwaitsUserTextInput)) {
                         log.info("Consumed user input: {}", processableMessage);
                         CommandType commandType = ifAwaitsUserTextInput.getFirst().getNextCommand();
                         Reply reply = handleCommand(commandType, processableMessage);
                         send(reply);
+                    } else {
+                        handleAdminReplyIfNeeded(processableMessage);
                     }
                 }
             }
         } catch (Throwable ex) {
             log.error("Something went wrong", ex);
             senderService.send(ReplyData.builder()
-                            .chatId(processableMessage.getChatId())
+                            .chatId(chatId)
                             .reply(SendMessage.builder()
-                                    .chatId(processableMessage.getChatId())
+                                    .chatId(chatId)
                                     .text(SOMETHING_WENT_WRONG)
                                     .build())
                     .build());
@@ -97,6 +103,15 @@ public class UpdateService {
             }
         } else if (reply instanceof BotImageReply imageReply) {
             senderService.send(replyMapper.toReplyData(imageReply));
+        }
+    }
+
+    private void handleAdminReplyIfNeeded(ProcessableMessage processableMessage) {
+        if (processableMessage.getChatId().equals(botProperties.getAdminChatId())) {
+            log.info("Handling reply from admin chat");
+            Reply reply = handleCommand(CommandType.FEEDBACK_REPLY, processableMessage);
+            send(reply);
+            log.info("Handled reply from admin chat");
         }
     }
 
