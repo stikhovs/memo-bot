@@ -25,7 +25,7 @@ import static org.apache.commons.collections4.CollectionUtils.size;
 @Service
 @RequiredArgsConstructor
 public class MessageCleanupScheduler {
-    private static final int MAX_HOURS_TTL = 48;
+    private static final int MAX_HOURS_TTL = 47;
     private static final int MAX_NUMBER_OF_MESSAGES = 100;
 
     private final TelegramClient memoBotClient;
