@@ -1,4 +1,4 @@
-package com.sergio.memo_bot.command_handler.info;
+package com.sergio.memo_bot.command_handler.options.info;
 
 import com.sergio.memo_bot.command_handler.CommandHandler;
 import com.sergio.memo_bot.dto.ProcessableMessage;

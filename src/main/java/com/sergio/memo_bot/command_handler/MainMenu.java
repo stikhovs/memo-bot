@@ -62,7 +62,7 @@ public class MainMenu implements CommandHandler {
                             Pair.of(CATEGORIES, CommandType.CATEGORY_MENU_DATA),
                             Pair.of(CARD_SETS, CommandType.CARD_SET_MENU_DATA),
                             Pair.of(EXERCISES, CommandType.EXERCISES_FROM_MAIN_MENU),
-                            Pair.of(BOT_INFO, CommandType.INFO)
+                            Pair.of(BOT_OPTIONS, CommandType.BOT_OPTIONS)
                     )))
                     .parseMode(ParseMode.HTML)
                     .build();
