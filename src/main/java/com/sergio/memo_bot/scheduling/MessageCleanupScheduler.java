@@ -2,6 +2,7 @@ package com.sergio.memo_bot.scheduling;
 
 import com.sergio.memo_bot.persistence.entity.ChatMessage;
 import com.sergio.memo_bot.persistence.service.ChatMessageService;
+import com.sergio.memo_bot.persistence.service.FeedbackService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,6 +31,7 @@ public class MessageCleanupScheduler {
 
     private final TelegramClient memoBotClient;
     private final ChatMessageService chatMessageService;
+    private final FeedbackService feedbackService;
 
     @Transactional
     @Scheduled(fixedDelayString = "${bot.cleanup.scheduler.delay-ms:3600000}")
@@ -62,6 +64,9 @@ public class MessageCleanupScheduler {
             chatMessageService.delete(chatId, messageIds);
             log.info("Scheduled cleanup is done for chat {}. Following messages were deleted: {} ", chatId, messageIds);
         });
+
+        log.info("Checking for resolved feedbacks to be deleted...");
+        feedbackService.deleteAllResolvedFeedbacks();
     }
 
     private void delete(DeleteMessages deleteMessages) {

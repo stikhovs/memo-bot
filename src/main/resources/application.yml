@@ -25,6 +25,7 @@ bot:
   cleanup:
     scheduler:
       delay-ms: 3600000 # once in 1 hour
+  admin-chat-id: ${ADMIN_CHAT_ID}
 
 backend:
   url: ${BACKEND_URL}

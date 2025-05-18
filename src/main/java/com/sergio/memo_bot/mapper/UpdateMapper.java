@@ -19,6 +19,8 @@ import org.telegram.telegrambots.meta.api.objects.polls.PollOption;
 
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 
 @Slf4j
 @Component
@@ -30,7 +32,8 @@ public class UpdateMapper {
             Message message = update.getMessage();
             User user = message.getFrom();
             Integer messageId = message.getMessageId();
-            return ProcessableMessage.builder()
+
+            ProcessableMessage processableMessage = ProcessableMessage.builder()
                     .processable(isFromUser(user))
                     .username(user.getUserName())
                     .userId(user.getId())
@@ -38,6 +41,12 @@ public class UpdateMapper {
                     .text(message.getText())
                     .messageId(messageId)
                     .build();
+
+            if (message.getReplyToMessage() != null) {
+                processableMessage.setReplyToMessageId(message.getReplyToMessage().getMessageId());
+            }
+
+            return processableMessage;
         }
 
         if (isCallbackData(update)) {
@@ -46,7 +55,7 @@ public class UpdateMapper {
             MaybeInaccessibleMessage message = callbackQuery.getMessage();
             Integer messageId = message.getMessageId();
 
-            boolean hasPhoto = checkIfHasPhoto(callbackQuery);
+            boolean hasPhoto = hasPhoto(callbackQuery);
 
             return ProcessableMessage.builder()
                     .processable(isFromUser(user))
@@ -82,9 +91,6 @@ public class UpdateMapper {
                     .orElseThrow();
             return ProcessableMessage.builder()
                     .processable(true)
-//                    .username(user.getUserName())
-//                    .userId(user.getId())
-//                    .chatId(message.getChatId())
                     .text(answer.getText())
                     .build();
         }
@@ -101,18 +107,41 @@ public class UpdateMapper {
                     .build();
         }
 
+        if (isTextWithImage(update)) {
+            Message message = update.getMessage();
+            List<PhotoSize> photos = message.getPhoto();
+            User user = message.getFrom();
+            Integer messageId = message.getMessageId();
+
+            String text = isNotBlank(message.getCaption()) ? message.getCaption() : message.getText();
+
+            return ProcessableMessage.builder()
+                    .processable(isFromUser(user) && isNotBlank(text))
+                    .username(user.getUserName())
+                    .userId(user.getId())
+                    .chatId(message.getChatId())
+                    .text(message.getCaption())
+                    .messageId(messageId)
+                    .hasPhoto(true)
+                    .photos(photos)
+                    .build();
+        }
+
         return ProcessableMessage.builder()
                 .processable(false)
-//                .userId(update.get)
                 .build();
     }
 
-    private boolean checkIfHasPhoto(CallbackQuery callbackQuery) {
+    private boolean hasPhoto(CallbackQuery callbackQuery) {
         if (Message.class.isAssignableFrom(callbackQuery.getMessage().getClass())) {
             List<PhotoSize> photo = ((Message) callbackQuery.getMessage()).getPhoto();
             return CollectionUtils.isNotEmpty(photo);
         }
         return false;
+    }
+
+    private boolean hasPhoto(Message message) {
+        return CollectionUtils.isNotEmpty(message.getPhoto());
     }
 
     /*private Long getUserId(Update update) {
@@ -128,23 +157,19 @@ public class UpdateMapper {
     private boolean isText(Update update) {
         return update.hasMessage() && update.getMessage().hasText();
     }
-
+    private boolean isTextWithImage(Update update) {return update.hasMessage() && hasPhoto(update.getMessage());}
     private boolean isCallbackData(Update update) {
         return update.hasCallbackQuery();
     }
-
     private boolean isPoll(Update update) {
         return update.hasPoll();
     }
-
     private boolean isPollAnswer(Update update) {
         return update.hasPollAnswer();
     }
-
     private boolean isEditedMessage(Update update) {
         return update.hasEditedMessage();
     }
-
     private boolean isFromUser(User user) {
         return BooleanUtils.isFalse(user.getIsBot());
     }

@@ -16,4 +16,6 @@ public class BotProperties {
 
     private String apiKey;
 
+    private Long adminChatId;
+
 }

@@ -5,3 +5,5 @@ databaseChangeLog:
       file: database/changelogs/create-table-chat_temp_data.sql
   - include:
       file: database/changelogs/create-table-chat_message.sql
+  - include:
+      file: database/changelogs/create-table-feedback.sql
